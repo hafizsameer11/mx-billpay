@@ -15,7 +15,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'fullName' => 'required|string', // Changed 'name' to 'fullName'
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|confirmed', // Laravel uses 'confirmed' rule for password confirmation
+            'password' => 'required|string', // Laravel uses 'confirmed' rule for password confirmation
             'confirmPassword' => 'required|string|same:password' // Custom confirmation field 'confirmPassword'
         ], [
             // Custom error messages for specific fields
