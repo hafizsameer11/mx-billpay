@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillerCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('dashboard.index');
 });
+
+Route::get('/fetch-biller-categories', [BillerCategoryController::class, 'fetchCategories']);
+Route::get('/pusher-log',function(){
+return view('welcome');
+}
+);

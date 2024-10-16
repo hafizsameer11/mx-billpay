@@ -14,7 +14,7 @@ class AccountController extends Controller
     protected $accessToken;
     public function __construct()
     {
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiMTM5ZDczODgtNjBkMC00YjQ5LTg5MjYtN2Y5YjQ1NDUzMzU4IiwiaWF0IjoxNzI4Njc2MTI1LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.FYUuQ4uknYKBUOxlQAbOP7yKsgi-ftvzumzkIpi0AYE-oQuOtdzoS8le_uVML1ARw6RZ6Epdl28VOrV8KzQLZw';
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZmIzNDczZjAtY2ZiNS00ZDQzLTk1Y2EtNWE2NjdlZTZmZjdkIiwiaWF0IjoxNzI4OTg5MDMwLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.W_P0TOjlgGN3fgi0wzv7EVLDoRXa45EmhRQVj0-NEjaH5hxkCJaDLqTeC7f4snDE0BbG2GTYubYEthW0inCShg';
     }
     public function createIndividualAccount(Request $request)
     {

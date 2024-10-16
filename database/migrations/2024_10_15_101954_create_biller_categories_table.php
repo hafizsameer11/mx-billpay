@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill_payment_categories', function (Blueprint $table) {
+        Schema::create('biller_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('category')->nullable();
+            $table->string('category');
             $table->timestamps();
         });
     }
+
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('bill_payment_categories');
+        Schema::dropIfExists('biller_categories');
     }
 };

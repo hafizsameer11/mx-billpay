@@ -18,9 +18,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'password','otp','otp_verified'
     ];
 
     /**
@@ -42,4 +41,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function Passreset(){
+        return $this->hasOne(PasswordReset::class,'user_id','id');
+    }
 }
