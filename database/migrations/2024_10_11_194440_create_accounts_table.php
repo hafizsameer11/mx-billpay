@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Reference to users table
             $table->string('account_number')->unique();
+            $table->string('profile_picture')->nullable(); 
             $table->string('account_type'); // Individual or Corporate
             $table->string('status')->default('PND'); // PND for Post No Debit
             $table->string('bvn');

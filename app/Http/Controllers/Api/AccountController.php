@@ -25,7 +25,13 @@ class AccountController extends Controller
             'dob' => 'required|date',
             'phone' => 'required|string',
             'bvn' => 'required|string',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+
         ]);
+        $profilePicturePath = null;
+    if ($request->hasFile('profile_picture')) {
+        $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+    }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
@@ -44,6 +50,7 @@ class AccountController extends Controller
             $account->account_type = 'individual';
             $account->status = 'PND';
             $account->bvn = $request->bvn;
+            $account->profile_picture = $profilePicturePath;
             $account->save();
             return response()->json($account, 201);
         }
