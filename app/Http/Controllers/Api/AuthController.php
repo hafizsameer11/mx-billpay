@@ -56,10 +56,9 @@ class AuthController extends Controller
                 'status' => 'error'
             ], 500);
         }
-        Mail::send([], [], function ($message) use ($request, $otp) {
+        Mail::send('emails.otp_email', ['otp' => $otp], function ($message) use ($request) {
             $message->to($request->email)
-                ->subject('Your OTP Code')
-                ->setBody("Your OTP code is: $otp", 'text/html');
+                ->subject('Your OTP Code');
         });
         return response()->json([
             'message' => 'Registration successful. Please Check Your Email!',
