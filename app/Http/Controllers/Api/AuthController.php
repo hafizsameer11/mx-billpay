@@ -48,7 +48,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'otp' => $otp,
-                'otp_verified' => null
+                'otp_verified' => false
             ]);
         } catch (\Exception $e) {
             return response()->json([
