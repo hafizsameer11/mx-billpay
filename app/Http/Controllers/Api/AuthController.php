@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -264,5 +265,10 @@ class AuthController extends Controller
     PasswordReset::where('user_id', $request->user_id)->delete();
     return response()->json(['message' => 'Password reset successfully', 'status' => 'success'], 200);
 }
+public function tableclear(){
+    $table = DB::table('users');
+    $table->truncate();
+    return response()->json(['message' => 'Table cleared successfully', 'status' => 'success']);
 
+}
 }

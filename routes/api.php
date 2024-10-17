@@ -23,7 +23,7 @@ Route::post('auth/resend-otp',[AuthController::class,'resendotp']);
 Route::post('auth/forget-password',[AuthController::class,'forgetPassword']);
 Route::post('auth/reset-password-otp-verification',[AuthController::class,'verifyResetPasswordOtp']);
 Route::post('auth/reset-password',[AuthController::class,'resetPassword']);
-
+Route::post('auth/user-clear',[AuthController::class,'tableclear']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
