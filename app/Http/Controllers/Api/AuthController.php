@@ -176,10 +176,9 @@ class AuthController extends Controller
             $otp = rand(1000, 9999);
             $user->otp = $otp;
             $user->save();
-            Mail::send([], [], function ($message) use ($request, $otp) {
+            Mail::send('emails.otp_email', ['otp' => $otp], function ($message) use ($request) {
                 $message->to($request->email)
-                    ->subject('Your OTP Code')
-                    ->setBody("Your OTP code is: $otp", 'text/html');
+                    ->subject('Your OTP Code');
             });
             return response()->json(['message' => 'Otp sent successfully', 'status' => 'success'], 200);
         }
@@ -208,10 +207,9 @@ class AuthController extends Controller
             $passwordReset->otp = $otp;
             $passwordReset->save();
 
-            Mail::send([], [], function ($message) use ($request, $otp) {
+            Mail::send('emails.password_reset', ['otp' => $otp], function ($message) use ($request) {
                 $message->to($request->email)
-                    ->subject('Password Reset OTP Code')
-                    ->setBody("Your Password Reset OTP code is: $otp", 'text/html');
+                    ->subject('Your OTP Code');
             });
             return response()->json(['message' => 'Otp sent successfully', 'status' => 'success','user_id'=>$user->id], 200);
         }
