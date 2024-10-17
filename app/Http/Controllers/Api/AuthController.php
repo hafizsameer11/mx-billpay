@@ -214,22 +214,24 @@ class AuthController extends Controller
                     ->subject('Password Reset OTP Code')
                     ->setBody("Your Password Reset OTP code is: $otp", 'text/html');
             });
-            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success'], 200);
+            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success','user_id'=>$user->id], 200);
         }
     }
 
     public function verifyResetPasswordOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'otp' => 'required'
+            'otp' => 'required',
+            'user_id'=>'required'
         ], [
-            'otp.required' => 'Otp is required'
+            'otp.required' => 'Otp is required',
+            'user_id.required'=>'User Id Required'
         ]);
         if ($validator->fails()) {
             $errorMessage = $validator->errors()->first();
             return response()->json(['message' => $errorMessage, 'error' => $validator->errors(), 'status' => 'error']);
         } else {
-            $passwordReset = PasswordReset::where('otp', $request->otp)->first();
+            $passwordReset = PasswordReset::where('otp', $request->otp)->where('user_id',$request->user_id)->first();
             if (!$passwordReset) {
                 return response()->json(['message' => 'Invalid otp', 'status' => 'error'], 404);
             } else {
@@ -240,7 +242,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'user_id' => 'required|exists:users,id', 
+        'user_id' => 'required|exists:users,id',
         'new_password' => 'required|min:6',
         'confirm_password' => 'required|same:new_password'
     ], [
