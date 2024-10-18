@@ -85,19 +85,15 @@ class AccountController extends Controller
 
         return $this->handleApiResponse($response);
     }
-    public function releaseAccount(Request $request)
+    public function releaseAccount($accountNo)
     {
-        $request->validate(['accountNo' => 'required|string']);
-        $accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiMTM5ZDczODgtNjBkMC00YjQ5LTg5MjYtN2Y5YjQ1NDUzMzU4IiwiaWF0IjoxNzI4Njc2MTI1LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.FYUuQ4uknYKBUOxlQAbOP7yKsgi-ftvzumzkIpi0AYE-oQuOtdzoS8le_uVML1ARw6RZ6Epdl28VOrV8KzQLZw';
-        $response = Http::withHeaders(['AccessToken' => $accessToken])
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/release', [
-                'accountNo' => $request->accountNo,
+                'accountNo' => $accountNo,
             ]);
-        $this->logApiCall('/client/release', 'POST', $request->all(), $response->json());
 
         return $this->handleApiResponse($response);
     }
-
     // Method to handle API responses
     private function handleApiResponse($response)
     {
@@ -132,7 +128,7 @@ class AccountController extends Controller
         $account = Account::where('bvn', $validatedData['data']['bvn'] ?? null)->first();
 
         if ($account) {
-            $releaseResponse = $this->releaseAccount((object) ['accountNo' => $account->account_number]);
+            $releaseResponse = $this->releaseAccount($account->account_number);
             Log::info('Account Released Response:', $releaseResponse);
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
