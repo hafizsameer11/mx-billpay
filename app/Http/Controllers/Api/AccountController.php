@@ -112,24 +112,21 @@ class AccountController extends Controller
     }
     public function handleBvnConsentWebhook(Request $request)
     {
-        // Validate incoming request
         $validatedData = $request->validate([
-            'status' => 'string', // Made optional
-            'message' => 'string', // Made optional
-            'data.bvn' => 'string', // Made optional
-            'data.status' => 'boolean', // Made optional
-            'data.reference' => 'string', // Made optional
+            'status' => 'string',
+            'message' => 'string',
+            'data.bvn' => 'string',
+            'data.status' => 'boolean',
+            'data.reference' => 'string',
         ]);
 
-        // Log the webhook notification
         Log::info('BVN Consent Notification Received:', $validatedData);
 
-        // Retrieve the account number using the provided BVN
         $account = Account::where('bvn', $validatedData['data']['bvn'] ?? null)->first();
 
         if ($account) {
             $releaseResponse = $this->releaseAccount($account->account_number);
-            Log::info('Account Released Response:', $releaseResponse);
+            Log::info('Account Released Response:', $releaseResponse->json() ?? []);
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
