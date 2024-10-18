@@ -92,8 +92,12 @@ class AccountController extends Controller
                 'accountNo' => $accountNo,
             ]);
 
+        // Instead of returning the response directly, we will log it and handle it properly
+        $this->logApiCall('/client/release', 'POST', ['accountNo' => $accountNo], $response->json());
+
         return $this->handleApiResponse($response);
     }
+
     // Method to handle API responses
     private function handleApiResponse($response)
     {
