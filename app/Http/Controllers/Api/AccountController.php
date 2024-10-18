@@ -19,23 +19,23 @@ class AccountController extends Controller
     }
     public function createIndividualAccount(Request $request)
     {
-        try {
-            $request->validate([
-                'userId' => 'required|string',
-                'firstName' => 'required|string',
-                'lastName' => 'required|string',
-                'dob' => 'required|string',
-                'phone' => 'required|string',
-                'bvn' => 'required|string',
-                'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
-            ]);
-        } catch (HttpResponseException $e) {
-            return response()->json([
-                'message' => 'Validation failed.',
-                'errors' => $e->validator->errors(),
-                'status' => 'error'
-            ], 422);
-        }
+        // try {
+        //     $request->validate([
+        //         'userId' => 'required|string',
+        //         'firstName' => 'required|string',
+        //         'lastName' => 'required|string',
+        //         'dob' => 'required|string',
+        //         'phone' => 'required|string',
+        //         'bvn' => 'required|string',
+        //         'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+        //     ]);
+        // } catch (HttpResponseException $e) {
+        //     return response()->json([
+        //         'message' => 'Validation failed.',
+        //         'errors' => $e->validator->errors(),
+        //         'status' => 'error'
+        //     ], 422);
+        // }
         $profilePicturePath = null;
         if ($request->hasFile('profile_picture')) {
             $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
