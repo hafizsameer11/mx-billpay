@@ -28,7 +28,7 @@ class AccountController extends Controller
             'bvn' => 'required|string',
             'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profi
         ]);
-      
+
         if($validation->fails()){
             $errorMessage=$validation->errors()->first();
             return response()->json(['message'=>$errorMessage,'errors'=>$validation->errors(),'status'=>'error']);
@@ -41,8 +41,8 @@ class AccountController extends Controller
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->timeout(120)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
-                'firstname' => $request->firstname,
-                'lastname' => $request->lastname,
+                'firstname' => $request->firstName,
+                'lastname' => $request->lastName,
                 'dob' => $request->dob,
                 'phone' => $request->phone,
                 'bvn' => $request->bvn,
