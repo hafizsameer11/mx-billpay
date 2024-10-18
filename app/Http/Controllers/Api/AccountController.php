@@ -19,13 +19,13 @@ class AccountController extends Controller
     public function createIndividualAccount(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'firstname' => 'required|string',
-            'lastname' => 'required|string',
-            'dob' => 'required|date',
+            'user_id' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
 
         ]);
         $profilePicturePath = null;
