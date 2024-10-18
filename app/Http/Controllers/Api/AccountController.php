@@ -51,7 +51,7 @@ class AccountController extends Controller
         if ($response) {
             $accountData = $response->json();
             $account = new Account();
-            $account->user_id = $request->user_id;
+            $account->user_id = $request->userId;
             $account->account_number = $accountData['data']['accountNo'];
             $account->account_type = 'individual';
             $account->status = 'PND';
