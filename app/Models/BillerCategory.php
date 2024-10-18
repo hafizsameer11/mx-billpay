@@ -9,4 +9,8 @@ class BillerCategory extends Model
 {
     use HasFactory;
     protected $fillable=['category'];
+    public function items()
+    {
+        return $this->hasMany(BillerItem::class);
+    }
 }

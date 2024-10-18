@@ -1,6 +1,6 @@
 <script src="{{ asset('assets/vendors/core/core.js') }}"></script>
 <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
-<script src="{{asset('assets/vendors/apexcharts/apexcharts.min.js')}}"></script>
+<script src="{{ asset('assets/vendors/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('assets/vendors/feather-icons/feather.min.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
@@ -32,3 +32,25 @@
 <script src="{{ asset('assets/vendors/pickr/pickr.min.js') }}"></script>
 <script src="{{ asset('assets/vendors/moment/moment.min.js') }}"></script>
 <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('0ad9e7f7e71dc1522ad6', {
+        cluster: 'ap1'
+    });
+    var channel = pusher.subscribe('biller-categories');
+    channel.bind('categories.updated', function(data) {
+
+        Toastify({
+            text: "Categories Updated:",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: 'right',
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            stopOnFocus: true
+        }).showToast();
+    });
+</script>

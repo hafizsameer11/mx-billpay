@@ -29,9 +29,9 @@ class AccountController extends Controller
 
         ]);
         $profilePicturePath = null;
-    if ($request->hasFile('profile_picture')) {
-        $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
-    }
+        if ($request->hasFile('profile_picture')) {
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
@@ -108,4 +108,31 @@ class AccountController extends Controller
             'response' => $responseData
         ]);
     }
+    public function handleBvnConsentWebhook(Request $request)
+{
+    // Validate incoming request
+    $validatedData = $request->validate([
+        'status' => 'string', // Made optional
+        'message' => 'string', // Made optional
+        'data.bvn' => 'string', // Made optional
+        'data.status' => 'boolean', // Made optional
+        'data.reference' => 'string', // Made optional
+    ]);
+
+    // Log the webhook notification
+    Log::info('BVN Consent Notification Received:', $validatedData);
+
+    // Retrieve the account number using the provided BVN
+    $account = Account::where('bvn', $validatedData['data']['bvn'] ?? null)->first();
+
+    if ($account) {
+        $releaseResponse = $this->releaseAccount((object) ['accountNo' => $account->account_number]);
+        Log::info('Account Released Response:', $releaseResponse);
+        return response()->json(['message' => 'Webhook received and processed successfully'], 200);
+    } else {
+        Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
+        return response()->json(['message' => 'Account not found'], 404);
+    }
+}
+
 }
