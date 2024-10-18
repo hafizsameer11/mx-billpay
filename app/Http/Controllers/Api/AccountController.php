@@ -19,7 +19,7 @@ class AccountController extends Controller
     public function createIndividualAccount(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|string',
+            'userId' => 'required|string',
             'firstName' => 'required|string',
             'lastName' => 'required|string',
             'dob' => 'required|string',

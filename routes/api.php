@@ -26,8 +26,8 @@ Route::post('auth/reset-password-otp-verification',[AuthController::class,'verif
 Route::post('auth/reset-password',[AuthController::class,'resetPassword']);
 Route::post('auth/user-clear',[AuthController::class,'tableclear']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
     Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
     Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
-});
+// });
