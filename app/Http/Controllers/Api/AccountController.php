@@ -34,6 +34,7 @@ class AccountController extends Controller
         }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
+        ->timeout(120)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
                 'firstname' => $request->firstname,
                 'lastname' => $request->lastname,
