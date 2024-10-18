@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -18,16 +19,23 @@ class AccountController extends Controller
     }
     public function createIndividualAccount(Request $request)
     {
-        $request->validate([
-            'userId' => 'required|string',
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'dob' => 'required|string',
-            'phone' => 'required|string',
-            'bvn' => 'required|string',
-            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
-
-        ]);
+        try {
+            $request->validate([
+                'userId' => 'required|string',
+                'firstName' => 'required|string',
+                'lastName' => 'required|string',
+                'dob' => 'required|string',
+                'phone' => 'required|string',
+                'bvn' => 'required|string',
+                'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+            ]);
+        } catch (HttpResponseException $e) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->validator->errors(),
+                'status' => 'error'
+            ], 422);
+        }
         $profilePicturePath = null;
         if ($request->hasFile('profile_picture')) {
             $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
