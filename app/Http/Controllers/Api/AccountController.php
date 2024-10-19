@@ -63,7 +63,7 @@ class AccountController extends Controller
 
         $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
 
-        if ($response) {
+        if ($response->successful()) {
             $accountData = $response->json();
             $account = new Account();
             $account->user_id = $request->userId;
