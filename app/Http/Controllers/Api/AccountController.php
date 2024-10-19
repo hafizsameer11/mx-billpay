@@ -27,7 +27,7 @@ class AccountController extends Controller
             'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profilePicture' => 'nullable|string', // Expecting base64 string
+            'profilePicture' => 'nullable|string',
         ]);
 
         if ($validation->fails()) {
