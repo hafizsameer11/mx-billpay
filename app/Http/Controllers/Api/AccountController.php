@@ -7,7 +7,6 @@ use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -27,44 +26,18 @@ class AccountController extends Controller
             'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profilePicture' => 'nullable|array', // Changed to accept an array (object)
-            'profilePicture.extension' => 'required|string', // Require the extension
-            'profilePicture.base64' => 'required|string', // Require the base64 data
-
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profi
         ]);
 
-        if ($validation->fails()) {
-            $errorMessage = $validation->errors()->first();
-            return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
+        if($validation->fails()){
+            $errorMessage=$validation->errors()->first();
+            return response()->json(['message'=>$errorMessage,'errors'=>$validation->errors(),'status'=>'error']);
         }
-
         $profilePicturePath = null;
-        if (isset($request->profilePicture)) {
-            $base64Image = $request->profilePicture['base64'];
-            $extension = $request->profilePicture['extension'];
-
-            // Check if the base64 string has the prefix and strip it
-            if (strpos($base64Image, 'base64,') !== false) {
-                $base64Image = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
-            }
-
-            // Decode the base64 image
-            $imageData = base64_decode($base64Image);
-            if ($imageData === false) {
-                return response()->json(['message' => 'Invalid image data.', 'status' => 'error'], 400);
-            }
-
-            $fileName = uniqid() . '.' . $extension; // Unique file name
-            $filePath = 'profile_pictures/' . $fileName;
-
-            // Store the image in the public disk
-            Storage::disk('public')->put($filePath, $imageData);
-            $profilePicturePath = $filePath; // Set the profile picture path
+        if ($request->hasFile('profile_picture')) {
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
         }
-
-
         $accessToken = $this->accessToken;
-
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->timeout(120)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
@@ -74,10 +47,9 @@ class AccountController extends Controller
                 'phone' => $request->phone,
                 'bvn' => $request->bvn,
             ]);
-
         $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
 
-        if ($response->successful()) {
+        if ($response) {
             $accountData = $response->json();
             $account = new Account();
             $account->user_id = $request->userId;
@@ -95,7 +67,6 @@ class AccountController extends Controller
 
         return $this->handleApiResponse($response);
     }
-
     public function requestBvnConsent(Request $request)
     {
         $request->validate([
@@ -145,7 +116,6 @@ class AccountController extends Controller
             return response()->json(['error' => $errorResponse['message']], $response->status());
         }
     }
-
 
     // Method to handle API responses
     private function handleApiResponse($response)
