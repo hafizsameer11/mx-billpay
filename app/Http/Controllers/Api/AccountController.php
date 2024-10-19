@@ -114,18 +114,18 @@ class AccountController extends Controller
         // Check if the response is successful
         if ($response->successful()) {
             // Log the success response
-            Log::info('Account released successfully:', $response->json());
+            Log::info('Account released successfully:', $response->json()); // This is fine as response->json() returns an array
 
             // Trigger the Pusher event here
-            // You can replace 'userId' with the actual user ID for notification
             // event(new AccountReleased($userId, 'Your account has been released.'));
 
-            return response()->json(['message' => 'Account released successfully'], 200);
+            return response()->json(['message' => 'Account released successfully', 'data' => $response->json()], 200);
         } else {
             // Log the error response
-            Log::error('API Error Response:', $response->json());
+            $errorResponse = $response->json(); // Get the error response data
+            Log::error('API Error Response:', $errorResponse); // Correctly log the error response
 
-            return response()->json(['error' => $response->json()['message']], $response->status());
+            return response()->json(['error' => $errorResponse['message']], $response->status());
         }
     }
 
@@ -162,7 +162,7 @@ class AccountController extends Controller
 
         if ($account) {
             $releaseResponse = $this->releaseAccount($account->account_number);
-            Log::info('Account Released Response:', $releaseResponse->json() ?? []);
+            Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
