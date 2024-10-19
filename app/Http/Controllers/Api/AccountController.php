@@ -33,9 +33,12 @@ class AccountController extends Controller
             $errorMessage=$validation->errors()->first();
             return response()->json(['message'=>$errorMessage,'errors'=>$validation->errors(),'status'=>'error']);
         }
-        $profilePicturePath = null;
-        if ($request->hasFile('profile_picture')) {
-            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        if ($request->hasFile('profilePicture')) {
+            $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
+
+            // Generate a unique file name and save it in the public storage
+            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
         }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
