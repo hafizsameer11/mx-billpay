@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -26,18 +27,27 @@ class AccountController extends Controller
             'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profi
+            'profilePicture' => 'nullable|string', // Expecting base64 string
         ]);
 
-        if($validation->fails()){
-            $errorMessage=$validation->errors()->first();
-            return response()->json(['message'=>$errorMessage,'errors'=>$validation->errors(),'status'=>'error']);
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->first();
+            return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
         }
+
         $profilePicturePath = null;
-        if ($request->hasFile('profile_picture')) {
-            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        if ($request->has('profilePicture')) {
+            $imageData = $request->profilePicture;
+            $imageParts = explode(";base64,", $imageData);
+            $imageBase64 = base64_decode($imageParts[1]);
+            $fileName = uniqid() . '.jpeg';
+            $filePath = 'profile_pictures/' . $fileName;
+            Storage::disk('public')->put($filePath, $imageBase64);
+            $profilePicturePath = $filePath;
         }
+
         $accessToken = $this->accessToken;
+
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->timeout(120)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
@@ -47,7 +57,9 @@ class AccountController extends Controller
                 'phone' => $request->phone,
                 'bvn' => $request->bvn,
             ]);
+
         $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
+
         if ($response) {
             $accountData = $response->json();
             $account = new Account();
@@ -55,14 +67,18 @@ class AccountController extends Controller
             $account->account_number = $accountData['data']['accountNo'];
             $account->account_type = 'individual';
             $account->status = 'PND';
+            $account->lastName=$request->lastName;
+            $account->firstName=$request->firstName;
+            $account->phone=$request->phone;
             $account->bvn = $request->bvn;
-            $account->profile_picture = $profilePicturePath;
+            $account->profile_picture = $profilePicturePath; // Save the image path
             $account->save();
             return response()->json($account, 201);
         }
 
         return $this->handleApiResponse($response);
     }
+
     public function requestBvnConsent(Request $request)
     {
         $request->validate([
