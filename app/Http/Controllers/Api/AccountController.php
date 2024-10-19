@@ -27,7 +27,10 @@ class AccountController extends Controller
             'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profilePicture' => 'nullable|string',
+            'profilePicture' => 'nullable|array', // Changed to accept an array (object)
+            'profilePicture.extension' => 'required|string', // Require the extension
+            'profilePicture.base64' => 'required|string', // Require the base64 data
+
         ]);
 
         if ($validation->fails()) {
