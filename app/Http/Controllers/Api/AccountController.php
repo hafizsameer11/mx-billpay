@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\AccountReleased;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use Illuminate\Http\Request;
@@ -101,21 +102,16 @@ class AccountController extends Controller
 
         // Log the API call
         $this->logApiCall('/client/release', 'POST', ['accountNo' => $accountNo], $response->json());
-
-        // Check if the response is successful
         if ($response->successful()) {
-            // Log the success response
-            Log::info('Account released successfully:', $response->json()); // This is fine as response->json() returns an array
-
-            // Trigger the Pusher event here
-            // event(new AccountReleased($userId, 'Your account has been released.'));
-
+            event(new AccountReleased($userId));
+            $account=Account::where('user_id',$userId)->first();
+            $account->status='RELEASED';
+            $account->save();
+            Log::info('Account released successfully:', $response->json());
             return response()->json(['message' => 'Account released successfully', 'data' => $response->json()], 200);
         } else {
-            // Log the error response
-            $errorResponse = $response->json(); // Get the error response data
-            Log::error('API Error Response:', $errorResponse); // Correctly log the error response
-
+            $errorResponse = $response->json();
+            Log::error('API Error Response:', $errorResponse);
             return response()->json(['error' => $errorResponse['message']], $response->status());
         }
     }
