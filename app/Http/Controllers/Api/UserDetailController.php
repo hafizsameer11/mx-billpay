@@ -22,7 +22,7 @@ class UserDetailController extends Controller
             'error'], 400);
         }
         $id=$request->userId;
-        $user=User::where('id',$id)->with('accounts')->first();
+        $user=User::where('id',$id)->with('account')->first();
         if (!$user) {
             return response()->json(['message' => 'User not found', 'status' => 'error'],404);
         }else{
