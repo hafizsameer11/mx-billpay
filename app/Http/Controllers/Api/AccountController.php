@@ -108,11 +108,27 @@ class AccountController extends Controller
                 'accountNo' => $accountNo,
             ]);
 
-        // Instead of returning the response directly, we will log it and handle it properly
+        // Log the API call
         $this->logApiCall('/client/release', 'POST', ['accountNo' => $accountNo], $response->json());
 
-        return $this->handleApiResponse($response);
+        // Check if the response is successful
+        if ($response->successful()) {
+            // Log the success response
+            Log::info('Account released successfully:', $response->json());
+
+            // Trigger the Pusher event here
+            // You can replace 'userId' with the actual user ID for notification
+            // event(new AccountReleased($userId, 'Your account has been released.'));
+
+            return response()->json(['message' => 'Account released successfully'], 200);
+        } else {
+            // Log the error response
+            Log::error('API Error Response:', $response->json());
+
+            return response()->json(['error' => $response->json()['message']], $response->status());
+        }
     }
+
 
     // Method to handle API responses
     private function handleApiResponse($response)
