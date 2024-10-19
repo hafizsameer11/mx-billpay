@@ -42,12 +42,26 @@ class AccountController extends Controller
         if (isset($request->profilePicture)) {
             $base64Image = $request->profilePicture['base64'];
             $extension = $request->profilePicture['extension'];
+
+            // Check if the base64 string has the prefix and strip it
+            if (strpos($base64Image, 'base64,') !== false) {
+                $base64Image = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
+            }
+
+            // Decode the base64 image
             $imageData = base64_decode($base64Image);
+            if ($imageData === false) {
+                return response()->json(['message' => 'Invalid image data.', 'status' => 'error'], 400);
+            }
+
             $fileName = uniqid() . '.' . $extension; // Unique file name
             $filePath = 'profile_pictures/' . $fileName;
+
+            // Store the image in the public disk
             Storage::disk('public')->put($filePath, $imageData);
             $profilePicturePath = $filePath; // Set the profile picture path
         }
+
 
         $accessToken = $this->accessToken;
 
