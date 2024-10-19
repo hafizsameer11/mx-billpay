@@ -36,14 +36,14 @@ class AccountController extends Controller
         }
 
         $profilePicturePath = null;
-        if ($request->has('profilePicture')) {
-            $imageData = $request->profilePicture;
-            $imageParts = explode(";base64,", $imageData);
-            $imageBase64 = base64_decode($imageParts[1]);
-            $fileName = uniqid() . '.jpeg';
+        if (isset($request->profilePicture)) {
+            $base64Image = $request->profilePicture['base64'];
+            $extension = $request->profilePicture['extension'];
+            $imageData = base64_decode($base64Image);
+            $fileName = uniqid() . '.' . $extension; // Unique file name
             $filePath = 'profile_pictures/' . $fileName;
-            Storage::disk('public')->put($filePath, $imageBase64);
-            $profilePicturePath = $filePath;
+            Storage::disk('public')->put($filePath, $imageData);
+            $profilePicturePath = $filePath; // Set the profile picture path
         }
 
         $accessToken = $this->accessToken;
@@ -101,7 +101,7 @@ class AccountController extends Controller
 
         return $this->handleApiResponse($response);
     }
-    public function releaseAccount($accountNo)
+    public function releaseAccount($accountNo,$userId)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/release', [
@@ -161,7 +161,7 @@ class AccountController extends Controller
         $account = Account::where('bvn', $validatedData['data']['bvn'] ?? null)->first();
 
         if ($account) {
-            $releaseResponse = $this->releaseAccount($account->account_number);
+            $releaseResponse = $this->releaseAccount($account->account_number,$account->user_id);
             Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
