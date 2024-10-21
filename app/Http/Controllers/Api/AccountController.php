@@ -34,44 +34,45 @@ class AccountController extends Controller
             $errorMessage = $validation->errors()->first();
             return response()->json(data: ['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
         }
-        if ($request->hasFile('profilePicture')) {
-            $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
+        return response()->json($request->all());
+        // if ($request->hasFile('profilePicture')) {
+        //     $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
 
-            // Generate a unique file name and save it in the public storage
-            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
-        }else{
-            $profilePicturePath="NULL";
-        }
-        $accessToken = $this->accessToken;
-        $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->timeout(220)
-            ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
-                'firstname' => $request->firstName,
-                'lastname' => $request->lastName,
-                'dob' => $request->dob,
-                'phone' => $request->phone,
-                'bvn' => $request->bvn,
-            ]);
-        $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
+        //     // Generate a unique file name and save it in the public storage
+        //     $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+        //     $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+        // }else{
+        //     $profilePicturePath="NULL";
+        // }
+        // $accessToken = $this->accessToken;
+        // $response = Http::withHeaders(['AccessToken' => $accessToken])
+        //     ->timeout(220)
+        //     ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
+        //         'firstname' => $request->firstName,
+        //         'lastname' => $request->lastName,
+        //         'dob' => $request->dob,
+        //         'phone' => $request->phone,
+        //         'bvn' => $request->bvn,
+        //     ]);
+        // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
 
-        if ($response->successful()) {
-            $accountData = $response->json();
-            $account = new Account();
-            $account->user_id = $request->userId;
-            $account->account_number = $accountData['data']['accountNo'];
-            $account->account_type = 'individual';
-            $account->status = 'PND';
-            $account->lastName = $request->lastName;
-            $account->firstName = $request->firstName;
-            $account->phone = $request->phone;
-            $account->bvn = $request->bvn;
-            $account->profile_picture = $profilePicturePath; // Save the image path
-            $account->save();
-            return response()->json($account, 201);
-        }
+        // if ($response->successful()) {
+        //     $accountData = $response->json();
+        //     $account = new Account();
+        //     $account->user_id = $request->userId;
+        //     $account->account_number = $accountData['data']['accountNo'];
+        //     $account->account_type = 'individual';
+        //     $account->status = 'PND';
+        //     $account->lastName = $request->lastName;
+        //     $account->firstName = $request->firstName;
+        //     $account->phone = $request->phone;
+        //     $account->bvn = $request->bvn;
+        //     $account->profile_picture = $profilePicturePath; // Save the image path
+        //     $account->save();
+        //     return response()->json($account, 201);
+        // }
 
-        return $this->handleApiResponse($response);
+        // return $this->handleApiResponse($response);
     }
     public function requestBvnConsent(Request $request)
     {

@@ -1,0 +1,44 @@
+[
+    {
+        "request": {
+            "userId": "18",
+            "firstName": "Mehmood",
+            "lastName": "hassan",
+            "bvn": "22222222235",
+            "dob": "2024/10/24",
+            "phone": "+2347109777777",
+            "profilePicture": {
+                "Illuminate\\Http\\UploadedFile": "/tmp/phppkPIyk"
+            }
+        },
+        "response": {
+            "status": "00",
+            "message": "Successful Creation",
+            "data": {
+                "firstname": "Mx Bill Pay-Mehmood",
+                "middlename": "",
+                "lastname": "hassan",
+                "bvn": "22222222235",
+                "phone": "Mx-+2347109777777",
+                "dob": "2024/10/24",
+                "accountNo": "1001633906"
+            }
+        }
+    },
+    {
+        "request": {
+            "userId": "12",
+            "firstName": "John",
+            "lastName": "Doe",
+            "dob": "1990-01-01",
+            "phone": "1234567890",
+            "bvn": "22222222267",
+            "profilePicture": null
+        },
+        "response": {
+            "status": "929",
+            "message": "BVN already exist",
+            "data": { "accountNo": "1001633841" }
+        }
+    }
+]
