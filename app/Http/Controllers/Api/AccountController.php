@@ -54,25 +54,33 @@ class AccountController extends Controller
                 'bvn' => $request->bvn,
             ]);
 
-            $responseData=$response->json();
+            $responseData=$response->json()['data'];
             // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
-            return response()->json(['data'=>$responseData]);
+            // return response()->json(['data'=>$responseData]);
 
-        // if ($response->successful()) {
-        //     $accountData = $response->json();
-        //     $account = new Account();
-        //     $account->user_id = $request->userId;
-        //     $account->account_number = $accountData['data']['accountNo'];
-        //     $account->account_type = 'individual';
-        //     $account->status = 'PND';
-        //     $account->lastName = $request->lastName;
-        //     $account->firstName = $request->firstName;
-        //     $account->phone = $request->phone;
-        //     $account->bvn = $request->bvn;
-        //     $account->profile_picture = $profilePicturePath; // Save the image path
-        //     $account->save();
-        //     return response()->json($account, 201);
-        // }
+        if ($response->successful()) {
+
+            if($responseData->status=="00"){
+                $accountData = $response->json();
+                $account = new Account();
+                $account->user_id = $request->userId;
+                $account->account_number = $accountData['data']['accountNo'];
+                $account->account_type = 'individual';
+                $account->status = 'PND';
+                $account->lastName = $request->lastName;
+                $account->firstName = $request->firstName;
+                $account->phone = $request->phone;
+                $account->bvn = $request->bvn;
+                $account->profile_picture = $profilePicturePath; // Save the image path
+                $account->save();
+                return response()->json(['message' => 'Account created successfully', 'data' => $account],200);
+            }else{
+                return response()->json(['status'=>'error','message'=>"Account Database Save failed",'response'=>$responseData]);
+            }
+
+        }else{
+            return response()->json(['status'=>'error','message'=>'Something Went Wrong Please Try again']);
+        }
 
         // return $this->handleApiResponse($response);
     }
