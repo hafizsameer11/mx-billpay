@@ -54,7 +54,7 @@ class AccountController extends Controller
                 'bvn' => $request->bvn,
             ]);
 
-            $responseData=$response->json()['data'];
+            $responseData = $response->json();
             // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
             // return response()->json(['data'=>$responseData]);
 
