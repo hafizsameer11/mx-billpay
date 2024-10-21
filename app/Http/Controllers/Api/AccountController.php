@@ -53,8 +53,10 @@ class AccountController extends Controller
                 'phone' => $request->phone,
                 'bvn' => $request->bvn,
             ]);
+
+            $responseData=$response->json();
             // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
-            return response()->json($response);
+            return response()->json($responseData);
 
         // if ($response->successful()) {
         //     $accountData = $response->json();
