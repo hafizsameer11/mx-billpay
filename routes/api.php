@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logou
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
     Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
     Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
+    Route::post('accountEnquiry',[AccountController::class,'accountEnquiry']);
 // });
