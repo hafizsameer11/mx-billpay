@@ -124,7 +124,7 @@ class AccountController extends Controller
         if ($response->successful()) {
             return response()->json($response->json(), 200);
         } else {
-            return response()->json(['error' => $response->json()['message']], $response->status());
+            return response()->json(['error' => $response->json()], $response->status());
         }
     }
     private function logApiCall($endpoint, $method, $requestData, $responseData)
