@@ -60,7 +60,7 @@ class AccountController extends Controller
 
         if ($response->successful()) {
 
-            if($responseData->status=="00"){
+            if($responseData['data']=="00"){
                 $accountData = $response->json();
                 $account = new Account();
                 $account->user_id = $request->userId;
