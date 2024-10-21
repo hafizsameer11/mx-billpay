@@ -34,27 +34,27 @@ class AccountController extends Controller
             $errorMessage = $validation->errors()->first();
             return response()->json(data: ['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
         }
-        return response()->json($request->all());
         // if ($request->hasFile('profilePicture')) {
-        //     $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
+            //     $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
 
-        //     // Generate a unique file name and save it in the public storage
-        //     $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-        //     $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
-        // }else{
-        //     $profilePicturePath="NULL";
+            //     // Generate a unique file name and save it in the public storage
+            //     $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            //     $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+            // }else{
+                //     $profilePicturePath="NULL";
         // }
-        // $accessToken = $this->accessToken;
-        // $response = Http::withHeaders(['AccessToken' => $accessToken])
-        //     ->timeout(220)
-        //     ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
-        //         'firstname' => $request->firstName,
-        //         'lastname' => $request->lastName,
-        //         'dob' => $request->dob,
-        //         'phone' => $request->phone,
-        //         'bvn' => $request->bvn,
-        //     ]);
-        // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
+        $accessToken = $this->accessToken;
+        $response = Http::withHeaders(['AccessToken' => $accessToken])
+        ->timeout(220)
+        ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
+                'firstname' => $request->firstName,
+                'lastname' => $request->lastName,
+                'dob' => $request->dob,
+                'phone' => $request->phone,
+                'bvn' => $request->bvn,
+            ]);
+            // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
+            return response()->json($response);
 
         // if ($response->successful()) {
         //     $accountData = $response->json();
