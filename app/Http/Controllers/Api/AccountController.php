@@ -56,7 +56,7 @@ class AccountController extends Controller
 
             $responseData=$response->json();
             // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
-            return response()->json($responseData);
+            return response()->json(['data'=>$responseData]);
 
         // if ($response->successful()) {
         //     $accountData = $response->json();
