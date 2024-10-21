@@ -43,7 +43,7 @@ class AccountController extends Controller
         }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->timeout(120)
+            ->timeout(220)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
                 'firstname' => $request->firstName,
                 'lastname' => $request->lastName,
@@ -53,7 +53,7 @@ class AccountController extends Controller
             ]);
         $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
 
-        if ($response) {
+        if ($response->successful()) {
             $accountData = $response->json();
             $account = new Account();
             $account->user_id = $request->userId;
