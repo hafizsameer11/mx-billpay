@@ -35,18 +35,18 @@ class AccountController extends Controller
             return response()->json(data: ['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
         }
         if ($request->hasFile('profilePicture')) {
-                $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
+            $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
 
-                // Generate a unique file name and save it in the public storage
-                $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-                $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
-            }else{
-                    $profilePicturePath="NULL";
+            // Generate a unique file name and save it in the public storage
+            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+        } else {
+            $profilePicturePath = "NULL";
         }
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
-        ->timeout(220)
-        ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
+            ->timeout(220)
+            ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
                 'firstname' => $request->firstName,
                 'lastname' => $request->lastName,
                 'dob' => $request->dob,
@@ -54,13 +54,13 @@ class AccountController extends Controller
                 'bvn' => $request->bvn,
             ]);
 
-            $responseData = $response->json();
-            // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
-            // return response()->json(['data'=>$responseData]);
+        $responseData = $response->json();
+        // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
+        // return response()->json(['data'=>$responseData]);
 
         if ($response->successful()) {
 
-            if($responseData['status']=="00"){
+            if ($responseData['status'] == "00") {
                 $accountData = $response->json();
                 $account = new Account();
                 $account->user_id = $request->userId;
@@ -73,17 +73,74 @@ class AccountController extends Controller
                 $account->bvn = $request->bvn;
                 $account->profile_picture = $profilePicturePath; // Save the image path
                 $account->save();
-                return response()->json(['message' => 'Account created successfully', 'data' => $account],200);
-            }else{
-                return response()->json(['status'=>'error','message'=>"Account Database Save failed",'response'=>$responseData]);
+                return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => "Account Database Save failed", 'response' => $responseData]);
             }
-
-        }else{
-            return response()->json(['status'=>'error','message'=>'Something Went Wrong Please Try again']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again']);
         }
-
-        // return $this->handleApiResponse($response);
     }
+    public function createCorporateAccount(Request $request)
+{
+    // Validate the incoming request data
+    $validation = Validator::make($request->all(), [
+        'userId' => 'required|string',
+        'firstName' => 'required|string',
+        'lastName' => 'required|string',
+        'phone' => 'required|string',
+        'rcNumber' => 'required|string',
+        'companyName' => 'required|string',
+        'incorporationDate' => 'required|string', // Ensure proper date format
+        'bvn' => 'required|string',
+        'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+    ]);
+
+    if ($validation->fails()) {
+        $errorMessage = $validation->errors()->first();
+        return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error'], 422);
+    }
+
+    // Handle profile picture upload if present
+    $profilePicturePath = null;
+    if ($request->hasFile('profilePicture')) {
+        $profilePicture = $request->file('profilePicture');
+        $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+        $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+    }
+
+    // Prepare the request for the external API
+    $accessToken = $this->accessToken;
+    $response = Http::withHeaders(['AccessToken' => $accessToken])
+        ->timeout(220)
+        ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
+            'rcNumber' => $request->rcNumber,
+            'companyName' => $request->companyName,
+            'incorporationDate' => $request->incorporationDate,
+            'bvn' => $request->bvn,
+        ]);
+
+    $responseData = $response->json();
+    if ($response->successful() && $responseData['status'] == "00") {
+
+        $account = new Account();
+        $account->user_id = $request->userId;
+        $account->account_number = $responseData['data']['accountNo'];
+        $account->account_type = 'corporate';
+        $account->status = 'PND';
+        $account->lastName = $request->lastName;
+        $account->firstName = $request->firstName;
+        $account->phone = $request->phone;
+        $account->bvn = $request->bvn;
+        $account->profile_picture = $profilePicturePath; // Save the image path
+        $account->save();
+
+        return response()->json(['message' => 'Corporate account created successfully', 'data' => $account], 201);
+    } else {
+        return response()->json(['status' => 'error', 'message' => $responseData['message'] ?? 'Failed to create corporate account'], 400);
+    }
+}
+
     public function requestBvnConsent(Request $request)
     {
         $request->validate([
