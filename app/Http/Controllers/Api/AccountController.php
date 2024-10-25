@@ -169,13 +169,13 @@ class AccountController extends Controller
                 'message' => 'No response received', // Example default message
             ];
         // Store the consent record in the database
-        BvnConsent::create([
-            'bvn' => $request->bvn,
-            'type' => $request->type,
-            'user_id' => $request->userId,
-            'reference' => $reference,
-            'response' =>  $defaultResponse,
-        ]);
+        // BvnConsent::create([
+        //     'bvn' => $request->bvn,
+        //     'type' => $request->type,
+        //     'user_id' => $request->userId,
+        //     'reference' => $reference,
+        //     'response' =>  $defaultResponse,
+        // ]);
 
         $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
 
