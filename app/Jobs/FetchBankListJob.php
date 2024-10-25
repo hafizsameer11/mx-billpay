@@ -35,7 +35,7 @@ class FetchBankListJob implements ShouldQueue
                 'response' => $response->json() // This will log the response in JSON format
             ]);
         if ($response->successful()) {
-            $banks = $response->json()['data'];
+            $banks = $response->json()['data']['bank'];
 
             foreach ($banks as $bank) {
                 // Save each bank's details in the database
