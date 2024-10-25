@@ -257,7 +257,7 @@ class AccountController extends Controller
             return response()->json(['error' => $errorMessage], 422);
         }
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/transfer/account/enquiry', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/transfer/account/enquiry', [
                 'accountNumber' => $request->accountNumber
             ]);
         if ($response->successful()) {
