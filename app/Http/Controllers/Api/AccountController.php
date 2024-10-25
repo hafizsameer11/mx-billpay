@@ -245,23 +245,21 @@ class AccountController extends Controller
     public function accountEnquiry(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'accountNumber' => 'required|string',
             'userId' => 'required'
         ], [
-            'accountNumber.required' => 'Account Number is required',
-
             'userId.required' => 'User ID is required',
         ]);
         if ($validate->fails()) {
             $errorMessage = $validate->errors()->first();
             return response()->json(['error' => $errorMessage], 422);
         }
+        $accountNumber=Account::where('user_id',$request->userId)->first();
+        $accountNumber1=$accountNumber->account_number;
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
-                'accountNumber' => $request->accountNumber
+                'accountNumber' => $accountNumber1
             ]);
         if ($response->successful()) {
-            // return response()->json(['success'=>true,'response'=>$response->json()]);
             $accountData = $response->json()['data'];
             $accountStatus = $response->json()['status'];
             if ($accountStatus === '00') {
