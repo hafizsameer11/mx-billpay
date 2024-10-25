@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('accounts', function (Blueprint $table) {
             $table->string('accountBalance')->nullable();
             $table->string('accountId')->nullable();
-
             $table->string('client')->nullable();
             $table->string('clientId')->nullable();
             $table->string('savingsProductName')->nullable();

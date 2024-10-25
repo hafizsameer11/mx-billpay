@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,4 @@ Route::geT('/show-biller-items',[BillerCategoryController::class,'showBillerItem
 Route::post('item/add-commission', [BillerCategoryController::class, 'addCommission'])->name('item.addCommission');
 Route::post('item/bulk-add-commission', [BillerCategoryController::class, 'bulkAddCommission'])->name('item.bulkAddCommission');
 
+Route::get('/fetch-banks',[BankController::class,'index']);
