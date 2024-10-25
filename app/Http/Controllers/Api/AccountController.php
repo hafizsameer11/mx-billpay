@@ -150,7 +150,7 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), [
             'bvn' => 'required|string',
             'type' => 'required|string',
-            'userId' => 'required',
+            'userId' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()], 422);
