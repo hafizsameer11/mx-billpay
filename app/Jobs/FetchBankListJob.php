@@ -32,7 +32,7 @@ class FetchBankListJob implements ShouldQueue
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/bank');
 
         if ($response->successful()) {
-            $banks = $response->json();
+            $banks = $response->json()['data'];
 
             foreach ($banks as $bank) {
                 // Save each bank's details in the database
