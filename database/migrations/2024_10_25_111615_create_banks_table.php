@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Name of the bank
             $table->string('code')->nullable(); // Bank code
-            $table->string('logo')->nullable(); // Bank logo URL
+            $table->text('logo')->nullable(); // Bank logo URL
             $table->timestamps();
         });
     }
