@@ -165,15 +165,16 @@ class AccountController extends Controller
                 'type' => $request->type,
                 'reference' => $reference,
             ]);
-        // Store the consent record in the database
+            $defaultResponse = [
+                'status' => 'unknown', // Example default status
+                'message' => 'No response received', // Example default message
+            ];
         BvnConsent::create([
             'bvn' => $request->bvn,
             'type' => $request->type,
             'user_id' => $request->userId,
-            'reference' => $reference,
-         
+            'reference' => $defaultResponse,
         ]);
-
         $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
 
         return $this->handleApiResponse($response);
