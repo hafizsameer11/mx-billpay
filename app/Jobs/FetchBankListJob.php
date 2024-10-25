@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FetchBankListJob implements ShouldQueue
 {
@@ -30,7 +31,9 @@ class FetchBankListJob implements ShouldQueue
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/bank');
-
+            Log::info('Bank List API Response:', [
+                'response' => $response->json() // This will log the response in JSON format
+            ]);
         if ($response->successful()) {
             $banks = $response->json()['data'];
 
