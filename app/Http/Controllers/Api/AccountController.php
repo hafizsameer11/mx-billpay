@@ -175,7 +175,7 @@ class AccountController extends Controller
                 'type' => $request->type,
                 'user_id' => $request->userId,
                 'reference' => $reference,
-                'response' =>  $response->json()['message'],
+             
             ]);
 
             $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());

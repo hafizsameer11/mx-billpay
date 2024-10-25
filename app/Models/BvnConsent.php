@@ -12,7 +12,6 @@ class BvnConsent extends Model
         'bvn',
         'type',
         'user_id',
-        'reference',
-        'response',
+        'reference'
     ];
 }
