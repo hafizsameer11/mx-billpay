@@ -36,6 +36,6 @@ class BillerCategoriesFetched implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'categories.updated';
+        return 'i';
     }
 }

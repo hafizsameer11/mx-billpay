@@ -73,6 +73,7 @@ class FetchBillerItems implements ShouldQueue
                 BillerItem::updateOrCreate(
                     ['paymentitemid' => $item['paymentitemid'], 'category_id' => $this->categoryId],
                     [
+                        'billerId'=>$billerId,
                         'paymentitemname' => $item['paymentitemname'],
                         'paymentCode' => $item['paymentCode'],
                         'productId' => $item['productId'],
