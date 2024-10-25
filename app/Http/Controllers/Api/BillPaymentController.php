@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
+use App\Models\BillPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -29,13 +30,8 @@ class BillPaymentController extends Controller
     {
         // Fetching query parameters
         $categoryId = $request->query('category_id');
-        $division = $request->query('division');
-        $productId = $request->query('productId');
-
         $validator = Validator::make($request->all(), [
-            'category_id' => 'required',
-            'division' => 'required',
-            'productId' => 'required',
+            'categoryId' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -45,20 +41,14 @@ class BillPaymentController extends Controller
             ], 400);
         }
         // Fetching the items based on the parameters
-        $items = BillerItem::where('category_id', $categoryId)
-            ->where('division', $division)
-            ->where('productId', $productId)
-            ->get();
-
-        // Check if any items were found
+        $items = BillerItem::where('category_id', $request->categoryId)->get();
+        // $items = BillerItem::where('category_id', $categoryId)->get();
         if ($items->isEmpty()) {
             return response()->json([
                 'message' => 'No items found for the provided criteria',
                 'data' => [],
             ], 404); // 404 Not Found
         }
-
-        // Success response with found items
         return response()->json([
             'message' => 'Items fetched successfully',
             'data' => $items,
@@ -79,68 +69,62 @@ class BillPaymentController extends Controller
         }
 
         $customerId = $request->input('customerId');
-        $id = $request->input('id');
+        $id = $request->id;
 
         $billerItem = BillerItem::where('id', $id)->first();
         $divisionId = $billerItem->division;
         $paymentItem = $billerItem->paymentCode;
+        $billerId = $billerItem->billerId;
 
-        // Make GET request to validate customer using Http::get() and passing query parameters
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/customervalidate', [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
             'customerId' => $customerId,
-            // 'billerId' => $billerId,
+            'billerId' => $billerId,
         ]);
 
         // Check if the API request was successful
         if ($response->successful()) {
             return response()->json([
+                'status' => 'success',
                 'message' => 'Successfully validated customer',
                 'data' => $response->json('data'),
             ], 200);
         } else {
-            // If the API request failed, return the error message and data
             return response()->json([
+                'status' => 'error',
                 'message' => $response->json('message'), // Error message from the API
                 'data' => $response->json('data'),
             ], $response->status());
         }
     }
-    //
-
     public function payBills(Request $request)
     {
         // Validate the request to ensure required parameters are present
         $validator = Validator::make($request->all(), [
             'customerId'   => 'required|string',
             'amount'       => 'required|numeric',
-            'division'     => 'required|string',
-            'paymentItem'  => 'required|string',
-            'productId'    => 'required|string',
-            'billerId'     => 'required|string',
-            // 'reference'    => 'required|string',
-            'phoneNumber'  => 'nullable|string',
+            'billerItemId' => 'required',
+            'phoneNumber' => 'nullable',
+            'userId' => 'required'
         ]);
 
-        // If validation fails, return an error response
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 400);
         }
-
-        // Collect required parameters
-        $customerId = $request->input('customerId');
-        $amount = $request->input('amount');
-        $division = $request->input('division');
-        $paymentItem = $request->input('paymentItem');
-        $productId = $request->input('productId');
-        $billerId = $request->input('billerId');
+        $customerId = $request->customerId;
+        $billerItem = $request->billerItemId;
+        $amount = $request->amount;
+        $billerItem = BillerItem::where('id', $billerItem)->first();
+        $billerId = $billerItem->billerId;
+        $paymentItem = $billerItem->paymentCode;
+        $productId = $billerItem->productId;
+        $division = $billerItem->division;
         $phoneNumber = $request->input('phoneNumber', null); // Optional
-
         $reference = 'mxPay-' . mt_rand(1000, 9999);
 
         // Prepare request payload
@@ -155,20 +139,30 @@ class BillPaymentController extends Controller
             'phoneNumber'  => $phoneNumber,  // Optional
         ];
 
-        // Make POST request to pay the bill
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
 
         // Check if the API request was successful
         if ($response->successful()) {
+            BillPayment::create([
+
+                'biller_item_id' => $request->billerItemId,
+                'user_id' => $request->userId,
+                'refference' => $reference,
+                'status' => 'success',
+                'customerId' => $customerId,
+                'phoneNumber' => $phoneNumber,
+
+            ]);
             return response()->json([
+                'status' => 'success',
                 'message' => 'Successful payment',
                 'data' => $response->json('data'),
             ], 200);
         } else {
-            // If the API request failed, return the error message and data
             return response()->json([
+                'status' => 'error',
                 'message' => $response->json('message'), // Error message from the API
                 'data' => $response->json('data'),
             ], $response->status());
