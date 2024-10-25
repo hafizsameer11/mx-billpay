@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Events\AccountReleased;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\BvnConsent;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+// use Str;
 
 class AccountController extends Controller
 {
@@ -82,72 +85,77 @@ class AccountController extends Controller
         }
     }
     public function createCorporateAccount(Request $request)
-{
-    // Validate the incoming request data
-    $validation = Validator::make($request->all(), [
-        'userId' => 'required|string',
-        'firstName' => 'required|string',
-        'lastName' => 'required|string',
-        'phone' => 'required|string',
-        'rcNumber' => 'required|string',
-        'companyName' => 'required|string',
-        'incorporationDate' => 'required|string', // Ensure proper date format
-        'bvn' => 'required|string',
-        'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
-    ]);
-
-    if ($validation->fails()) {
-        $errorMessage = $validation->errors()->first();
-        return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error'], 422);
-    }
-
-    // Handle profile picture upload if present
-    $profilePicturePath = null;
-    if ($request->hasFile('profilePicture')) {
-        $profilePicture = $request->file('profilePicture');
-        $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-        $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
-    }
-
-    // Prepare the request for the external API
-    $accessToken = $this->accessToken;
-    $response = Http::withHeaders(['AccessToken' => $accessToken])
-        ->timeout(220)
-        ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
-            'rcNumber' => $request->rcNumber,
-            'companyName' => $request->companyName,
-            'incorporationDate' => $request->incorporationDate,
-            'bvn' => $request->bvn,
+    {
+        // Validate the incoming request data
+        $validation = Validator::make($request->all(), [
+            'userId' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'phone' => 'required|string',
+            'rcNumber' => 'required|string',
+            'companyName' => 'required|string',
+            'incorporationDate' => 'required|string', // Ensure proper date format
+            'bvn' => 'required|string',
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
         ]);
 
-    $responseData = $response->json();
-    if ($response->successful() && $responseData['status'] == "00") {
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->first();
+            return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error'], 422);
+        }
 
-        $account = new Account();
-        $account->user_id = $request->userId;
-        $account->account_number = $responseData['data']['accountNo'];
-        $account->account_type = 'corporate';
-        $account->status = 'PND';
-        $account->lastName = $request->lastName;
-        $account->firstName = $request->firstName;
-        $account->phone = $request->phone;
-        $account->bvn = $request->bvn;
-        $account->profile_picture = $profilePicturePath; // Save the image path
-        $account->save();
+        // Handle profile picture upload if present
+        $profilePicturePath = null;
+        if ($request->hasFile('profilePicture')) {
+            $profilePicture = $request->file('profilePicture');
+            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+        }
 
-        return response()->json(['message' => 'Corporate account created successfully', 'data' => $account], 201);
-    } else {
-        return response()->json(['status' => 'error', 'message' => $responseData['message'] ?? 'Failed to create corporate account'], 400);
+        // Prepare the request for the external API
+        $accessToken = $this->accessToken;
+        $response = Http::withHeaders(['AccessToken' => $accessToken])
+            ->timeout(220)
+            ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
+                'rcNumber' => $request->rcNumber,
+                'companyName' => $request->companyName,
+                'incorporationDate' => $request->incorporationDate,
+                'bvn' => $request->bvn,
+            ]);
+
+        $responseData = $response->json();
+        if ($response->successful() && $responseData['status'] == "00") {
+
+            $account = new Account();
+            $account->user_id = $request->userId;
+            $account->account_number = $responseData['data']['accountNo'];
+            $account->account_type = 'corporate';
+            $account->status = 'PND';
+            $account->lastName = $request->lastName;
+            $account->firstName = $request->firstName;
+            $account->phone = $request->phone;
+            $account->bvn = $request->bvn;
+            $account->profile_picture = $profilePicturePath; // Save the image path
+            $account->save();
+
+            return response()->json(['message' => 'Corporate account created successfully', 'data' => $account], 201);
+        } else {
+            return response()->json(['status' => 'error', 'message' => $responseData['message'] ?? 'Failed to create corporate account'], 400);
+        }
     }
-}
 
     public function requestBvnConsent(Request $request)
     {
-        $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'bvn' => 'required|string',
             'type' => 'required|string',
-            'reference' => 'nullable|string|max:250',
+            'userId' => 'required',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()], 422);
+        }
+        $reference = Str::uuid()->toString();
 
         $accessToken = $this->accessToken;
 
@@ -155,10 +163,17 @@ class AccountController extends Controller
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/bvn-consent', [
                 'bvn' => $request->bvn,
                 'type' => $request->type,
-                'reference' => $request->reference,
+                'reference' => $reference,
             ]);
+        // Store the consent record in the database
+        BvnConsent::create([
+            'bvn' => $request->bvn,
+            'type' => $request->type,
+            'user_id' => $request->userId,
+            'reference' => $reference,
+            'response' => $response->json(),
+        ]);
 
-        // Log the API call
         $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
 
         return $this->handleApiResponse($response);
