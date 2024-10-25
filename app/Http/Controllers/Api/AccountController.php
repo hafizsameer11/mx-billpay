@@ -169,17 +169,23 @@ class AccountController extends Controller
                 'message' => 'No response received', // Example default message
             ];
         // Store the consent record in the database
-        BvnConsent::create([
-            'bvn' => $request->bvn,
-            'type' => $request->type,
-            'user_id' => $request->userId,
-            'reference' => $reference,
-            'response' =>  $response->json()['data'],
-        ]);
+        if($response->successful()){
+            BvnConsent::create([
+                'bvn' => $request->bvn,
+                'type' => $request->type,
+                'user_id' => $request->userId,
+                'reference' => $reference,
+                'response' =>  $response->json()['data']['message'],
+            ]);
 
-        $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
+            $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
 
-        return $this->handleApiResponse($response);
+            return $this->handleApiResponse($response);
+        }else{
+            $this->logApiCall('/bvn-consent', 'POST', $request->all(), $defaultResponse);
+            return response()->json(['status' => 'error', 'message' => 'something went wrong'], 400);
+        }
+
     }
     public function releaseAccount($accountNo, $userId)
     {
