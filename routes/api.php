@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,5 +35,5 @@ Route::post('client/corporate',[AccountController::class,'createCor` porateAccou
     Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
     Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
     Route::post('accountEnquiry',[AccountController::class,'accountEnquiry']);
-    
+    Route::get('fetch-banks',[TransferController::class,'fetchBanks']);
 // });
