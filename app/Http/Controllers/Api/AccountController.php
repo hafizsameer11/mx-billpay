@@ -261,27 +261,27 @@ class AccountController extends Controller
                 'accountNumber' => $request->accountNumber
             ]);
         if ($response->successful()) {
-            return response()->json(['success'=>true,'response'=>$response->json()]);
-            // $accountData = $response->json()['data'];
-            // $accountStatus = $response->json()['status'];
-            // if ($accountStatus === '00') {
-            //     $account = Account::where('user_id', $request->userId)->first();
-            //     if ($account) {
-            //         $account->accountBalance = $accountData['accountBalance'];
-            //         $account->save();
-            //         if (is_null($account->accountId)) {
-            //             $account->accountId = $accountData['accountId'];
-            //             $account->client = $accountData['client'];
-            //             $account->clientId = $accountData['clientId'];
-            //             $account->savingsProductName = $accountData['savingsProductName'];
-            //             $account->save();
-            //         }
-            //         return response()->json($account, 200);
-            //     }
-            //     return response()->json(['message' => 'Account not found'], 404);
-            // } else {
-            //     return response()->json(['error' => 'Invalid account status', 'status' => $accountStatus], 400);
-            // }
+            // return response()->json(['success'=>true,'response'=>$response->json()]);
+            $accountData = $response->json()['data'];
+            $accountStatus = $response->json()['status'];
+            if ($accountStatus === '00') {
+                $account = Account::where('user_id', $request->userId)->first();
+                if ($account) {
+                    $account->accountBalance = $accountData['accountBalance'];
+                    $account->save();
+                    if (is_null($account->accountId)) {
+                        $account->accountId = $accountData['accountId'];
+                        $account->client = $accountData['client'];
+                        $account->clientId = $accountData['clientId'];
+                        $account->savingsProductName = $accountData['savingsProductName'];
+                        $account->save();
+                    }
+                    return response()->json($account, 200);
+                }
+                return response()->json(['message' => 'Account not found'], 404);
+            } else {
+                return response()->json(['error' => 'Invalid account status', 'status' => $accountStatus], 400);
+            }
         } else {
             return response()->json(['error' => 'Failed to fetch account details', 'details' => $response->json()], $response->status());
         }
