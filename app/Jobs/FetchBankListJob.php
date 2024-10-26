@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class FetchBankListJob implements ShouldQueue
 {
@@ -21,7 +22,7 @@ class FetchBankListJob implements ShouldQueue
     protected $accessToken;
     public function __construct($accessToken)
     {
-        $this->accessToken=$accessToken;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -31,16 +32,18 @@ class FetchBankListJob implements ShouldQueue
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/bank');
-            Log::info('Bank List API Response:', [
-                'response' => $response->json() // This will log the response in JSON format
-            ]);
+        Log::info('Bank List API Response:', [
+            'response' => $response->json()
+        ]);
         if ($response->successful()) {
             $banks = $response->json()['data']['bank'];
-
             foreach ($banks as $bank) {
-                // Save each bank's details in the database
+                if (isset($bank['logo'])) {
+                    $logoUrl = $this->storeLogo($bank['logo'], $bank['code']);
+                    $bank['logo'] = $logoUrl;
+                }
                 Bank::updateOrCreate(
-                    ['code' => $bank['code']], // Use bank code to identify duplicates
+                    ['code' => $bank['code']],
                     [
                         'name' => $bank['name'],
                         'logo' => $bank['logo']
@@ -48,5 +51,17 @@ class FetchBankListJob implements ShouldQueue
                 );
             }
         }
+    }
+
+    private function storeLogo($base64Logo, $bankCode)
+    {
+        $imageData = explode(',', $base64Logo);
+        if (count($imageData) > 1) {
+            $image = base64_decode(end($imageData));
+            $fileName = 'bank_logos/' . $bankCode . '.png';
+            Storage::disk('public')->put($fileName, $image);
+            return Storage::url($fileName);
+        }
+        return null;
     }
 }
