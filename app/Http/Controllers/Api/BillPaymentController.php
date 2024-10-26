@@ -27,22 +27,12 @@ class BillPaymentController extends Controller
             'data' => $categories
         ]);
     }
-    public function fetchBillerItems(Request $request)
+    public function fetchBillerItems($id)
     {
         // Fetching query parameters
-        $categoryId = $request->query('category_id');
-        $validator = Validator::make($request->all(), [
-            'categoryId' => 'required'
-        ]);
+        $categoryId = $id;
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-                'data' => [],
-            ], 400);
-        }
-        // Fetching the items based on the parameters
-        $items = BillerItem::where('category_id', $request->categoryId)->get();
+        $items = BillerItem::where('category_id', $id)->get();
         // $items = BillerItem::where('category_id', $categoryId)->get();
         //get only id and paymentitemname for items
         $items = $items->map(function ($item) {
@@ -210,20 +200,20 @@ class BillPaymentController extends Controller
             ], $response->status());
         }
     }
-    public function fetchbillerItemDetails(Request $request)
+    public function fetchbillerItemDetails($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'billerItemId' => 'required'
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'billerItemId' => 'required'
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-                'data' => [],
-            ], 400);
-        }
-        $billerItemId = $request->input('billerItemId');
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'message' => $validator->errors(),
+        //         'data' => [],
+        //     ], 400);
+        // }
+        $billerItemId = $id;
         $billerItem = BillerItem::where('id', $billerItemId)->first();
         if (!$billerItem) {
             return response()->json([

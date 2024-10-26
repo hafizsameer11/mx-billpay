@@ -40,9 +40,9 @@ Route::post('accountEnquiry', [AccountController::class, 'accountEnquiry']);
 Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
 //bill payment apis
 Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBillerCategories']);
-Route::get('/biller-items-fetch', [BillPaymentController::class, 'fetchBillerItems']);
-Route::get('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
+Route::get('/biller-items-fetch/{id}', [BillPaymentController::class, 'fetchBillerItems']);
+Route::post('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
 Route::post('/payBills', [BillPaymentController::class, 'payBills']);
 Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);
-Route::get('/biller-Item-details',[BillPaymentController::class,'fetchbillerItemDetails']);
+Route::get('/biller-Item-details{id}',[BillPaymentController::class,'fetchbillerItemDetails']);
 // });
