@@ -55,13 +55,21 @@ class FetchBankListJob implements ShouldQueue
 
     private function storeLogo($base64Logo, $bankCode)
     {
+        // Split the Base64 string to get the actual data
         $imageData = explode(',', $base64Logo);
         if (count($imageData) > 1) {
-            $image = base64_decode(end($imageData));
-            $fileName = 'bank_logos/' . $bankCode . '.png';
+            $image = base64_decode(end($imageData)); // Decode the actual image data
+
+            // Define the image path
+            $fileName = 'bank_logos/' . $bankCode . '.png'; // Use bank code to name the file
+
+            // Store the image in the public disk
             Storage::disk('public')->put($fileName, $image);
-            return Storage::url($fileName);
+
+            // Return the full URL of the stored image
+            return url('storage/' . $fileName); // This generates the full URL
         }
-        return null;
+
+        return null; // Handle the case where logo is not provided properly
     }
 }
