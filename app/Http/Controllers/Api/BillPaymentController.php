@@ -102,7 +102,6 @@ class BillPaymentController extends Controller
     }
     public function payBills(Request $request)
     {
-        // Validate the request to ensure required parameters are present
         $validator = Validator::make($request->all(), [
             'customerId'   => 'required|string',
             'amount'       => 'required|numeric',
@@ -110,7 +109,6 @@ class BillPaymentController extends Controller
             'phoneNumber' => 'nullable',
             'userId' => 'required'
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
@@ -126,8 +124,6 @@ class BillPaymentController extends Controller
         $division = $billerItem->division;
         $phoneNumber = $request->input('phoneNumber', null); // Optional
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-
-        // Prepare request payload
         $payload = [
             'customerId'   => $customerId,
             'amount'       => $amount,
@@ -138,12 +134,9 @@ class BillPaymentController extends Controller
             'reference'    => $reference,
             'phoneNumber'  => $phoneNumber,  // Optional
         ];
-
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
-
-        // Check if the API request was successful
         if ($response->successful()) {
             BillPayment::create([
 
@@ -157,6 +150,7 @@ class BillPaymentController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
+                'refference'=>$reference,
                 'message' => 'Successful payment',
                 'data' => $response->json('data'),
             ], 200);
