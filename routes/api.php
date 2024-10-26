@@ -44,5 +44,5 @@ Route::get('/biller-items-fetch', [BillPaymentController::class, 'fetchBillerIte
 Route::get('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
 Route::post('/payBills', [BillPaymentController::class, 'payBills']);
 Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);
-
+Route::get('/biller-Item-details',[BillPaymentController::class,'fetchbillerItemDetails']);
 // });

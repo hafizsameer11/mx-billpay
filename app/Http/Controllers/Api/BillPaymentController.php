@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
 use App\Models\BillPayment;
+use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -43,6 +44,15 @@ class BillPaymentController extends Controller
         // Fetching the items based on the parameters
         $items = BillerItem::where('category_id', $request->categoryId)->get();
         // $items = BillerItem::where('category_id', $categoryId)->get();
+        //get only id and paymentitemname for items
+        $items = $items->map(function ($item) {
+            return [
+
+                'id' => $item->id,
+                'paymentitemname' => $item->paymentitemname
+
+            ];
+        });
         if ($items->isEmpty()) {
             return response()->json([
                 'message' => 'No items found for the provided criteria',
@@ -150,7 +160,7 @@ class BillPaymentController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'refference'=>$reference,
+                'refference' => $reference,
                 'message' => 'Successful payment',
                 'data' => $response->json('data'),
             ], 200);
@@ -199,5 +209,32 @@ class BillPaymentController extends Controller
                 'data' => $response->json('data'),
             ], $response->status());
         }
+    }
+    public function fetchbillerItemDetails(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'billerItemId' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+                'data' => [],
+            ], 400);
+        }
+        $billerItemId = $request->input('billerItemId');
+        $billerItem = BillerItem::where('id', $billerItemId)->first();
+        if (!$billerItem) {
+            return response()->json([
+                'message' => 'No items found for the provided criteria',
+                'data' => [],
+            ], 404); // 404 Not Found
+        }
+        return response()->json([
+            'message' => 'Items fetched successfully',
+            'data' => $billerItem,
+        ], 200); // 200 OK
+
     }
 }
