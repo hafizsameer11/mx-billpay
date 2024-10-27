@@ -31,6 +31,7 @@ class BillPaymentController extends Controller
     {
         // Fetching query parameters
         $categoryId = $id;
+        $categories=BillerCategory::where('id',$categoryId)->first();
 
         $items = BillerItem::where('category_id', $id)->get();
         // $items = BillerItem::where('category_id', $categoryId)->get();
@@ -51,7 +52,11 @@ class BillPaymentController extends Controller
         }
         return response()->json([
             'message' => 'Items fetched successfully',
-            'data' => $items,
+
+            'data' => [
+                'category' => $categories,
+                'itemList'=>$items
+            ],
         ], 200); // 200 OK
     }
     public function validateCustomer(Request $request)
