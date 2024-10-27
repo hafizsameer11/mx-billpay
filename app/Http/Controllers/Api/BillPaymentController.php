@@ -32,12 +32,10 @@ class BillPaymentController extends Controller
         // Fetching query parameters
         $categoryId = $id;
         $categories=BillerCategory::where('id',$categoryId)->first();
-$categories=$categories->map(function($category){
-return [
-'id'=>$category->id,
-'category'=>$category->category
+$categories=[
+    'id'=>$categories->id,
+    'category'=>$categories->category
 ];
-});
 
         $items = BillerItem::where('category_id', $id)->get();
 
