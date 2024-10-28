@@ -200,7 +200,7 @@ class AccountController extends Controller
         // Prepare the request for the external API
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->timeout(220)
+            ->timeout(300)
             ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
                 'rcNumber' => $request->rcNumber,
                 'companyName' => $request->companyName,
