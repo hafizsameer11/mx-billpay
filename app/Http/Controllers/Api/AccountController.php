@@ -148,7 +148,6 @@ class AccountController extends Controller
                     ], 500);
             }
         } else {
-            // If the API call fails (non-2xx status), delete the record
             $account->delete();
             return response()->json([
                 'status' => 'error',
