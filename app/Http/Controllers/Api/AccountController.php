@@ -68,6 +68,7 @@ class AccountController extends Controller
         $account->lastName = $request->lastName;
         $account->firstName = $request->firstName;
         $account->phone = $request->phone;
+        $account->account_number="000";
         $account->bvn = $request->bvn;
         $account->profile_picture = $profilePicturePath;
         $account->save();
