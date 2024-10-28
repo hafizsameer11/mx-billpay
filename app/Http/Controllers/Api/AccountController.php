@@ -30,20 +30,49 @@ class AccountController extends Controller
             'dob' => 'required|string',
             'phone' => 'required|string',
             'bvn' => 'required|string',
-            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profi
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validation->fails()) {
             $errorMessage = $validation->errors()->first();
-            return response()->json(data: ['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
+            return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
         }
+
+        // Check if the user already has an account with the same userId or bvn
+        $existingAccount = Account::where('user_id', $request->userId)
+            ->orWhere('bvn', $request->bvn)
+            ->first();
+
+        if ($existingAccount) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already has an account with us.',
+                'data' => $existingAccount
+            ], 409); // 409 Conflict status
+        }
+
+        // Save the profile picture if it exists
         if ($request->hasFile('profilePicture')) {
-            $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
+            $profilePicture = $request->file('profilePicture');
             $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
+            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public');
         } else {
-            $profilePicturePath = "NULL";
+            $profilePicturePath = null;
         }
+
+        // First, save the account record in the database with status 'PND'
+        $account = new Account();
+        $account->user_id = $request->userId;
+        $account->account_type = 'individual';
+        $account->status = 'PND';
+        $account->lastName = $request->lastName;
+        $account->firstName = $request->firstName;
+        $account->phone = $request->phone;
+        $account->bvn = $request->bvn;
+        $account->profile_picture = $profilePicturePath;
+        $account->save();
+
+        // Call the external API
         $accessToken = $this->accessToken;
         $response = Http::withHeaders(['AccessToken' => $accessToken])
             ->timeout(220)
@@ -57,29 +86,77 @@ class AccountController extends Controller
 
         $responseData = $response->json();
 
+        // Handle various API responses
         if ($response->successful()) {
+            switch ($responseData['status']) {
+                case "00":
+                    // Successful creation
+                    $account->account_number = $responseData['data']['accountNo'];
+                    $account->save();
+                    return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
 
-            if ($responseData['status'] == "00") {
-                $accountData = $response->json();
-                $account = new Account();
-                $account->user_id = $request->userId;
-                $account->account_number = $accountData['data']['accountNo'];
-                $account->account_type = 'individual';
-                $account->status = 'PND';
-                $account->lastName = $request->lastName;
-                $account->firstName = $request->firstName;
-                $account->phone = $request->phone;
-                $account->bvn = $request->bvn;
-                $account->profile_picture = $profilePicturePath; // Save the image path
-                $account->save();
-                return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
-            } else {
-                return response()->json(['status' => 'error', 'message' => "Account Database Save failed", 'response' => $responseData]);
+                case "01":
+                    if (isset($responseData['data']['accountNo'])) {
+                        // Update the account with the existing account number
+                        $account->account_number = $responseData['data']['accountNo'];
+                        $account->status = 'EXIST';
+                        $account->save();
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'User already has an account, updated with existing account number.',
+                            'data' => $account
+                        ], 200);
+                    } else {
+                        $account->delete();
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => $responseData['message'],
+                        ], 400);
+                    }
+
+                case "929":
+                    $account->delete();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $responseData['message'] ?? 'Error creating client. Contact Admin.',
+                    ], 400);
+
+                case "199":
+                    // Pending consent or other authorization issues, return without deleting
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $responseData['message'],
+                    ], 403);
+
+                case "119":
+                    // Not Authorized to create clients
+                    $account->delete();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Not authorized to create clients.',
+                    ], 403);
+
+                default:
+                    // Unexpected status codes
+                    $account->delete();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Unexpected error occurred. Please try again.',
+                        'response' => $responseData
+                    ], 500);
             }
         } else {
-            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again','data'=>$responseData]);
+            // If the API call fails (non-2xx status), delete the record
+            $account->delete();
+            return response()->json([
+                'status' => 'error',
+                'message' => $responseData['message'] ?? 'API call failed. Account not created.',
+                'response' => $responseData
+            ], 400);
         }
     }
+
     public function createCorporateAccount(Request $request)
     {
         // Validate the incoming request data
