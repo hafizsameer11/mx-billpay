@@ -39,8 +39,6 @@ class AccountController extends Controller
         }
         if ($request->hasFile('profilePicture')) {
             $profilePicture = $request->file('profilePicture'); // Laravel will handle the file object
-
-            // Generate a unique file name and save it in the public storage
             $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
             $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
         } else {
@@ -58,8 +56,6 @@ class AccountController extends Controller
             ]);
 
         $responseData = $response->json();
-        // $this->logApiCall('/client/individual', 'POST', $request->all(), $response->json());
-        // return response()->json(['data'=>$responseData]);
 
         if ($response->successful()) {
 
@@ -81,7 +77,7 @@ class AccountController extends Controller
                 return response()->json(['status' => 'error', 'message' => "Account Database Save failed", 'response' => $responseData]);
             }
         } else {
-            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again']);
+            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again','data'=>$response['message']]);
         }
     }
     public function createCorporateAccount(Request $request)
