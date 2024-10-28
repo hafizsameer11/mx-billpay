@@ -77,7 +77,7 @@ class AccountController extends Controller
                 return response()->json(['status' => 'error', 'message' => "Account Database Save failed", 'response' => $responseData]);
             }
         } else {
-            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again','data'=>$response['message']]);
+            return response()->json(['status' => 'error', 'message' => 'Something Went Wrong Please Try again','data'=>$responseData]);
         }
     }
     public function createCorporateAccount(Request $request)
