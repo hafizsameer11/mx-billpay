@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recepient-details', [TransferApiController::class, 'beneficiaryEnquiry']);
     Route::post('/transfer', [TransferApiController::class, 'transferFunds']);
     Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
+    Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
 });
-Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
 //Tranfser Routes
+Route::get('/getpooldetails',[TransferApiController::class,'getPoolAccountDetails']);

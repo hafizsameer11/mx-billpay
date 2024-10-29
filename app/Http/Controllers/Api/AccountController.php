@@ -331,6 +331,7 @@ class AccountController extends Controller
             return response()->json(['message' => 'Account not found'], 404);
         }
     }
+    
     public function accountEnquiry(Request $request)
     {
         $userId=Auth::user()->id;

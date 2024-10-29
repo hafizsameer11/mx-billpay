@@ -71,7 +71,7 @@ class TransferApiController extends Controller
             'toBank' => 'required|string',
             'transferType' => 'required|string|in:intra,inter',
             'fromClientId' => 'required|string',
-            'fromClient' => 'required|string', 
+            'fromClient' => 'required|string',
             'fromSavingsId' => 'required|string', // Add this line
             'fromBvn' => 'required|string', // Add this line
             'toClientId' => 'required|string',
@@ -131,5 +131,11 @@ class TransferApiController extends Controller
     private function generateSignature($fromAccount, $toAccount)
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature
+    }
+    public function getPoolAccountDetails(){
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+        ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', );
+
+        return $response->json();
     }
 }
