@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Models\BvnConsent;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -226,7 +227,7 @@ class AccountController extends Controller
     public function requestBvnConsent(Request $request)
     {
 
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
         $validator = Validator::make($request->all(), [
             'bvn' => 'required|string',
             'type' => 'required|string',
