@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('status')->default('pending'); // Status of the transfer (e.g., pending, completed, failed)
             $table->string('to_client_name')->nullable();
             $table->string('from_client_name')->nullable();
+            $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade'); // Foreign key referencing transactions table
             $table->decimal('amount', 15, 2)->nullable(); // Amount of the transfer
 
             $table->text('response_message')->nullable(); // Message from the response, useful for errors
