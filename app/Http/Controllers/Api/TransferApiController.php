@@ -123,7 +123,7 @@ class TransferApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => $response->json('message'),
-                'data' => $response->json('data'),
+                'data' => $response->json(),
             ], $response->status());
         }
     }
