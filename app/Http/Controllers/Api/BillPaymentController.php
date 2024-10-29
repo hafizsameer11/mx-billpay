@@ -8,6 +8,7 @@ use App\Models\BillerItem;
 use App\Models\BillPayment;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,11 +32,11 @@ class BillPaymentController extends Controller
     {
         // Fetching query parameters
         $categoryId = $id;
-        $categories=BillerCategory::where('id',$categoryId)->first();
-$categories=[
-    'id'=>$categories->id,
-    'category'=>$categories->category
-];
+        $categories = BillerCategory::where('id', $categoryId)->first();
+        $categories = [
+            'id' => $categories->id,
+            'category' => $categories->category
+        ];
 
         $items = BillerItem::where('category_id', $id)->get();
 
@@ -58,7 +59,7 @@ $categories=[
 
             'data' => [
                 'category' => $categories,
-                'itemList'=>$items
+                'itemList' => $items
             ],
         ], 200); // 200 OK
     }
@@ -115,13 +116,14 @@ $categories=[
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
             'phoneNumber' => 'nullable',
-            'userId' => 'required'
+
         ]);
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 400);
         }
+        $userId=Auth::user()->id;
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -149,7 +151,7 @@ $categories=[
             BillPayment::create([
 
                 'biller_item_id' => $request->billerItemId,
-                'user_id' => $request->userId,
+                'user_id' => $userId,
                 'refference' => $reference,
                 'status' => 'success',
                 'customerId' => $customerId,

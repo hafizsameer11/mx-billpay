@@ -37,7 +37,7 @@ class AccountController extends Controller
         $errorMessage = $validation->errors()->first();
         return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
     }
-    $userId = auth()->user()->id;
+    $userId = Auth::user()->id;
     $existingAccount = Account::where('user_id', $userId)
         ->orWhere('bvn', $request->bvn)
         ->first();
@@ -167,7 +167,7 @@ class AccountController extends Controller
     public function createCorporateAccount(Request $request)
     {
         // Validate the incoming request data
-        $userId=auth()->user()->id;
+        $userId=Auth::user()->id;
         $validation = Validator::make($request->all(), [
             'firstName' => 'required|string',
             'lastName' => 'required|string',
@@ -333,7 +333,7 @@ class AccountController extends Controller
     }
     public function accountEnquiry(Request $request)
     {
-        $userId=auth()->user()->id;
+        $userId=Auth::user()->id;
 
         $accountNumber=Account::where('user_id',$userId)->first();
         $accountNumber1=$accountNumber->account_number;

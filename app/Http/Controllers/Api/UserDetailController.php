@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class UserDetailController extends Controller
@@ -14,15 +15,8 @@ class UserDetailController extends Controller
 
     public function detail(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'userId' => 'required'
-        ]);
-        if ($validation->fails()) {
-            $errorMessage = $validation->errors()->first();
-            return response()->json(['message' => $errorMessage, 'status' =>
-            'error'], 400);
-        }
-        $id = $request->userId;
+
+        $id = Auth::user()->id;;
         $user = User::where('id', $id)->with('account')->first();
         $userId = $user->id;
         $email = $user->email;
