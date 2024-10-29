@@ -71,7 +71,14 @@ class TransferApiController extends Controller
             'toBank' => 'required|string',
             'transferType' => 'required|string|in:intra,inter',
             'fromClientId' => 'required|string',
+            'fromClient' => 'required|string', // Add this line
+            'fromSavingsId' => 'required|string', // Add this line
+            'fromBvn' => 'required|string', // Add this line
             'toClientId' => 'required|string',
+            'toClient' => 'required|string', // Add this line
+            'toSavingsId' => 'required|string', // Add this line
+            'toSession' => 'nullable|string', // Optional for inter transfers
+            'toBvn' => 'nullable|string', // Optional
         ]);
 
         if ($validator->fails()) {
@@ -89,8 +96,13 @@ class TransferApiController extends Controller
             'transferType' => $request->transferType,
             'fromClientId' => $request->fromClientId,
             'fromClient' => $request->fromClient, // Add this line
+            'fromSavingsId' => $request->fromSavingsId, // Add this line
+            'fromBvn' => $request->fromBvn, // Add this line
             'toClientId' => $request->toClientId,
             'toClient' => $request->toClient, // Add this line
+            'toSavingsId' => $request->toSavingsId, // Add this line
+            'toSession' => $request->toSession, // Optional for inter transfers
+            'toBvn' => $request->toBvn, // Optional
             'signature' => $this->generateSignature($request->fromAccount, $request->toAccount),
             'reference' =>  'mxPay-' . mt_rand(1000, 9999), // Generate a unique reference
         ];
