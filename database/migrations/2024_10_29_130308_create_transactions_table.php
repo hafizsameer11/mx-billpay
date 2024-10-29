@@ -13,16 +13,20 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('type')->nullable();
+            $table->string('transaction_title')->nullable();
+            $table->string('transaction_type')->nullable();
             $table->string('reference')->nullable();
-            $table->string('sign')->nullable();
-            $table->string('amount')->nullable();
-            $table->string('accountNumber')->nullable();
-            $table->string('originate_account_number')->nullable();
-            $table->string('receiver_account_number')->nullable();
-            
-            $table->timestamps();
+            $table->decimal('amount', 15, 2)->nullable(); // Amount of the transaction
+            $table->string('currency')->default('NGN');
+            $table->string('from_account_number')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Foreign key referencing users table
+            $table->string('to_account_title')->nullable();
+            $table->string('from_account_title')->nullable();
+            $table->string('to_account_number')->nullable();
+            $table->string('status')->nullable();
+            $table->timestamp('transaction_date')->nullable(); // Timestamp of when the transaction was processed
+            $table->text('response_message')->nullable(); // Message from the response, useful for errors
+            $table->timestamps(); // Created at and updated at timestamps
         });
     }
 
