@@ -240,7 +240,7 @@ class AccountController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()], 422);
         }
-        $reference = Str::uuid()->toString();
+        $reference =  'mxPay-' . mt_rand(1000, 9999);
 
         $accessToken = $this->accessToken;
 
