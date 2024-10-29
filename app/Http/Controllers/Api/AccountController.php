@@ -24,7 +24,6 @@ class AccountController extends Controller
     public function createIndividualAccount(Request $request)
 {
     $validation = Validator::make($request->all(), [
-        'userId' => 'required|string',
         'firstName' => 'required|string',
         'lastName' => 'required|string',
         'dob' => 'required|string',
@@ -37,12 +36,10 @@ class AccountController extends Controller
         $errorMessage = $validation->errors()->first();
         return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
     }
-
-    // Check if the user already has an account with the same userId or bvn
-    $existingAccount = Account::where('user_id', $request->userId)
+    $userId = auth()->user()->id;
+    $existingAccount = Account::where('user_id', $userId)
         ->orWhere('bvn', $request->bvn)
         ->first();
-
     if ($existingAccount) {
         return response()->json([
             'status' => 'error',
@@ -51,7 +48,6 @@ class AccountController extends Controller
         ], 409); // 409 Conflict status
     }
 
-    // Save the profile picture if it exists
     if ($request->hasFile('profilePicture')) {
         $profilePicture = $request->file('profilePicture');
         $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
@@ -59,10 +55,8 @@ class AccountController extends Controller
     } else {
         $profilePicturePath = null;
     }
-
-    // First, save the account record in the database with status 'PND'
     $account = new Account();
-    $account->user_id = $request->userId;
+    $account->user_id = $userId;
     $account->account_type = 'individual';
     $account->status = 'PND';
     $account->lastName = $request->lastName;
@@ -172,8 +166,8 @@ class AccountController extends Controller
     public function createCorporateAccount(Request $request)
     {
         // Validate the incoming request data
+        $userId=auth()->user()->id;
         $validation = Validator::make($request->all(), [
-            'userId' => 'required|string',
             'firstName' => 'required|string',
             'lastName' => 'required|string',
             'phone' => 'required|string',
@@ -212,7 +206,7 @@ class AccountController extends Controller
         if ($response->successful() && $responseData['status'] == "00") {
 
             $account = new Account();
-            $account->user_id = $request->userId;
+            $account->user_id = $userId;
             $account->account_number = $responseData['data']['accountNo'];
             $account->account_type = 'corporate';
             $account->status = 'PND';
@@ -232,10 +226,10 @@ class AccountController extends Controller
     public function requestBvnConsent(Request $request)
     {
 
+        $userId = auth()->user()->id;
         $validator = Validator::make($request->all(), [
             'bvn' => 'required|string',
             'type' => 'required|string',
-            'userId' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()], 422);
@@ -258,7 +252,7 @@ class AccountController extends Controller
             BvnConsent::create([
                 'bvn' => $request->bvn,
                 'type' => $request->type,
-                'user_id' => $request->userId,
+                'user_id' => $userId,
                 'reference' => $reference,
 
             ]);
@@ -338,16 +332,9 @@ class AccountController extends Controller
     }
     public function accountEnquiry(Request $request)
     {
-        $validate = Validator::make($request->all(), [
-            'userId' => 'required'
-        ], [
-            'userId.required' => 'User ID is required',
-        ]);
-        if ($validate->fails()) {
-            $errorMessage = $validate->errors()->first();
-            return response()->json(['error' => $errorMessage], 422);
-        }
-        $accountNumber=Account::where('user_id',$request->userId)->first();
+        $userId=auth()->user()->id;
+
+        $accountNumber=Account::where('user_id',$userId)->first();
         $accountNumber1=$accountNumber->account_number;
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
@@ -357,7 +344,7 @@ class AccountController extends Controller
             $accountData = $response->json()['data'];
             $accountStatus = $response->json()['status'];
             if ($accountStatus === '00') {
-                $account = Account::where('user_id', $request->userId)->first();
+                $account = Account::where('user_id', $userId)->first();
                 if ($account) {
                     $account->accountBalance = $accountData['accountBalance'];
                     $account->save();

@@ -71,7 +71,7 @@ class TransferApiController extends Controller
             'toBank' => 'required|string',
             'transferType' => 'required|string|in:intra,inter',
             'fromClientId' => 'required|string',
-            'fromClient' => 'required|string', // Add this line
+            'fromClient' => 'required|string', 
             'fromSavingsId' => 'required|string', // Add this line
             'fromBvn' => 'required|string', // Add this line
             'toClientId' => 'required|string',
