@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('to_client_name')->nullable();
             $table->string('from_client_name')->nullable();
             $table->decimal('amount', 15, 2)->nullable(); // Amount of the transfer
-
             $table->text('response_message')->nullable(); // Message from the response, useful for errors
 
             $table->timestamps();

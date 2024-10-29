@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('logo')->nullable()->default('Null');
             $table->string('color')->nullable();
-
             $table->string('refference')->nullable();
             $table->string('customerId')->nullable();
             $table->string('phoneNumber')->nullable();

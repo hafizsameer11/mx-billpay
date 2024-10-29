@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
+use App\Models\Transfer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -66,6 +69,7 @@ class TransferApiController extends Controller
         // Validate the request parameters
         $validator = Validator::make($request->all(), [
             'fromAccount' => 'required|string',
+            'toClientName'=>'required|string',
             'toAccount' => 'required|string',
             'amount' => 'required|numeric',
             'toBank' => 'required|string',
@@ -86,6 +90,7 @@ class TransferApiController extends Controller
                 'message' => $validator->errors(),
             ], 400);
         }
+        $reffernce = 'mxPay-' . mt_rand(1000, 9999);
 
         // Prepare the payload
         $payload = [
@@ -104,7 +109,7 @@ class TransferApiController extends Controller
             'toSession' => $request->toSession, // Optional for inter transfers
             'toBvn' => $request->toBvn, // Optional
             'signature' => $this->generateSignature($request->fromAccount, $request->toAccount),
-            'reference' =>  'mxPay-' . mt_rand(1000, 9999), // Generate a unique reference
+            'reference' =>  $reffernce, // Generate a unique reference
         ];
 
         // Make the API request
@@ -114,11 +119,51 @@ class TransferApiController extends Controller
 
         // Check if the API request was successful
         if ($response->successful()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Transfer successful',
-                'data' => $response->json('data'),
-            ], 200);
+            // if()
+            $responseData = $response->json();
+            if ($responseData['status'] == "00") {
+                $transaction = new Transaction();
+                $transaction->user_id = Auth::user()->id;
+                $transaction->transaction_type = "Funds Transfer";
+                $transaction->amount = $request->amount;
+                $transaction->transaction_date = now();
+                $transaction->sign = "negative";
+                $transaction->status = "Completed";
+                $transaction->save();
+
+                //transfer record saving
+                $transfer = new Transfer();
+                $transfer->transaction_id = $transaction->id;
+                $transfer->from_account_number = $request->fromAccountNumber;
+                $transfer->to_account_number = $request->toAccountNumber;
+                $transfer->from_client_id = $request->fromClientId;
+                $transfer->to_client_id = $request->toClientId;
+                $transfer->status = "Completed";
+                $transfer->to_client_name = $request->toClientName;
+                $transfer->from_client_name = Auth::user()->name;
+                $transfer->amount = $request->amount;
+                $transfer->response_message = $responseData['message'] ?? null;
+                $transfer->save();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Transfer successful',
+                    'data' => $response->json('data'),
+                ], 200);
+            } else {
+                $transaction = new Transaction();
+                $transaction->user_id = Auth::user()->id;
+                $transaction->transaction_type = "Funds Transfer";
+                $transaction->amount = $request->amount;
+                $transaction->transaction_date = now();
+                $transaction->sign = "negative";
+                $transaction->status = "Failed";
+                $transaction->save();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->json('message'),
+                    'data' => $response->json(),
+                ], $response->status());
+            }
         } else {
             return response()->json([
                 'status' => 'error',
@@ -132,9 +177,10 @@ class TransferApiController extends Controller
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature
     }
-    public function getPoolAccountDetails(){
+    public function getPoolAccountDetails()
+    {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-        ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', );
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry',);
 
         return $response->json();
     }
