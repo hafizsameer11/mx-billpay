@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillPaymentController;
+use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserDetailController;
 use Illuminate\Http\Request;
@@ -46,3 +47,6 @@ Route::post('/payBills', [BillPaymentController::class, 'payBills']);
 Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);
 Route::get('/biller-Item-details/{id}',[BillPaymentController::class,'fetchbillerItemDetails']);
 // });
+
+//Tranfser Routes
+Route::post('/recepient-details',[TransferApiController::class,'beneficiaryEnquiry']);

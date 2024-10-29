@@ -26,7 +26,6 @@ class UserDetailController extends Controller
         $user = User::where('id', $id)->with('account')->first();
         $userId = $user->id;
         $email = $user->email;
-        // $firstName = $user->account->firstName;
         $account = Account::where('user_id', $id)->first();
         $firstName = $account->firstName;
         $lastName = $account->lastName;
