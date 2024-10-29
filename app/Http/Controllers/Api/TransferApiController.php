@@ -11,8 +11,9 @@ class TransferApiController extends Controller
 {
     public $accessToken;
 
-    public function __construct(){
-        $this->accessToken='eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
+    public function __construct()
+    {
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
     }
     public function beneficiaryEnquiry(Request $request)
     {
@@ -87,7 +88,9 @@ class TransferApiController extends Controller
             'toBank' => $request->toBank,
             'transferType' => $request->transferType,
             'fromClientId' => $request->fromClientId,
+            'fromClient' => $request->fromClient, // Add this line
             'toClientId' => $request->toClientId,
+            'toClient' => $request->toClient, // Add this line
             'signature' => $this->generateSignature($request->fromAccount, $request->toAccount),
             'reference' =>  'mxPay-' . mt_rand(1000, 9999), // Generate a unique reference
         ];
