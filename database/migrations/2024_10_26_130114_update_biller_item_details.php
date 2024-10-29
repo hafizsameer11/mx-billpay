@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('biller_categories', function (Blueprint $table) {
-            $table->string('logo')->nullable()->default('Null');
             $table->string('color')->nullable();
         });
     }
