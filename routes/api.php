@@ -32,22 +32,22 @@ Route::post('auth/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('auth/user-clear', [AuthController::class, 'tableclear']);
 Route::post('user-details', [UserDetailController::class, 'detail']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
-Route::post('client/corporate', [AccountController::class, 'createCor` porateAccount']);
-// Route::middleware('auth:sanctum')->group(function () {
-Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
-Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
-Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
-Route::post('accountEnquiry', [AccountController::class, 'accountEnquiry']);
-Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
-//bill payment apis
-Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBillerCategories']);
-Route::get('/biller-items-fetch/{id}', [BillPaymentController::class, 'fetchBillerItems']);
-Route::post('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
-Route::post('/payBills', [BillPaymentController::class, 'payBills']);
-Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);
-Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
-// });
+Route::middleware('auth:sanctum')->group(function () {
 
+    Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
+    Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
+    Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
+    Route::post('accountEnquiry', [AccountController::class, 'accountEnquiry']);
+    Route::post('client/corporate', [AccountController::class, 'createCor` porateAccount']);
+    //bill payment apis
+    Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBillerCategories']);
+    Route::get('/biller-items-fetch/{id}', [BillPaymentController::class, 'fetchBillerItems']);
+    Route::post('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
+    Route::post('/payBills', [BillPaymentController::class, 'payBills']);
+    Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);
+    Route::post('/recepient-details', [TransferApiController::class, 'beneficiaryEnquiry']);
+    Route::post('/transfer', [TransferApiController::class, 'transferFunds']);
+    Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
+});
+Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
 //Tranfser Routes
-Route::post('/recepient-details', [TransferApiController::class, 'beneficiaryEnquiry']);
-Route::post('/transfer', [TransferApiController::class, 'transferFunds']);
