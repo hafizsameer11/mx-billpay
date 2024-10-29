@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -129,12 +130,11 @@ class AuthController extends Controller
     }
     public function verifyEmail(Request $request)
     {
+        $userId=Auth::user()->id;
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|string',
             'otp' => 'required|digits:4',
         ], [
-            'user_id.required' => 'User id is required',
-            'user_id.string' => 'User id must be a string',
+
             'otp.required' => 'Otp is required',
             'otp.digits' => 'Otp must be 4 digits',
         ]);
@@ -143,7 +143,7 @@ class AuthController extends Controller
             $errorMessage = $validator->errors()->first();
             return response()->json(['message' => $errorMessage, 'errors' => $validator->errors(), 'status' => 'error'], 500);
         }
-        $id = $request->user_id;
+        $id = $userId;
         $user = User::where('id', $id)->first();
         if (!$user) {
             return response()->json(['message' => 'User not found.', 'status' => 'error'], 404);
