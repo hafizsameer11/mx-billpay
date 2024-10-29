@@ -23,151 +23,148 @@ class AccountController extends Controller
         $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
     }
     public function createIndividualAccount(Request $request)
-{
-    $validation = Validator::make($request->all(), [
-        'firstName' => 'required|string',
-        'lastName' => 'required|string',
-        'dob' => 'required|string',
-        'phone' => 'required|string',
-        'bvn' => 'required|string',
-        'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    {
+        $validation = Validator::make($request->all(), [
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'dob' => 'required|string',
+            'phone' => 'required|string',
+            'bvn' => 'required|string',
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    if ($validation->fails()) {
-        $errorMessage = $validation->errors()->first();
-        return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
-    }
-    $userId = Auth::user()->id;
-    $existingAccount = Account::where('user_id', $userId)
-        ->orWhere('bvn', $request->bvn)
-        ->first();
-    if ($existingAccount) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'User already has an account with us.',
-            'data' => $existingAccount
-        ], 409); // 409 Conflict status
-    }
+        if ($validation->fails()) {
+            $errorMessage = $validation->errors()->first();
+            return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error']);
+        }
+        $userId = Auth::user()->id;
+        $existingAccount = Account::where('user_id', $userId)
+            ->orWhere('bvn', $request->bvn)
+            ->first();
+        if ($existingAccount) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already has an account with us.',
+                'data' => $existingAccount
+            ], 409); // 409 Conflict status
+        }
 
-    if ($request->hasFile('profilePicture')) {
-        $profilePicture = $request->file('profilePicture');
-        $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
-        $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public');
-    } else {
-        $profilePicturePath = null;
-    }
-    $account = new Account();
-    $account->user_id = $userId;
-    $account->account_type = 'individual';
-    $account->status = 'PND';
-    $account->lastName = $request->lastName;
-    $account->firstName = $request->firstName;
-    $account->phone = $request->phone;
-    $account->account_number = "000";
-    $account->bvn = $request->bvn;
-    $account->profile_picture = $profilePicturePath;
-    $account->save();
+        if ($request->hasFile('profilePicture')) {
+            $profilePicture = $request->file('profilePicture');
+            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public');
+        } else {
+            $profilePicturePath = null;
+        }
+        $account = new Account();
+        $account->user_id = $userId;
+        $account->account_type = 'individual';
+        $account->status = 'PND';
+        $account->lastName = $request->lastName;
+        $account->firstName = $request->firstName;
+        $account->phone = $request->phone;
+        $account->account_number = "000";
+        $account->bvn = $request->bvn;
+        $account->profile_picture = $profilePicturePath;
+        $account->save();
 
-    try {
-        // Call the external API
-        $accessToken = $this->accessToken;
-        $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->timeout(30) // Adjust the timeout duration if necessary
-            ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
-                'firstname' => $request->firstName,
-                'lastname' => $request->lastName,
-                'dob' => $request->dob,
-                'phone' => $request->phone,
-                'bvn' => $request->bvn,
-            ]);
+        try {
+            // Call the external API
+            $accessToken = $this->accessToken;
+            $response = Http::withHeaders(['AccessToken' => $accessToken])
+                ->timeout(30) // Adjust the timeout duration if necessary
+                ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual', [
+                    'firstname' => $request->firstName,
+                    'lastname' => $request->lastName,
+                    'dob' => $request->dob,
+                    'phone' => $request->phone,
+                    'bvn' => $request->bvn,
+                ]);
 
-        $responseData = $response->json();
+            $responseData = $response->json();
 
-        // Handle various API responses
-        if ($response->successful()) {
-            switch ($responseData['status']) {
-                case "00":
-                    // Successful creation
-                    $account->account_number = $responseData['data']['accountNo'];
-                    $account->save();
-                    return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
-
-                case "01":
-                    if (isset($responseData['data']['accountNo'])) {
-                        // Update the account with the existing account number
+            // Handle various API responses
+            if ($response->successful()) {
+                switch ($responseData['status']) {
+                    case "00":
                         $account->account_number = $responseData['data']['accountNo'];
-                        $account->status = 'EXIST';
                         $account->save();
+                        return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
 
-                        return response()->json([
-                            'status' => 'success',
-                            'message' => 'User already has an account, updated with existing account number.',
-                            'data' => $account
-                        ], 200);
-                    } else {
+                    case "01":
+                        if (isset($responseData['data']['accountNo'])) {
+                            // Update the account with the existing account number
+                            $account->account_number = $responseData['data']['accountNo'];
+                            $account->status = 'EXIST';
+                            $account->save();
+
+                            return response()->json([
+                                'status' => 'success',
+                                'message' => 'User already has an account, updated with existing account number.',
+                                'data' => $account
+                            ], 200);
+                        } else {
+                            $account->delete();
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => $responseData['message'],
+                            ], 400);
+                        }
+
+                    case "929":
                         $account->delete();
                         return response()->json([
                             'status' => 'error',
-                            'message' => $responseData['message'],
+                            'message' => $responseData['message'] ?? 'Error creating client. Contact Admin.',
                         ], 400);
-                    }
 
-                case "929":
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => $responseData['message'] ?? 'Error creating client. Contact Admin.',
-                    ], 400);
+                    case "199":
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => $responseData['message'],
+                        ], 403);
 
-                case "199":
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => $responseData['message'],
-                    ], 403);
+                    case "119":
+                        $account->delete();
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Not authorized to create clients.',
+                        ], 403);
 
-                case "119":
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Not authorized to create clients.',
-                    ], 403);
-
-                default:
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Unexpected error occurred. Please try again.',
-                        'response' => $responseData
-                    ], 500);
+                    default:
+                        $account->delete();
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Unexpected error occurred. Please try again.',
+                            'response' => $responseData
+                        ], 500);
+                }
+            } else {
+                Log::error('API call failed', ['response' => $response->body()]);
+                $account->delete();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'API call failed. Account not created.',
+                    'response' => $response->json() ?? 'No response from API'
+                ], 400);
             }
-        } else {
-            // Log the response details for debugging
-            Log::error('API call failed', ['response' => $response->body()]);
+        } catch (\Exception $e) {
+            // Log the exception message for further investigation
+            Log::error('API call exception', ['exception' => $e->getMessage()]);
             $account->delete();
             return response()->json([
                 'status' => 'error',
-                'message' => 'API call failed. Account not created.',
-                'response' => $response->json() ?? 'No response from API'
-            ], 400);
+                'message' => 'An error occurred while calling the API.',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-    } catch (\Exception $e) {
-        // Log the exception message for further investigation
-        Log::error('API call exception', ['exception' => $e->getMessage()]);
-        $account->delete();
-        return response()->json([
-            'status' => 'error',
-            'message' => 'An error occurred while calling the API.',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
 
 
     public function createCorporateAccount(Request $request)
     {
         // Validate the incoming request data
-        $userId=Auth::user()->id;
+        $userId = Auth::user()->id;
         $validation = Validator::make($request->all(), [
             'firstName' => 'required|string',
             'lastName' => 'required|string',
@@ -244,12 +241,13 @@ class AccountController extends Controller
                 'bvn' => $request->bvn,
                 'type' => $request->type,
                 'reference' => $reference,
-            ]);  $defaultResponse = [
-                'status' => 'unknown', // Example default status
-                'message' => 'No response received', // Example default message
-            ];
+            ]);
+        $defaultResponse = [
+            'status' => 'unknown', // Example default status
+            'message' => 'No response received', // Example default message
+        ];
         // Store the consent record in the database
-        if($response->successful()){
+        if ($response->successful()) {
             BvnConsent::create([
                 'bvn' => $request->bvn,
                 'type' => $request->type,
@@ -261,11 +259,10 @@ class AccountController extends Controller
             $this->logApiCall('/bvn-consent', 'POST', $request->all(), $response->json());
 
             return $this->handleApiResponse($response);
-        }else{
+        } else {
             $this->logApiCall('/bvn-consent', 'POST', $request->all(), $defaultResponse);
             return response()->json(['status' => 'error', 'message' => 'something went wrong'], 400);
         }
-
     }
     public function releaseAccount($accountNo, $userId)
     {
@@ -331,13 +328,13 @@ class AccountController extends Controller
             return response()->json(['message' => 'Account not found'], 404);
         }
     }
-    
+
     public function accountEnquiry(Request $request)
     {
-        $userId=Auth::user()->id;
+        $userId = Auth::user()->id;
 
-        $accountNumber=Account::where('user_id',$userId)->first();
-        $accountNumber1=$accountNumber->account_number;
+        $accountNumber = Account::where('user_id', $userId)->first();
+        $accountNumber1 = $accountNumber->account_number;
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
                 'accountNumber' => $accountNumber1

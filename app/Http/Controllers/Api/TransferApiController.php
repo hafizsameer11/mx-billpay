@@ -134,13 +134,13 @@ class TransferApiController extends Controller
                 //transfer record saving
                 $transfer = new Transfer();
                 $transfer->transaction_id = $transaction->id;
-                $transfer->from_account_number = $request->fromAccountNumber;
-                $transfer->to_account_number = $request->toAccountNumber;
+                $transfer->from_account_number = $request->fromAccount;
+                $transfer->to_account_number = $request->toAccount;
                 $transfer->from_client_id = $request->fromClientId;
                 $transfer->to_client_id = $request->toClientId;
                 $transfer->status = "Completed";
                 $transfer->to_client_name = $request->toClientName;
-                $transfer->from_client_name = Auth::user()->name;
+                $transfer->from_client_name = Auth::user()->email;
                 $transfer->amount = $request->amount;
                 $transfer->response_message = $responseData['message'] ?? null;
                 $transfer->save();
