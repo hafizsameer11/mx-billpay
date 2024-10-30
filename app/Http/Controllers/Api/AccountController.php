@@ -274,13 +274,15 @@ class AccountController extends Controller
         // Log the API call
         $this->logApiCall('/client/release', 'POST', ['accountNo' => $accountNo], $response->json());
         if ($response->successful()) {
-            event(new AccountReleased($userId));
+
             $account = Account::where('user_id', $userId)->first();
             $account->status = 'RELEASED';
             $account->save();
-            event(new AccountReleased($userId));
+            $pusherRouteResponse = Http::get(route('test-pusher', ['userId' => $userId]));
 
+            Log::info('Pusher Response:', $pusherRouteResponse->json());
             Log::info('Account released successfully:', $response->json());
+
             return response()->json(['message' => 'Account released successfully', 'data' => $response->json()], 200);
         } else {
             $errorResponse = $response->json();
