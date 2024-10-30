@@ -33,12 +33,12 @@ Route::post('auth/user-clear', [AuthController::class, 'tableclear']);
 Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBillerCategories']);
 Route::get('/biller-items-fetch/{id}', [BillPaymentController::class, 'fetchBillerItems']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('user-details', [UserDetailController::class, 'detail']);
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
     Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
-    Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
     Route::post('accountEnquiry', [AccountController::class, 'accountEnquiry']);
     Route::post('client/corporate', [AccountController::class, 'createCor` porateAccount']);
     Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
@@ -51,6 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/transfer', [TransferApiController::class, 'transferFunds']);
     Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
     Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
+    //profile end points
+    Route::post('/update-profile',[UserDetailController::class,'updateProfile']);
+    Route::get('/profile-detail',[UserDetailController::class,'profileDetail']);
 });
 //Tranfser Routes
 Route::get('/getpooldetails',[TransferApiController::class,'getPoolAccountDetails']);
