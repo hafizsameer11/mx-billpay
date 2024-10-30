@@ -52,8 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
     Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
     //profile end points
-    Route::post('/update-profile',[UserDetailController::class,'updateProfile']);
-    Route::get('/profile-detail',[UserDetailController::class,'profileDetail']);
+    Route::post('update-profile',[UserDetailController::class,'updateProfile']);
+    Route::get('profile-detail',[UserDetailController::class,'profileDetail']);
 });
 //Tranfser Routes
 Route::get('/getpooldetails',[TransferApiController::class,'getPoolAccountDetails']);
