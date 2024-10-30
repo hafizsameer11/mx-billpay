@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //profile end points
     Route::post('update-profile',[UserDetailController::class,'updateProfile']);
     Route::get('profile-detail',[UserDetailController::class,'profileDetail']);
+    Route::get('/transaction-details',[]);
 });
 //Tranfser Routes
 Route::get('/getpooldetails',[TransferApiController::class,'getPoolAccountDetails']);

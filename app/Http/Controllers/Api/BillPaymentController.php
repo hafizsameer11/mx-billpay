@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
 use App\Models\BillPayment;
+use App\Models\Transaction;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -123,7 +124,7 @@ class BillPaymentController extends Controller
                 'message' => $validator->errors(),
             ], 400);
         }
-        $userId=Auth::user()->id;
+        $userId = Auth::user()->id;
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -148,12 +149,19 @@ class BillPaymentController extends Controller
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
         if ($response->successful()) {
+            $transaction = new Transaction();
+            $transaction->user_id = $userId;
+            $transaction->transaction_type = "Bill Payment";
+            $transaction->status = 'completed';
+            $transaction->sign = 'negative';
+            $transaction->amount = $amount;
+            $transaction->save();
             BillPayment::create([
-
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
                 'refference' => $reference,
                 'status' => 'success',
+                'transaction_id' => $transaction->id,
                 'customerId' => $customerId,
                 'phoneNumber' => $phoneNumber,
 

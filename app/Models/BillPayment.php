@@ -14,7 +14,7 @@ class BillPayment extends Model
         'status',
         'refference',
         'customerId',
-        'phoneNumber'
+        'phoneNumber','transaction_id'
     ];
     public function billerItem(){
         return $this->belongsTo(BillerItem::class,'biller_item_id','id');
@@ -22,5 +22,8 @@ class BillPayment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function transaction(){
+        return $this->belongsTo(Transaction::class ,'transaction_id','id'); ;
     }
 }

@@ -45,6 +45,6 @@ class User extends Authenticatable
         return $this->hasOne(PasswordReset::class,'user_id','id');
     }
     public function account(){
-        return $this->hasMany(Account::class,'user_id','id');
+        return $this->hasOne(Account::class,'user_id','id');
     }
 }
