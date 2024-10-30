@@ -130,8 +130,6 @@ class TransferApiController extends Controller
                 $transaction->sign = "negative";
                 $transaction->status = "Completed";
                 $transaction->save();
-
-                //transfer record saving
                 $transfer = new Transfer();
                 $transfer->transaction_id = $transaction->id;
                 $transfer->from_account_number = $request->fromAccount;
@@ -172,7 +170,6 @@ class TransferApiController extends Controller
             ], $response->status());
         }
     }
-
     private function generateSignature($fromAccount, $toAccount)
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature
@@ -181,7 +178,6 @@ class TransferApiController extends Controller
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry',);
-
         return $response->json();
     }
 }

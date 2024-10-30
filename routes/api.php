@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillPaymentController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserDetailController;
@@ -52,9 +53,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/biller-Item-details/{id}', [BillPaymentController::class, 'fetchbillerItemDetails']);
     Route::get('fetch-banks', [TransferController::class, 'fetchBanks']);
     //profile end points
-    Route::post('update-profile',[UserDetailController::class,'updateProfile']);
-    Route::get('profile-detail',[UserDetailController::class,'profileDetail']);
-    Route::get('/transaction-details',[]);
+    Route::post('update-profile', [UserDetailController::class, 'updateProfile']);
+    Route::get('profile-detail', [UserDetailController::class, 'profileDetail']);
+    // Route::get('/transaction-details',[]);
+    Route::get('/wallet-transactions', [TransactionController::class, 'fetchWalletTransactions']);
+    Route::get('/bank-transactions', [TransactionController::class, 'fetchBankTransactions']);
 });
 //Tranfser Routes
-Route::get('/getpooldetails',[TransferApiController::class,'getPoolAccountDetails']);
+Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);

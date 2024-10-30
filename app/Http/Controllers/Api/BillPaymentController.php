@@ -220,17 +220,6 @@ class BillPaymentController extends Controller
     }
     public function fetchbillerItemDetails($id)
     {
-
-        // $validator = Validator::make($request->all(), [
-        //     'billerItemId' => 'required'
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'message' => $validator->errors(),
-        //         'data' => [],
-        //     ], 400);
-        // }
         $billerItemId = $id;
         $billerItem = BillerItem::where('id', $billerItemId)->first();
         if (!$billerItem) {
