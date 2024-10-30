@@ -33,3 +33,21 @@ Route::get('/test-account-release',function(){
 return view('account-release-test');
 });
 Route::get('/dipatchevent',[TransferController::class,'dispatchevent']);
+use Pusher\Pusher;
+
+Route::get('/test-pusher', function () {
+    $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true,
+        ]
+    );
+
+    $data = ['message' => 'Testing direct Pusher integration'];
+    $pusher->trigger('user.1', 'account.released', $data);
+
+    return 'Direct Pusher test triggered';
+});
