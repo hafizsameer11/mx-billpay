@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
+use App\Http\Controllers\TransferController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,3 +29,7 @@ Route::post('item/add-commission', [BillerCategoryController::class, 'addCommiss
 Route::post('item/bulk-add-commission', [BillerCategoryController::class, 'bulkAddCommission'])->name('item.bulkAddCommission');
 
 Route::get('/fetch-banks',[BankController::class,'index']);
+Route::get('/test-account-release',function(){
+return view('account-release-test');
+});
+Route::get('/dipatchevent',[TransferController::class,'dispatchevent']);
