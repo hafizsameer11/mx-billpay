@@ -94,6 +94,6 @@ class UserDetailController extends Controller
     public function profileDetail(){
         $userId = Auth::user()->id;
         $account = Account::where('user_id', $userId)->first();
-        return response()->json(['data' => $account], 200);
+        return response()->json(['success'=> true,'data' => $account], 200);
     }
 }
