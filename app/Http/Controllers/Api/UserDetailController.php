@@ -92,9 +92,8 @@ class UserDetailController extends Controller
         return response()->json(['message' => 'Profile updated successfully.', 'data' => $account], 200);
     }
     public function profileDetail(){
-        return response()->json('success','200');
-        // $userId = Auth::user()->id;
-        // $account = Account::where('user_id', $userId)->first();
-        // return response()->json(['success'=> true,'data' => $account], 200);
+        $userId = Auth::user()->id;
+        $account = Account::where('user_id', $userId)->first();
+        return response()->json(['status'=> 'success','data' => $account], 200);
     }
 }
