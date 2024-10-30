@@ -35,7 +35,7 @@ return view('account-release-test');
 Route::get('/dipatchevent',[TransferController::class,'dispatchevent']);
 use Pusher\Pusher;
 
-Route::get('/test-pusher', function () {
+Route::get('/test-pusher/{userId}', function ($userId) {
     $pusher = new Pusher(
         env('PUSHER_APP_KEY'),
         env('PUSHER_APP_SECRET'),
@@ -46,8 +46,8 @@ Route::get('/test-pusher', function () {
         ]
     );
 
-    $data = ['message' => 'Testing direct Pusher integration'];
-    $pusher->trigger('user.1', 'account.released', $data);
+    $data = ['message' => 'Testing direct Pusher integration for user ' . $userId];
+    $pusher->trigger("user.{$userId}", 'account.released', $data);
 
-    return 'Direct Pusher test triggered';
+    return "Direct Pusher test triggered for user {$userId}";
 });
