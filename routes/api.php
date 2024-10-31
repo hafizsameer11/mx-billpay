@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/transaction-details',[]);
     Route::post('/get-transfer', [TransactionController::class, 'getTransactions']);
     Route::post('/get-billpayments', [TransactionController::class, 'getBillPayment']);
+    Route::post('/update-email',[UserController::class,'updateEmail']);
+    Route::post('/update-password',[UserController::class,'updatePassword']);
 });
 //Tranfser Routes
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
