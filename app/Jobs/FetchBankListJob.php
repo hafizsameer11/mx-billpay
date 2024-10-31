@@ -67,7 +67,7 @@ class FetchBankListJob implements ShouldQueue
             Storage::disk('public')->put($fileName, $image);
 
             // Return the full URL of the stored image
-            return url('storage/' . $fileName); // This generates the full URL
+            return url( $fileName); // This generates the full URL
         }
 
         return null; // Handle the case where logo is not provided properly
