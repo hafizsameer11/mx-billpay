@@ -17,7 +17,7 @@ class TransactionController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
 
-            $transactions = Transaction::where('user_id', $user->id)->with('transfer')->get();
+            $transactions = Transaction::where('user_id', $user->id)->has('transfer')->with('transfer')->get();
 
             return response()->json(['status' => 'success', 'data' => $transactions], 200);
         } catch (\Exception $e) {
@@ -37,9 +37,9 @@ class TransactionController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
             $billpayments = Transaction::where('user_id', $user->id)
-            ->with(['billpayment.billerItem']) // Eager load the billpayments and their related billerItems
+            ->has('billpayment') // Only get transactions with non-null billpayments
+            ->with(['billpayment.billerItem']) // Eager load billpayment and their related billerItem
             ->get();
-
             if (!$billpayments) {
                 return response()->json(['status' => 'error', 'message' => 'No bill payments found'], 404);
             }
