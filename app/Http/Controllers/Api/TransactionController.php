@@ -35,8 +35,8 @@ class TransactionController extends Controller
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
             'transactionType' => 'wallet',
-            'page' => $request->get('page', 0),
-            'size' => $request->get('size', 20),
+            'page' => $request->page,
+            'size' => $request->size,
         ]);
 
         if ($response->successful()) {
