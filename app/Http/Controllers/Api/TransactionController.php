@@ -28,31 +28,33 @@ class TransactionController extends Controller
             'size' => 'nullable|integer',
         ]);
 
+        // Make the GET request to the API
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken, // Ensure this is defined
-        ])->get(' https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/transactions', [
+        ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/transactions', [
             'accountNo' => $request->accountNo,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
-            'transactionType' => 'wallet',
-            'page' => $request->page,
-            'size' => $request->size,
+            'transactionType' => 'wallet', // Ensure you are passing 'wallet' for wallet transactions
+            'page' => $request->get('page', 0), // Default to 0 if not provided
+            'size' => $request->get('size', 20), // Default to 20 if not provided
         ]);
 
         if ($response->successful()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Wallet transactions fetched successfully',
-                'data' => $response->json(),
+                'data' => $response->json(), // Return the full JSON response
             ]);
         } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch wallet transactions',
-                'data' => $response->json(),
+                'data' => $response->json(), // Return the error data
             ], $response->status());
         }
     }
+
     public function fetchBankTransactions(Request $request)
     {
         $request->validate([
