@@ -8,6 +8,7 @@ use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TransferApiController extends Controller
@@ -69,20 +70,20 @@ class TransferApiController extends Controller
         // Validate the request parameters
         $validator = Validator::make($request->all(), [
             'fromAccount' => 'required|string',
-            'toClientName'=>'required|string',
+            'toClientName' => 'required|string',
             'toAccount' => 'required|string',
             'amount' => 'required|numeric',
             'toBank' => 'required|string',
             'transferType' => 'required|string|in:intra,inter',
             'fromClientId' => 'required|string',
             'fromClient' => 'required|string',
-            'fromSavingsId' => 'required|string', // Add this line
-            'fromBvn' => 'required|string', // Add this line
+            'fromSavingsId' => 'required|string',
+            'fromBvn' => 'required|string',
             'toClientId' => 'required|string',
-            'toClient' => 'required|string', // Add this line
-            'toSavingsId' => 'required|string', // Add this line
-            'toSession' => 'nullable|string', // Optional for inter transfers
-            'toBvn' => 'nullable|string', // Optional
+            'toClient' => 'required|string',
+            'toSavingsId' => 'required|string',
+            'toSession' => 'nullable|string',
+            'toBvn' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +91,8 @@ class TransferApiController extends Controller
                 'message' => $validator->errors(),
             ], 400);
         }
-        $reffernce = 'mxPay-' . mt_rand(1000, 9999);
+
+        $reference = 'mxPay-' . mt_rand(1000, 9999);
 
         // Prepare the payload
         $payload = [
@@ -100,76 +102,100 @@ class TransferApiController extends Controller
             'toBank' => $request->toBank,
             'transferType' => $request->transferType,
             'fromClientId' => $request->fromClientId,
-            'fromClient' => $request->fromClient, // Add this line
-            'fromSavingsId' => $request->fromSavingsId, // Add this line
-            'fromBvn' => $request->fromBvn, // Add this line
+            'fromClient' => $request->fromClient,
+            'fromSavingsId' => $request->fromSavingsId,
+            'fromBvn' => $request->fromBvn,
             'toClientId' => $request->toClientId,
-            'toClient' => $request->toClient, // Add this line
-            'toSavingsId' => $request->toSavingsId, // Add this line
-            'toSession' => $request->toSession, // Optional for inter transfers
-            'toBvn' => $request->toBvn, // Optional
+            'toClient' => $request->toClient,
+            'toSavingsId' => $request->toSavingsId,
+            'toSession' => $request->toSession,
+            'toBvn' => $request->toBvn,
             'signature' => $this->generateSignature($request->fromAccount, $request->toAccount),
-            'reference' =>  $reffernce, // Generate a unique reference
+            'reference' => $reference,
         ];
 
-        // Make the API request
-        $response = Http::withHeaders([
-            'AccessToken' => $this->accessToken,
-        ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/transfer', $payload);
+        // Make the API request with a retry mechanism
+        $maxRetries = 3; // Number of retries
+        $attempt = 0;
+        $response = null;
+
+        while ($attempt < $maxRetries) {
+            try {
+                $response = Http::withHeaders([
+                    'AccessToken' => $this->accessToken,
+                ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/transfer', $payload);
+
+                // Break the loop if the request is successful
+                if ($response->successful()) {
+                    break;
+                }
+            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+                // Log the exception or handle it as necessary
+                Log::error('Connection error while making transfer', ['error' => $e->getMessage()]);
+            }
+
+            $attempt++;
+            sleep(1); // Wait before retrying
+        }
 
         // Check if the API request was successful
-        if ($response->successful()) {
-            // if()
+        if ($response && $response->successful()) {
             $responseData = $response->json();
             if ($responseData['status'] == "00") {
-                $transaction = new Transaction();
-                $transaction->user_id = Auth::user()->id;
-                $transaction->transaction_type = "Funds Transfer";
-                $transaction->amount = $request->amount;
-                $transaction->transaction_date = now();
-                $transaction->sign = "negative";
-                $transaction->status = "Completed";
-                $transaction->save();
-                $transfer = new Transfer();
-                $transfer->transaction_id = $transaction->id;
-                $transfer->from_account_number = $request->fromAccount;
-                $transfer->to_account_number = $request->toAccount;
-                $transfer->from_client_id = $request->fromClientId;
-                $transfer->to_client_id = $request->toClientId;
-                $transfer->status = "Completed";
-                $transfer->to_client_name = $request->toClientName;
-                $transfer->from_client_name = Auth::user()->email;
-                $transfer->amount = $request->amount;
-                $transfer->response_message = $responseData['message'] ?? null;
-                $transfer->save();
+                // Record the successful transaction
+                $this->recordTransaction($request, 'Completed', $reference, $responseData['data']);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Transfer successful',
-                    'data' => $response->json('data'),
+                    'data' => $responseData['data'],
                 ], 200);
             } else {
-                $transaction = new Transaction();
-                $transaction->user_id = Auth::user()->id;
-                $transaction->transaction_type = "Funds Transfer";
-                $transaction->amount = $request->amount;
-                $transaction->transaction_date = now();
-                $transaction->sign = "negative";
-                $transaction->status = "Failed";
-                $transaction->save();
+                // Record the failed transaction
+                $this->recordTransaction($request, 'Failed', $reference);
                 return response()->json([
                     'status' => 'error',
-                    'message' => $response->json('message'),
-                    'data' => $response->json(),
+                    'message' => $responseData['message'],
+                    'data' => $responseData,
                 ], $response->status());
             }
         } else {
+            // Handle the error if the response was not successful after retries
             return response()->json([
                 'status' => 'error',
-                'message' => $response->json('message'),
-                'data' => $response->json(),
-            ], $response->status());
+                'message' => 'Failed to fetch the transfer response after multiple attempts.',
+                'data' => $response ? $response->json() : null,
+            ], 500);
         }
     }
+
+    private function recordTransaction(Request $request, $status, $reference, $responseData = null)
+    {
+        $transaction = new Transaction();
+        $transaction->user_id = Auth::user()->id;
+        $transaction->transaction_type = "Funds Transfer";
+        $transaction->amount = $request->amount;
+        $transaction->transaction_date = now();
+        $transaction->sign = "negative";
+        $transaction->status = $status;
+        $transaction->save();
+
+        // Optionally save additional details in the Transfer table
+        if ($responseData) {
+            $transfer = new Transfer();
+            $transfer->transaction_id = $transaction->id;
+            $transfer->from_account_number = $request->fromAccount;
+            $transfer->to_account_number = $request->toAccount;
+            $transfer->from_client_id = $request->fromClientId;
+            $transfer->to_client_id = $request->toClientId;
+            $transfer->status = $status;
+            $transfer->to_client_name = $request->toClientName;
+            $transfer->from_client_name = Auth::user()->email;
+            $transfer->amount = $request->amount;
+            $transfer->response_message = $responseData['message'] ?? null;
+            $transfer->save();
+        }
+    }
+
     private function generateSignature($fromAccount, $toAccount)
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature
