@@ -12,15 +12,13 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
-    // public function billerItem()
-    // {
-    //     return $this->hasOne(BillerItem::class);
-    // }
-    public function transfer(){
+
+    public function transfer()
+    {
         return $this->hasOne(Transfer::class);
     }
-public function billPayment(){
-    return $this->hasOne(BillPayment::class);
+    public function billPayment()
+    {
+        return $this->hasOne(BillPayment::class);
     }
-
 }
