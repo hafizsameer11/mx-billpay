@@ -56,8 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('update-profile', [UserDetailController::class, 'updateProfile']);
     Route::get('profile-detail', [UserDetailController::class, 'profileDetail']);
     // Route::get('/transaction-details',[]);
-    Route::post('/wallet-transactions', [TransactionController::class, 'fetchWalletTransactions']);
-    Route::post('/bank-transactions', [TransactionController::class, 'fetchBankTransactions']);
+    Route::post('/get-transfer', [TransactionController::class, 'getTransactions']);
+    Route::post('/get-billpayments', [TransactionController::class, 'getBillPayment']);
 });
 //Tranfser Routes
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
