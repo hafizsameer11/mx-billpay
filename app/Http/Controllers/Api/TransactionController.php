@@ -34,10 +34,8 @@ class TransactionController extends Controller
                         'to_account_number' => $transaction->transfer->to_account_number,
                         'from_client_id' => $transaction->transfer->from_client_id,
                         'to_client_id' => $transaction->transfer->to_client_id,
-                        'status' => $transaction->transfer->status,
                         'to_client_name' => $transaction->transfer->to_client_name,
                         'from_client_name' => $transaction->transfer->from_client_name,
-                        'amount' => $transaction->transfer->amount,
                         'response_message' => $transaction->transfer->response_message,
 
                     ];
