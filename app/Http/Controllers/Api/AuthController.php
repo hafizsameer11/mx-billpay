@@ -114,17 +114,15 @@ class AuthController extends Controller
 
         // Check if account balance exists; if not, call account enquiry
         if (!$account || !$account->accountBalance) {
-            // Assuming accountEnquiry is a method in the same controller that performs the account enquiry
             $this->accountEnquiry(new Request(['accountNo' => $account->account_number])); // Pass necessary parameters
-            // Reload the account details after the enquiry
             $account->refresh(); // Refresh to get updated account data
         }
 
         return response()->json([
             'message' => 'Login successful.',
             'user' => [
-                'firstName' => $user->firstName,
-                'lastName' => $user->lastName,
+                'firstName' => $user->account->firstName,
+                'lastName' => $user->account->lastName,
                 'email' => $user->email,
                 'accountNumber' => $account->account_number,
                 'accountBalance' => $account->accountBalance,
