@@ -116,6 +116,7 @@ class AuthController extends Controller
                 'statuss' => 'success',
                 'message' => 'User Does Not Have An Account. Please Create One.',
                 'user' => $user,
+                'token' => $user->createToken('API Token')->plainTextToken,
             ]);
         }
 
