@@ -125,7 +125,7 @@ class AuthController extends Controller
             $account->refresh(); // Refresh to get updated account data
         }
 
-        $profilePictureUrl = asset('storage/app/public/' . $user->account->profile_picture);
+        $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
 
         return response()->json([
             'message' => 'Login successful.',
