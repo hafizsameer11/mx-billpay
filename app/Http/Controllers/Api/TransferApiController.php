@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Transaction;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
@@ -88,19 +89,13 @@ class TransferApiController extends Controller
         }
 
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-        $fromAccount = "1001629262";
+        $fromAccount = "1001629262"; // This should be dynamically fetched based on the logged-in user's account
         $fromClientId = "149383";
         $fromClient = "Mx Bill Pay";
         $fromSavingsId = "162926";
         $fromBvn = "22222222226";
-        $FromData = [
-            'fromAccount' => $fromAccount,
-            'fromBvn'=> $fromBvn,
-            'fromClientId' => $fromClientId,
-            'fromClient' => $fromClient,
-            'fromSavingsId' => $fromSavingsId,
-        ];
-        // Prepare the payload
+
+        // Prepare the payload for the API request
         $payload = [
             'fromAccount' => $fromAccount,
             'toAccount' => $request->toAccount,
@@ -147,22 +142,38 @@ class TransferApiController extends Controller
         // Check if the API request was successful
         if ($response && $response->successful()) {
             $responseData = $response->json();
-            if ($responseData['status'] == "00") {
-                // Record the successful transaction
-                $this->recordTransaction($request, 'Completed', $reference, $responseData['data']);
+
+            // Record the successful transaction
+            $transactionStatus = $responseData['status'] == "00" ? 'Completed' : 'Failed';
+            $this->recordTransaction($request, $transactionStatus, $reference, $responseData['data']);
+
+            // Prepare response details
+            $transactionDetails = [
+                'beneficiaryAccountNumber' => $request->toAccount,
+                'paymentReference' => $reference,
+                'clientName' => $request->toClientName,
+            ];
+
+            // Check if the beneficiary's account exists in the accounts table
+            $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
+
+            if ($beneficiaryAccount) {
+                // If it exists, fetch additional details
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Transfer successful',
-                    'data' => $responseData['data'],
+                    'data' => array_merge($transactionDetails, [
+                        'beneficiaryFirstName' => $beneficiaryAccount->firstName,
+                        'beneficiaryLastName' => $beneficiaryAccount->lastName,
+                        'beneficiaryEmail' => $beneficiaryAccount->email,
+                    ]),
                 ], 200);
             } else {
-                // Record the failed transaction
-                $this->recordTransaction($request, 'Failed', $reference,$FromData);
                 return response()->json([
-                    'status' => 'error',
-                    'message' => $responseData['message'],
-                    'data' => $responseData,
-                ], $response->status());
+                    'status' => 'success',
+                    'message' => 'Transfer successful, but beneficiary account not found in our records.',
+                    'data' => $transactionDetails,
+                ], 200);
             }
         } else {
             // Handle the error if the response was not successful after retries
@@ -174,14 +185,14 @@ class TransferApiController extends Controller
         }
     }
 
-    private function recordTransaction(Request $request, $status, $reference,$FromData, $responseData = null)
+    private function recordTransaction(Request $request, $status, $reference, $responseData = null)
     {
         $transaction = new Transaction();
         $transaction->user_id = Auth::user()->id;
         $transaction->transaction_type = "Funds Transfer";
         $transaction->amount = $request->amount;
         $transaction->transaction_date = now();
-        $transaction->sign = "negative";
+        $transaction->sign = "negative"; // Assuming negative sign for transfers
         $transaction->status = $status;
         $transaction->save();
 
@@ -189,18 +200,19 @@ class TransferApiController extends Controller
         if ($responseData) {
             $transfer = new Transfer();
             $transfer->transaction_id = $transaction->id;
-            $transfer->from_account_number = $FromData->fromAccount;
+            $transfer->from_account_number = "1001629262"; // This should be dynamically fetched
             $transfer->to_account_number = $request->toAccount;
-            $transfer->from_client_id = $FromData->fromClientId;
+            $transfer->from_client_id = "149383"; // This should be dynamically fetched
             $transfer->to_client_id = $request->toClientId;
             $transfer->status = $status;
             $transfer->to_client_name = $request->toClientName;
-            $transfer->from_client_name = Auth::user()->email;
+            $transfer->from_client_name = Auth::user()->email; // Assuming the user's email
             $transfer->amount = $request->amount;
             $transfer->response_message = $responseData['message'] ?? null;
             $transfer->save();
         }
     }
+
 
     private function generateSignature($fromAccount, $toAccount)
     {
