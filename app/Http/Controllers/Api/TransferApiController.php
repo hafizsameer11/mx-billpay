@@ -116,7 +116,7 @@ class TransferApiController extends Controller
             'toSavingsId' => $request->toSavingsId,
             'toSession' => $request->toSession,
             'toBvn' => $request->toBvn,
-            'signature' => $this->generateSignature($request->fromAccount, $request->toAccount),
+            'signature' => $this->generateSignature($fromAccount, $request->toAccount),
             'reference' => $reference,
         ];
 
