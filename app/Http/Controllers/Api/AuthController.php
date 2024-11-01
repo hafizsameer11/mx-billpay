@@ -132,6 +132,7 @@ class AuthController extends Controller
                 'firstName' => $user->account->firstName,
                 'lastName' => $user->account->lastName,
                 'email' => $user->email,
+                'phone'=> $user->account->phone,
                 'accountNumber' => $account->account_number,
                 'accountBalance' => $account->accountBalance,
                 'created_at' => $account->created_at,
