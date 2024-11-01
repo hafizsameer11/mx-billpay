@@ -111,9 +111,16 @@ class AuthController extends Controller
 
         // Fetch the user's account details
         $account = $user->account;
+        if (!$account) {
+            return response()->json([
+                'statuss' => 'success',
+                'message' => 'User Does Not Have An Account. Please Create One.',
+                'user' => $user,
+            ]);
+        }
 
         // Check if account balance exists; if not, call account enquiry
-        if (!$account || !$account->accountBalance) {
+        if (!$account->accountBalance) {
             $this->accountEnquiry(new Request(['accountNo' => $account->account_number])); // Pass necessary parameters
             $account->refresh(); // Refresh to get updated account data
         }
