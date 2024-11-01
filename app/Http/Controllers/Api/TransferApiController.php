@@ -69,16 +69,11 @@ class TransferApiController extends Controller
     {
         // Validate the request parameters
         $validator = Validator::make($request->all(), [
-            'fromAccount' => 'required|string',
             'toClientName' => 'required|string',
             'toAccount' => 'required|string',
             'amount' => 'required|numeric',
             'toBank' => 'required|string',
             'transferType' => 'required|string|in:intra,inter',
-            'fromClientId' => 'required|string',
-            'fromClient' => 'required|string',
-            'fromSavingsId' => 'required|string',
-            'fromBvn' => 'required|string',
             'toClientId' => 'required|string',
             'toClient' => 'required|string',
             'toSavingsId' => 'required|string',
@@ -93,18 +88,29 @@ class TransferApiController extends Controller
         }
 
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-
+        $fromAccount = "1001629262";
+        $fromClientId = "149383";
+        $fromClient = "Mx Bill Pay";
+        $fromSavingsId = "162926";
+        $fromBvn = "22222222226";
+        $FromData = [
+            'fromAccount' => $fromAccount,
+            'fromBvn'=> $fromBvn,
+            'fromClientId' => $fromClientId,
+            'fromClient' => $fromClient,
+            'fromSavingsId' => $fromSavingsId,
+        ];
         // Prepare the payload
         $payload = [
-            'fromAccount' => $request->fromAccount,
+            'fromAccount' => $fromAccount,
             'toAccount' => $request->toAccount,
             'amount' => $request->amount,
             'toBank' => $request->toBank,
             'transferType' => $request->transferType,
-            'fromClientId' => $request->fromClientId,
-            'fromClient' => $request->fromClient,
-            'fromSavingsId' => $request->fromSavingsId,
-            'fromBvn' => $request->fromBvn,
+            'fromClientId' => $fromClientId,
+            'fromClient' => $fromClient,
+            'fromSavingsId' => $fromSavingsId,
+            'fromBvn' => $fromBvn,
             'toClientId' => $request->toClientId,
             'toClient' => $request->toClient,
             'toSavingsId' => $request->toSavingsId,
@@ -151,7 +157,7 @@ class TransferApiController extends Controller
                 ], 200);
             } else {
                 // Record the failed transaction
-                $this->recordTransaction($request, 'Failed', $reference);
+                $this->recordTransaction($request, 'Failed', $reference,$FromData);
                 return response()->json([
                     'status' => 'error',
                     'message' => $responseData['message'],
@@ -168,7 +174,7 @@ class TransferApiController extends Controller
         }
     }
 
-    private function recordTransaction(Request $request, $status, $reference, $responseData = null)
+    private function recordTransaction(Request $request, $status, $reference,$FromData, $responseData = null)
     {
         $transaction = new Transaction();
         $transaction->user_id = Auth::user()->id;
@@ -183,9 +189,9 @@ class TransferApiController extends Controller
         if ($responseData) {
             $transfer = new Transfer();
             $transfer->transaction_id = $transaction->id;
-            $transfer->from_account_number = $request->fromAccount;
+            $transfer->from_account_number = $FromData->fromAccount;
             $transfer->to_account_number = $request->toAccount;
-            $transfer->from_client_id = $request->fromClientId;
+            $transfer->from_client_id = $FromData->fromClientId;
             $transfer->to_client_id = $request->toClientId;
             $transfer->status = $status;
             $transfer->to_client_name = $request->toClientName;
