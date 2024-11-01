@@ -120,11 +120,12 @@ class AuthController extends Controller
             ]);
         }
 
-        // Check if account balance exists; if not, call account enquiry
         if (!$account->accountBalance) {
             $this->accountEnquiry(new Request(['accountNo' => $account->account_number])); // Pass necessary parameters
             $account->refresh(); // Refresh to get updated account data
         }
+
+        $profilePictureUrl = asset('storage/app/public/' . $user->account->profile_picture);
 
         return response()->json([
             'message' => 'Login successful.',
@@ -137,6 +138,7 @@ class AuthController extends Controller
                 'accountBalance' => $account->accountBalance,
                 'created_at' => $account->created_at,
                 'updated_at' => $account->updated_at,
+                'profilePicture' => $profilePictureUrl
             ],
             'token' => $user->createToken('API Token')->plainTextToken,
             'status' => 'success'
