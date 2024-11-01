@@ -113,7 +113,7 @@ class AuthController extends Controller
         $account = $user->account;
         if (!$account) {
             return response()->json([
-                'statuss' => 'success',
+                'statuss' => 'pending',
                 'message' => 'User Does Not Have An Account. Please Create One.',
                 'user' => $user,
                 'token' => $user->createToken('API Token')->plainTextToken,
