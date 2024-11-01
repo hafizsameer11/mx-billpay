@@ -165,7 +165,7 @@ class TransferApiController extends Controller
                     'data' => array_merge($transactionDetails, [
                         'beneficiaryFirstName' => $beneficiaryAccount->firstName,
                         'beneficiaryLastName' => $beneficiaryAccount->lastName,
-                        'beneficiaryEmail' => $beneficiaryAccount->email,
+                
                     ]),
                 ], 200);
             } else {
