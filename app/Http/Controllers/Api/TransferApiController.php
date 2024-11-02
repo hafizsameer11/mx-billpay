@@ -202,7 +202,6 @@ class TransferApiController extends Controller
         $transaction->transaction_date = now();
         $transaction->sign = "negative"; // Indicate outgoing funds
         $transaction->status = $status;
-        $transaction->reference = $reference; // Reference for the transaction
         $transaction->save();
 
         if ($responseData) {
@@ -216,6 +215,7 @@ class TransferApiController extends Controller
             $transfer->to_client_name = $request->toClientName;
             $transfer->from_client_name = Auth::user()->email;
             $transfer->amount = $request->amount;
+            $transfer->reference = $reference; // Reference for the transaction
             // if ($request->toBank == "999999") {
 
             //     $transfer->transfer_type = "intra";
@@ -238,7 +238,6 @@ class TransferApiController extends Controller
         $transaction->transaction_date = now();
         $transaction->sign = 'positive'; // Positive sign for incoming funds
         $transaction->status = 'Completed'; // Set status as completed or as appropriate
-        $transaction->reference = $reference; // Reference for the transaction
         $transaction->save();
         $userAccount = Auth::user()->id;
         $account = Account::where('user_id', $userAccount)->first();
@@ -249,6 +248,7 @@ class TransferApiController extends Controller
         $transfer->from_account_number = $account->account_number; // This is the originating account number
         $transfer->to_account_number = $beneficiaryAccount->account_number; // This is the beneficiary account number (same)
         $transfer->from_client_id = 'Unknown'; // Or get it from the request if available
+        $transfer->reference = $reference; // Reference for the transaction
         $transfer->to_client_id = $beneficiaryAccount->user_id; // ID of the beneficiary client
         $transfer->status = 'Completed'; // Incoming funds status
         $transfer->to_client_name = $beneficiaryAccount->firstName; // Beneficiary client name
