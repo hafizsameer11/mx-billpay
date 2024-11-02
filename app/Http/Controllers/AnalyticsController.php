@@ -51,11 +51,13 @@ class AnalyticsController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
-        // Fetch transfers and filter by date range
-        // $transfers = Transfer::where('user_id', $userId)
-        //     ->whereBetween('created_at', [$startDate, $endDate])
-        //     ->get();
-$transfers=Transaction::where('user_id', $userId)->has('transfer')->with('transfer')->whereBetween('transaction_date', [$startDate, $endDate])->get();
+        // Fetch transfers from the transactions table and filter by date range
+        $transfers = Transaction::where('user_id', $userId)
+            ->whereHas('transfer') // Ensure the transaction has a related transfer
+            ->with('transfer') // Eager load the transfer relationship
+            ->whereBetween('transaction_date', [$startDate, $endDate])
+            ->get();
+
         // Process bill payments and format data
         foreach ($billPayments as $payment) {
             $expenseTotal += $payment->amount; // Assuming bill payments are expenses
@@ -69,7 +71,8 @@ $transfers=Transaction::where('user_id', $userId)->has('transfer')->with('transf
         }
 
         // Process transfers and format data
-        foreach ($transfers->transfer as $transfer) {
+        foreach ($transfers as $transaction) {
+            $transfer = $transaction->transfer;
             if ($transfer->sign === 'positive') {
                 $incomeTotal += $transfer->amount; // Income from transfers
                 $data[] = [
@@ -102,4 +105,5 @@ $transfers=Transaction::where('user_id', $userId)->has('transfer')->with('transf
             ],
         ], 200);
     }
+
 }
