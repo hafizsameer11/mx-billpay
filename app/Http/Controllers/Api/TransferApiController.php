@@ -208,7 +208,6 @@ class TransferApiController extends Controller
             $transfer = new Transfer();
             $transfer->transaction_id = $transaction->id;
             $transfer->from_account_number = "1001629262";
-            $transfer->user_id = Auth::user()->id;
             $transfer->to_account_number = $request->toAccount;
             $transfer->from_client_id = "149383";
             $transfer->to_client_id = $request->toClientId;
@@ -244,7 +243,6 @@ class TransferApiController extends Controller
         $account = Account::where('user_id', $userAccount)->first();
 
         $transfer = new Transfer();
-        $transfer->user_id=$userId;
         $transfer->transaction_id = $transaction->id;
         $transfer->from_account_number = $account->account_number; // This is the originating account number
         $transfer->to_account_number = $beneficiaryAccount->account_number; // This is the beneficiary account number (same)
