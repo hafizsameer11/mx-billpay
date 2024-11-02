@@ -87,7 +87,7 @@ class TransactionController extends Controller
                         'division' => $transaction->billpayment->billerItem->division,
                         'created_at' => $transaction->created_at,
                         'billerId' => $transaction->billpayment->billerItem->billerId,
-                        'category_icon' => $transaction->billpayment->billerItem->category->logo,
+                        'category_icon' => asset($transaction->billpayment->billerItem->category->logo),
                         'iconColor' => $transaction->billpayment->billerItem->category->backgroundColor
                         // 'billpayment' => [
                         //     'transaction_id' => $transaction->billpayment->id,
