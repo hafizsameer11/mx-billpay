@@ -109,12 +109,15 @@ class TransferApiController extends Controller
                 'message' => $validator->errors(),
             ], 400);
         }
+
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-        $fromAccount = "1001629262";
-        $fromClientId = "149383";
-        $fromClient = "Mx Bill Pay";
-        $fromSavingsId = "162926";
-        $fromBvn = "22222222226";
+        $fromAccount = "1001629262"; // This should ideally come from the authenticated user or a dynamic source
+        $fromClientId = "149383"; // This should also come dynamically based on the logged-in user
+        $fromClient = "Mx Bill Pay"; // Adjust according to your requirements
+        $fromSavingsId = "162926"; // Adjust according to your requirements
+        $fromBvn = "22222222226"; // Adjust according to your requirements
+
+        // Prepare the payload
         $payload = [
             'fromAccount' => $fromAccount,
             'toAccount' => $request->toAccount,
@@ -133,6 +136,8 @@ class TransferApiController extends Controller
             'signature' => $this->generateSignature($fromAccount, $request->toAccount),
             'reference' => $reference,
         ];
+
+        // Make the API request with a retry mechanism
         $maxRetries = 3; // Number of retries
         $attempt = 0;
         $response = null;
@@ -142,6 +147,8 @@ class TransferApiController extends Controller
                 $response = Http::withHeaders([
                     'AccessToken' => $this->accessToken,
                 ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/transfer', $payload);
+
+                // Break the loop if the request is successful
                 if ($response->successful()) {
                     break;
                 }
@@ -151,43 +158,32 @@ class TransferApiController extends Controller
             $attempt++;
             sleep(1); // Wait before retrying
         }
+
+        // Check if the API request was successful
         if ($response && $response->successful() && $response->json()['status'] == "00") {
             $responseData = $response->json();
-            $notification = new Notification();
-            $notification->user_id = Auth::user()->id;
-            $notification->title = "Transfer Successful";
-            $notification->type = "transfer";
 
-            $notification->message = "Payment to " . $request->toClient . " Successful";
-            $notification->icon = asset('notificationLogos/profile2.png');
-            $notification->iconColor = config('notification_colors.colors.Account');
-            $notification->save();
-            Log::info('API Response transfer:', $response->json());
-            $transactionStatus = $responseData['status'] == "00" ? 'Completed' : 'Failed';
-            $this->recordTransaction($request, $transactionStatus, $reference, $responseData['data']);
-            $transactionDetails = [
-                'beneficiaryAccountNumber' => $request->toAccount,
-                'paymentReference' => $reference,
-                'clientName' => $request->toClientName,
-            ];
-            $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
-            if ($beneficiaryAccount) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Transfer successful',
-                    'data' => array_merge($transactionDetails, [
-                        'beneficiaryFirstName' => $beneficiaryAccount->firstName,
-                        'beneficiaryLastName' => $beneficiaryAccount->lastName,
+            // Record the successful transaction
+            $this->recordTransaction($request, 'Completed', $reference, $responseData['data']);
 
-                    ]),
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Transfer successful, but beneficiary account not found in our records.',
-                    'data' => $transactionDetails,
-                ], 200);
+            // Check if the transfer type is intra
+            if ($request->transferType === 'intra') {
+                $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
+                if ($beneficiaryAccount) {
+                    // Record the incoming funds for the beneficiary
+                    $this->recordIncomingFunds($beneficiaryAccount->user_id, $request->amount, $reference, $beneficiaryAccount);
+                }
             }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Transfer successful',
+                'data' => [
+                    'beneficiaryAccountNumber' => $request->toAccount,
+                    'paymentReference' => $reference,
+                    'clientName' => $request->toClientName,
+                ],
+            ], 200);
         } else {
             return response()->json([
                 'status' => 'error',
@@ -196,6 +192,7 @@ class TransferApiController extends Controller
             ], 500);
         }
     }
+
     private function recordTransaction(Request $request, $status, $reference, $responseData = null)
     {
         $transaction = new Transaction();
@@ -203,9 +200,11 @@ class TransferApiController extends Controller
         $transaction->transaction_type = "Funds Transfer";
         $transaction->amount = $request->amount;
         $transaction->transaction_date = now();
-        $transaction->sign = "negative";
+        $transaction->sign = "negative"; // Indicate outgoing funds
         $transaction->status = $status;
+        $transaction->reference = $reference; // Reference for the transaction
         $transaction->save();
+
         if ($responseData) {
             $transfer = new Transfer();
             $transfer->transaction_id = $transaction->id;
@@ -223,11 +222,42 @@ class TransferApiController extends Controller
             // } else {
 
             // }
-                $transfer->transfer_type = $request->transferType;
+            $transfer->transfer_type = $request->transferType;
             $transfer->response_message = $responseData['message'] ?? null;
             $transfer->save();
         }
     }
+
+    private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount)
+    {
+        // Create a new transaction for incoming funds
+        $transaction = new Transaction();
+        $transaction->user_id = $userId;
+        $transaction->transaction_type = 'Inward Credit';
+        $transaction->amount = $amount;
+        $transaction->transaction_date = now();
+        $transaction->sign = 'positive'; // Positive sign for incoming funds
+        $transaction->status = 'Completed'; // Set status as completed or as appropriate
+        $transaction->reference = $reference; // Reference for the transaction
+        $transaction->save();
+$userAccount=Auth::user()->id;
+$account=Account::where('user_id',$userAccount)->first();
+
+        // Record transfer details for the incoming transaction
+        $transfer = new Transfer();
+        $transfer->transaction_id = $transaction->id;
+        $transfer->from_account_number = $account->account_number; // This is the originating account number
+        $transfer->to_account_number = $beneficiaryAccount->account_number; // This is the beneficiary account number (same)
+        $transfer->from_client_id = 'Unknown'; // Or get it from the request if available
+        $transfer->to_client_id = $beneficiaryAccount->user_id; // ID of the beneficiary client
+        $transfer->status = 'Completed'; // Incoming funds status
+        $transfer->to_client_name = $beneficiaryAccount->firstName; // Beneficiary client name
+        $transfer->from_client_name = 'Unknown'; // Or get from request if available
+        $transfer->amount = $amount; // Amount received
+        $transfer->response_message = "Successful inward credit"; // Message for transfer
+        $transfer->save();
+    }
+
     private function generateSignature($fromAccount, $toAccount)
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature
