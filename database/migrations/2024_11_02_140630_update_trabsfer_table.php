@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notifications', function (Blueprint $table) {
+        Schema::table('transfers', function (Blueprint $table) {
             $table->string('transfer_type')->nullable();
         });
     }
