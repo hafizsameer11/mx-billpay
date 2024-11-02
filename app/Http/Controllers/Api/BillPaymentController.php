@@ -30,6 +30,7 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 // 'description' => $category->description,
                 'icon' => asset($category->logo),
+                'backgroundColor'=>$category->backgroundColor
             ];
         });
         return response()->json([
