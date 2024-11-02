@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,5 +62,12 @@ class UserController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Failed to update
                             password', 'error' => $e->getMessage()],  500);
         }
+    }
+    public function unreadNotifications()
+    {
+        $userId = Auth::user()->id;
+        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->get();
+        return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
+        // return $unreadNotifications;
     }
 }

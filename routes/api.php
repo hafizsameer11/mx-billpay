@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/get-billpayments', [TransactionController::class, 'getBillPayment']);
     Route::post('/update-email',[UserController::class,'updateEmail']);
     Route::post('/update-password',[UserController::class,'updatePassword']);
+    Route::get('/unread-notifications',[UserController::class,'unreadNotifications']);
 });
 //Tranfser Routes
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
