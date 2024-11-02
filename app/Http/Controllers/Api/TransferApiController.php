@@ -49,14 +49,34 @@ class TransferApiController extends Controller
             'bank' => $bank,
             'transfer_type' => $transferType,
         ]);
-
         // Check if the API request was successful
         if ($response->successful()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Beneficiary details retrieved successfully',
-                'data' => $response->json('data'), // Return the beneficiary details
-            ], 200);
+            // Check if the account number exists in the database
+            $userAccount = Account::where('account_number', $accountNo)->with('user')->first();
+
+            if ($userAccount) {
+                // Account found, send additional user details
+                $profilePictureUrl = asset('storage/' . $userAccount->profile_picture);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Beneficiary details retrieved successfully',
+                    'data' => [
+                        'beneficiaryDetails' => $response->json('data'), // Return the beneficiary details from the API
+                        'firstName' => $userAccount->user->firstName,
+                        'lastName' => $userAccount->user->lastName,
+                        'email' => $userAccount->user->email,
+                        'profilePicture' => $profilePictureUrl
+                    ],
+                ], 200);
+            } else {
+                // Account not found in the database, but still return the API data
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Beneficiary details retrieved successfully',
+                    'additionalMessage' => 'Beneficiary account not found in our records.',
+                    'data' => $response->json('data'), // Return the beneficiary details from the API
+                ], 200);
+            }
         } else {
             return response()->json([
                 'status' => 'error',
@@ -165,7 +185,7 @@ class TransferApiController extends Controller
                     'data' => array_merge($transactionDetails, [
                         'beneficiaryFirstName' => $beneficiaryAccount->firstName,
                         'beneficiaryLastName' => $beneficiaryAccount->lastName,
-                
+
                     ]),
                 ], 200);
             } else {
