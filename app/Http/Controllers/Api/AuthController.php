@@ -312,7 +312,7 @@ class AuthController extends Controller
             $errorMessage = $validator->errors()->first();
             return response()->json(['message' => $errorMessage, 'error' => $validator->errors(), 'status' => 'error']);
         } else {
-            $passwordReset = PasswordReset::where('otp', $request->otp)->where('user_id', $request->user_id)->first();
+            $passwordReset = PasswordReset::where('otp', $request->otp)->where('user_id', $request->userId)->first();
             if (!$passwordReset) {
                 return response()->json(['message' => 'Invalid otp', 'status' => 'error'], 404);
             } else {
