@@ -64,7 +64,7 @@ class TransactionController extends Controller
             $billpayments = Transaction::where('user_id', $user->id)
                 ->has('billpayment') // Only get transactions with non-null billpayments
                 ->with([
-                    'billpayment.billerItem.billerCategory' // Eager load billpayment, billerItem, and billerCategory
+                    'billpayment.billerItem.category' // Eager load billpayment, billerItem, and billerCategory
                 ])
                 ->get()
                 ->map(function ($transaction) {
