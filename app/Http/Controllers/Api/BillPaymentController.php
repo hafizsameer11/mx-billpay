@@ -47,7 +47,7 @@ class BillPaymentController extends Controller
             'id' => $categories->id,
             'category' => $categories->category,
             'icon'=>$categories->logo,
-            'iconColor'=>$categories->backgroundColor
+            'iconColor'=>asset($categories->backgroundColor)
         ];
 
         $items = BillerItem::where('category_id', $id)->get();
