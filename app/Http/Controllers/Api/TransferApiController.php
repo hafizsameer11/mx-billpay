@@ -285,7 +285,6 @@ class TransferApiController extends Controller
                 $transaction->reference = $reference;
                 $transaction->save();
 
-                // Record transfer details with the captured webhook data
                 $transfer = new Transfer();
                 $transfer->transaction_id = $transaction->id;
                 $transfer->from_account_number = $originatorAccountNumber;
