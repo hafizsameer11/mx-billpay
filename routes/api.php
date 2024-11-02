@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillPaymentController;
@@ -68,3 +69,4 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 //Tranfser Routes
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
+Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
