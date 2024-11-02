@@ -163,6 +163,8 @@ class TransferApiController extends Controller
             $responseData = $response->json();
 
             // Record the successful transaction
+            //log the response of api
+            Log::info('API Response:', $response->json());
             $transactionStatus = $responseData['status'] == "00" ? 'Completed' : 'Failed';
             $this->recordTransaction($request, $transactionStatus, $reference, $responseData['data']);
 
