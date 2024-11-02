@@ -84,31 +84,22 @@ class AccountController extends Controller
             'bvn' => $request->bvn,
         ];
 
-        // Make the API request with retry logic
-        $maxRetries = 3;
-        $attempt = 0;
-        $response = null;
-
-        while ($attempt < $maxRetries) {
-            try {
-                $response = Http::withHeaders(['AccessToken' => $accessToken])
-                    ->timeout(300)
-                    ->post($apiEndpoint, $apiPayload);
-
-                // Break the loop if the request is successful
-                if ($response->successful()) {
-                    break;
-                }
-            } catch (\Illuminate\Http\Client\ConnectionException $e) {
-                Log::error('Connection error while creating account', ['error' => $e->getMessage()]);
-            }
-
-            $attempt++;
-            sleep(1); // Wait before retrying
+        // Make the API request
+        try {
+            $response = Http::withHeaders(['AccessToken' => $accessToken])
+                ->timeout(300)
+                ->post($apiEndpoint, $apiPayload);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::error('Connection error while creating account', ['error' => $e->getMessage()]);
+            $account->delete();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'API connection error. Account not created.',
+            ], 400);
         }
 
         // Handle the API response
-        if ($response && $response->successful()) {
+        if ($response->successful()) {
             $responseData = $response->json();
 
             switch ($responseData['status']) {
@@ -120,7 +111,6 @@ class AccountController extends Controller
 
                 case "01":
                     if (isset($responseData['data']['accountNo'])) {
-                        // Update the account with the existing account number
                         $account->account_number = $responseData['data']['accountNo'];
                         $account->status = 'EXIST';
                         $account->save();
@@ -176,6 +166,7 @@ class AccountController extends Controller
             ], 400);
         }
     }
+
 
 
 
