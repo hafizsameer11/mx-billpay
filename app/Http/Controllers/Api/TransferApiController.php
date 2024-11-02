@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class TransferApiController extends Controller
                 // Account found, send additional user details
                 $profilePictureUrl = asset('storage/' . $userAccount->profile_picture);
                 $beneficeiryDetails = $response->json('data');
-                 return response()->json([
+                return response()->json([
                     'status' => 'success',
                     'message' => 'Beneficiary details retrieved successfully',
                     'data' => array_merge($beneficeiryDetails, [ // Merge beneficiary details directly
@@ -108,15 +109,12 @@ class TransferApiController extends Controller
                 'message' => $validator->errors(),
             ], 400);
         }
-
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-        $fromAccount = "1001629262"; // This should be dynamically fetched based on the logged-in user's account
+        $fromAccount = "1001629262";
         $fromClientId = "149383";
         $fromClient = "Mx Bill Pay";
         $fromSavingsId = "162926";
         $fromBvn = "22222222226";
-
-        // Prepare the payload for the API request
         $payload = [
             'fromAccount' => $fromAccount,
             'toAccount' => $request->toAccount,
@@ -135,8 +133,6 @@ class TransferApiController extends Controller
             'signature' => $this->generateSignature($fromAccount, $request->toAccount),
             'reference' => $reference,
         ];
-
-        // Make the API request with a retry mechanism
         $maxRetries = 3; // Number of retries
         $attempt = 0;
         $response = null;
@@ -146,42 +142,35 @@ class TransferApiController extends Controller
                 $response = Http::withHeaders([
                     'AccessToken' => $this->accessToken,
                 ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/transfer', $payload);
-
-                // Break the loop if the request is successful
                 if ($response->successful()) {
                     break;
                 }
             } catch (\Illuminate\Http\Client\ConnectionException $e) {
-                // Log the exception or handle it as necessary
                 Log::error('Connection error while making transfer', ['error' => $e->getMessage()]);
             }
-
             $attempt++;
             sleep(1); // Wait before retrying
         }
-
-        // Check if the API request was successful
         if ($response && $response->successful() && $response->json()['status'] == "00") {
             $responseData = $response->json();
-
-            // Record the successful transaction
-            //log the response of api
+            $notification = new Notification();
+            $notification->user_id = Auth::user()->id;
+            $notification->title = "Transfer Successful";
+            $notification->type = "login";
+            $notification->message = "User Logged In Successfully";
+            $notification->icon = asset('notificationLogos/profile2.png');
+            $notification->iconColor = config('notification_colors.colors.Account');
+            $notification->save();
             Log::info('API Response transfer:', $response->json());
             $transactionStatus = $responseData['status'] == "00" ? 'Completed' : 'Failed';
             $this->recordTransaction($request, $transactionStatus, $reference, $responseData['data']);
-
-            // Prepare response details
             $transactionDetails = [
                 'beneficiaryAccountNumber' => $request->toAccount,
                 'paymentReference' => $reference,
                 'clientName' => $request->toClientName,
             ];
-
-            // Check if the beneficiary's account exists in the accounts table
             $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
-
             if ($beneficiaryAccount) {
-                // If it exists, fetch additional details
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Transfer successful',
@@ -199,7 +188,6 @@ class TransferApiController extends Controller
                 ], 200);
             }
         } else {
-            // Handle the error if the response was not successful after retries
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch the transfer response after multiple attempts.',
@@ -207,7 +195,6 @@ class TransferApiController extends Controller
             ], 500);
         }
     }
-
     private function recordTransaction(Request $request, $status, $reference, $responseData = null)
     {
         $transaction = new Transaction();
@@ -215,28 +202,24 @@ class TransferApiController extends Controller
         $transaction->transaction_type = "Funds Transfer";
         $transaction->amount = $request->amount;
         $transaction->transaction_date = now();
-        $transaction->sign = "negative"; // Assuming negative sign for transfers
+        $transaction->sign = "negative";
         $transaction->status = $status;
         $transaction->save();
-
-        // Optionally save additional details in the Transfer table
         if ($responseData) {
             $transfer = new Transfer();
             $transfer->transaction_id = $transaction->id;
-            $transfer->from_account_number = "1001629262"; // This should be dynamically fetched
+            $transfer->from_account_number = "1001629262";
             $transfer->to_account_number = $request->toAccount;
-            $transfer->from_client_id = "149383"; // This should be dynamically fetched
+            $transfer->from_client_id = "149383";
             $transfer->to_client_id = $request->toClientId;
             $transfer->status = $status;
             $transfer->to_client_name = $request->toClientName;
-            $transfer->from_client_name = Auth::user()->email; // Assuming the user's email
+            $transfer->from_client_name = Auth::user()->email;
             $transfer->amount = $request->amount;
             $transfer->response_message = $responseData['message'] ?? null;
             $transfer->save();
         }
     }
-
-
     private function generateSignature($fromAccount, $toAccount)
     {
         return hash('sha512', $fromAccount . $toAccount); // Generate SHA512 signature

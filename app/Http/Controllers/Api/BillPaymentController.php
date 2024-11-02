@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
 use App\Models\BillPayment;
+use App\Models\Notification;
 use App\Models\Transaction;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 // 'description' => $category->description,
                 'icon' => asset($category->logo),
-                'iconColor'=>$category->backgroundColor
+                'iconColor' => $category->backgroundColor
             ];
         });
         return response()->json([
@@ -46,8 +47,8 @@ class BillPaymentController extends Controller
         $categories = [
             'id' => $categories->id,
             'category' => $categories->category,
-            'icon'=>asset($categories->logo) ,
-            'iconColor'=>$categories->backgroundColor
+            'icon' => asset($categories->logo),
+            'iconColor' => $categories->backgroundColor
         ];
 
         $items = BillerItem::where('category_id', $id)->get();
@@ -166,6 +167,13 @@ class BillPaymentController extends Controller
             $transaction->status = 'completed';
             $transaction->sign = 'negative';
             $transaction->amount = $amount;
+            $notification = new Notification();
+            $notification->title = "Bill Payment Successful";
+            $notification->message = "Bill payment of " . $amount . " has been successful";
+            $notification->user_id = $userId;
+            $notification->icon = asset('notificationLogos/bill.png');
+            $notification->iconColor = config('notification_colors.colors.Bill');
+            $notification->save();
             $transaction->save();
             BillPayment::create([
                 'biller_item_id' => $request->billerItemId,

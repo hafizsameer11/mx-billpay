@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\Notification as ModelsNotification;
 use App\Models\PasswordReset;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Notification;
 
 class AuthController extends Controller
 {
@@ -126,7 +128,14 @@ class AuthController extends Controller
         }
 
         $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
-
+        $notification = new ModelsNotification();
+        $notification->user_id = $user->id;
+        $notification->type = "login";
+        $notification->title = "User Logged In";
+        $notification->message = "User Logged In Successfully";
+        $notification->icon=asset('notificationLogos/profile2.png');
+        $notification->iconColor=config('notification_colors.colors.Account');
+        $notification->save();
         return response()->json([
             'message' => 'Login successful.',
             'user' => [
