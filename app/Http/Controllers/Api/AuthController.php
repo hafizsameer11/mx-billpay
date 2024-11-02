@@ -339,13 +339,13 @@ class AuthController extends Controller
             $errorMessage = $validator->errors()->first();
             return response()->json(['message' => $errorMessage, 'error' => $validator->errors(), 'status' => 'error'], 400);
         }
-        $user = User::find($request->user_id);
+        $user = User::find($request->userId);
         if (!$user) {
             return response()->json(['message' => 'User not found', 'status' => 'error'], 404);
         }
         $user->password = bcrypt($request->newPassword);
         $user->save();
-        PasswordReset::where('user_id', $request->user_id)->delete();
+        PasswordReset::where('user_id', $request->userId)->delete();
         return response()->json(['message' => 'Password reset successfully', 'status' => 'success'], 200);
     }
     public function tableclear()
