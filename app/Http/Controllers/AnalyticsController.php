@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BillPayment;
+use App\Models\Transaction;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,10 +52,10 @@ class AnalyticsController extends Controller
             ->get();
 
         // Fetch transfers and filter by date range
-        $transfers = Transfer::where('user_id', $userId)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
-
+        // $transfers = Transfer::where('user_id', $userId)
+        //     ->whereBetween('created_at', [$startDate, $endDate])
+        //     ->get();
+$transfers=Transaction::where('user_id', $userId)->with('transfer')->whereBetween('transaction_date', [$startDate, $endDate])->get();
         // Process bill payments and format data
         foreach ($billPayments as $payment) {
             $expenseTotal += $payment->amount; // Assuming bill payments are expenses
@@ -68,7 +69,7 @@ class AnalyticsController extends Controller
         }
 
         // Process transfers and format data
-        foreach ($transfers as $transfer) {
+        foreach ($transfers->transfer as $transfer) {
             if ($transfer->sign === 'positive') {
                 $incomeTotal += $transfer->amount; // Income from transfers
                 $data[] = [
