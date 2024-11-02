@@ -171,7 +171,7 @@ class TransferApiController extends Controller
                 $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
                 if ($beneficiaryAccount) {
                     // Record the incoming funds for the beneficiary
-                    $this->recordIncomingFunds($beneficiaryAccount->user_id, $request->amount, $reference, $beneficiaryAccount);
+                    $this->recordIncomingFunds($beneficiaryAccount->user_id, $request->amount, $reference, $beneficiaryAccount,$request);
                 }
             }
 
@@ -228,7 +228,7 @@ class TransferApiController extends Controller
         }
     }
 
-    private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount)
+    private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount,Request $request)
     {
         // Create a new transaction for incoming funds
         $transaction = new Transaction();
@@ -242,14 +242,13 @@ class TransferApiController extends Controller
         $userAccount = Auth::user()->id;
         $account = Account::where('user_id', $userAccount)->first();
 
-        // Record transfer details for the incoming transaction
         $transfer = new Transfer();
         $transfer->transaction_id = $transaction->id;
         $transfer->from_account_number = $account->account_number; // This is the originating account number
         $transfer->to_account_number = $beneficiaryAccount->account_number; // This is the beneficiary account number (same)
         $transfer->from_client_id = 'Unknown'; // Or get it from the request if available
         $transfer->reference = $reference; // Reference for the transaction
-        $transfer->to_client_id = $beneficiaryAccount->user_id; // ID of the beneficiary client
+        $transfer->to_client_id = $request->toClient; // ID of the beneficiary client
         $transfer->status = 'Completed'; // Incoming funds status
         $transfer->to_client_name = $beneficiaryAccount->firstName; // Beneficiary client name
         $transfer->from_client_name = 'Unknown'; // Or get from request if available
