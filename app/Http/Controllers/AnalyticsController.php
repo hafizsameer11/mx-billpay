@@ -55,7 +55,7 @@ class AnalyticsController extends Controller
         // $transfers = Transfer::where('user_id', $userId)
         //     ->whereBetween('created_at', [$startDate, $endDate])
         //     ->get();
-$transfers=Transaction::where('user_id', $userId)->with('transfer')->whereBetween('transaction_date', [$startDate, $endDate])->get();
+$transfers=Transaction::where('user_id', $userId)->has('transfer')->with('transfer')->whereBetween('transaction_date', [$startDate, $endDate])->get();
         // Process bill payments and format data
         foreach ($billPayments as $payment) {
             $expenseTotal += $payment->amount; // Assuming bill payments are expenses
