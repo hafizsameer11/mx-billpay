@@ -101,5 +101,4 @@ class AnalyticsController extends Controller
             ],
         ], 200);
     }
-
 }
