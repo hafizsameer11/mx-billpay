@@ -59,18 +59,15 @@ class TransferApiController extends Controller
                 // Account found, send additional user details
                 $profilePictureUrl = asset('storage/' . $userAccount->profile_picture);
                 $beneficeiryDetails = $response->json('data');
-                return response()->json([
+                 return response()->json([
                     'status' => 'success',
                     'message' => 'Beneficiary details retrieved successfully',
-                    'data' => [
-                        array_merge($beneficeiryDetails, [
-                            'firstName' => $userAccount->firstName,
-                            'lastName' => $userAccount->lastName,
-                            'email' => $userAccount->user->email,
-                            'profilePicture' => $profilePictureUrl
-                        ])
-
-                    ],
+                    'data' => array_merge($beneficeiryDetails, [ // Merge beneficiary details directly
+                        'firstName' => $userAccount->firstName,
+                        'lastName' => $userAccount->lastName,
+                        'email' => $userAccount->user->email,
+                        'profilePicture' => $profilePictureUrl
+                    ]),
                 ], 200);
             } else {
                 return response()->json([
