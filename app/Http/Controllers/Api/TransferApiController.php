@@ -62,8 +62,8 @@ class TransferApiController extends Controller
                     'message' => 'Beneficiary details retrieved successfully',
                     'data' => [
                         'beneficiaryDetails' => $response->json('data'), // Return the beneficiary details from the API
-                        'firstName' => $userAccount->user->firstName,
-                        'lastName' => $userAccount->user->lastName,
+                        'firstName' => $userAccount->firstName,
+                        'lastName' => $userAccount->lastName,
                         'email' => $userAccount->user->email,
                         'profilePicture' => $profilePictureUrl
                     ],
