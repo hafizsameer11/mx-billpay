@@ -69,7 +69,6 @@ class TransferApiController extends Controller
                     ],
                 ], 200);
             } else {
-                // Account not found in the database, but still return the API data
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Beneficiary details retrieved successfully',
