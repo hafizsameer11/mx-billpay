@@ -295,7 +295,7 @@ class AuthController extends Controller
                 $message->to($request->email)
                     ->subject('Your OTP Code');
             });
-            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success', 'user_id' => $user->id], 200);
+            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success', 'user_id' => $user->id,'otp'=>$otp], 200);
         }
     }
 
