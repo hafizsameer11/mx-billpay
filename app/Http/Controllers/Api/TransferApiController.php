@@ -58,15 +58,18 @@ class TransferApiController extends Controller
             if ($userAccount) {
                 // Account found, send additional user details
                 $profilePictureUrl = asset('storage/' . $userAccount->profile_picture);
+                $beneficeiryDetails = $response->json('data');
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Beneficiary details retrieved successfully',
                     'data' => [
-                        'beneficiaryDetails' => $response->json('data'), // Return the beneficiary details from the API
-                        'firstName' => $userAccount->firstName,
-                        'lastName' => $userAccount->lastName,
-                        'email' => $userAccount->user->email,
-                        'profilePicture' => $profilePictureUrl
+                        array_merge($beneficeiryDetails, [
+                            'firstName' => $userAccount->firstName,
+                            'lastName' => $userAccount->lastName,
+                            'email' => $userAccount->user->email,
+                            'profilePicture' => $profilePictureUrl
+                        ])
+
                     ],
                 ], 200);
             } else {
@@ -161,7 +164,7 @@ class TransferApiController extends Controller
         }
 
         // Check if the API request was successful
-        if ($response && $response->successful() && $response->json()['status']=="00") {
+        if ($response && $response->successful() && $response->json()['status'] == "00") {
             $responseData = $response->json();
 
             // Record the successful transaction
