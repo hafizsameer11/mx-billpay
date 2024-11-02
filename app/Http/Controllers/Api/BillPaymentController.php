@@ -24,6 +24,14 @@ class BillPaymentController extends Controller
     public function fetchBillerCategories()
     {
         $categories = BillerCategory::all();
+        $categories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'category' => $category->category,
+                // 'description' => $category->description,
+                'icon' => asset($category->logo),
+            ];
+        });
         return response()->json([
             'message' => 'Categories fetched successfully',
             'data' => $categories
