@@ -240,8 +240,8 @@ class TransferApiController extends Controller
         $transaction->status = 'Completed'; // Set status as completed or as appropriate
         $transaction->reference = $reference; // Reference for the transaction
         $transaction->save();
-$userAccount=Auth::user()->id;
-$account=Account::where('user_id',$userAccount)->first();
+        $userAccount = Auth::user()->id;
+        $account = Account::where('user_id', $userAccount)->first();
 
         // Record transfer details for the incoming transaction
         $transfer = new Transfer();
