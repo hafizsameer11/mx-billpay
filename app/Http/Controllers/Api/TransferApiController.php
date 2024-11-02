@@ -212,7 +212,7 @@ class TransferApiController extends Controller
             $transfer->from_client_id = "149383";
             $transfer->to_client_id = $request->toClientId;
             $transfer->status = $status;
-            $transfer->to_client_name = $request->toClientName;
+            $transfer->to_client_name = $request->toClient;
             $transfer->from_client_name = Auth::user()->email;
             $transfer->amount = $request->amount;
             $transfer->reference = $reference; // Reference for the transaction
