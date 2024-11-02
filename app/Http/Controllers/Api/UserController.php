@@ -70,4 +70,5 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
     }
+    
 }

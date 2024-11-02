@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
+use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-email',[UserController::class,'updateEmail']);
     Route::post('/update-password',[UserController::class,'updatePassword']);
     Route::get('/unread-notifications',[UserController::class,'unreadNotifications']);
+
 });
+Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 //Tranfser Routes
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
