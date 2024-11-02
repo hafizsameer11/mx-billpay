@@ -217,13 +217,13 @@ class TransferApiController extends Controller
             $transfer->to_client_name = $request->toClientName;
             $transfer->from_client_name = Auth::user()->email;
             $transfer->amount = $request->amount;
-            if ($request->toBank == "999999") {
+            // if ($request->toBank == "999999") {
 
-                $transfer->transfer_type = "intra";
-            } else {
+            //     $transfer->transfer_type = "intra";
+            // } else {
 
-                $transfer->transfer_type = "inter";
-            }
+            // }
+                $transfer->transfer_type = $request->transferType;
             $transfer->response_message = $responseData['message'] ?? null;
             $transfer->save();
         }
