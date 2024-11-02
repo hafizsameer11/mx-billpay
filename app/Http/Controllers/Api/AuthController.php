@@ -324,15 +324,15 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'userId' => 'required|exists:users,id',
-            'new_password' => 'required|min:6',
-            'confirm_password' => 'required|same:new_password'
-        ], [
+            'newPassword' => 'required|min:6',
+            'confirmPassword' => 'required|same:new_password'
+        ], messages: [
             'userId.required' => 'User ID is required',
             'userId.exists' => 'User not found',
-            'new_password.required' => 'New password is required',
-            'new_password.min' => 'Password must be at least 6 characters long',
-            'confirm_password.required' => 'Please confirm your password',
-            'confirm_password.same' => 'Passwords do not match'
+            'newPassword.required' => 'New password is required',
+            'newPassword.min' => 'Password must be at least 6 characters long',
+            'confirmPassword.required' => 'Please confirm your password',
+            'confirmPassword.same' => 'Passwords do not match'
         ]);
 
         if ($validator->fails()) {
@@ -343,7 +343,7 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found', 'status' => 'error'], 404);
         }
-        $user->password = bcrypt($request->new_password);
+        $user->password = bcrypt($request->newPassword);
         $user->save();
         PasswordReset::where('user_id', $request->user_id)->delete();
         return response()->json(['message' => 'Password reset successfully', 'status' => 'success'], 200);
