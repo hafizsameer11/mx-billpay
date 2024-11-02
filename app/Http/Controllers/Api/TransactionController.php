@@ -37,6 +37,7 @@ class TransactionController extends Controller
                         'to_client_name' => $transaction->transfer->to_client_name,
                         'from_client_name' => $transaction->transfer->from_client_name,
                         'response_message' => $transaction->transfer->response_message,
+                        'type' => $transaction->transfer->transfer_type
 
                     ];
                 });
@@ -62,7 +63,9 @@ class TransactionController extends Controller
 
             $billpayments = Transaction::where('user_id', $user->id)
                 ->has('billpayment') // Only get transactions with non-null billpayments
-                ->with(['billpayment.billerItem']) // Eager load billpayment and their related billerItem
+                ->with([
+                    'billpayment.billerItem.billerCategory' // Eager load billpayment, billerItem, and billerCategory
+                ])
                 ->get()
                 ->map(function ($transaction) {
                     return [
@@ -84,6 +87,8 @@ class TransactionController extends Controller
                         'division' => $transaction->billpayment->billerItem->division,
                         'created_at' => $transaction->created_at,
                         'billerId' => $transaction->billpayment->billerItem->billerId,
+                        'category_icon' => $transaction->billpayment->billerItem->category->logo,
+                        'iconColor' => $transaction->billpayment->billerItem->category->backgroundColor
                         // 'billpayment' => [
                         //     'transaction_id' => $transaction->billpayment->id,
                         //     'user_id' => $transaction->billpayment->user_id,
