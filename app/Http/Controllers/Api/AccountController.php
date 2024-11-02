@@ -92,7 +92,7 @@ class AccountController extends Controller
         while ($attempt < $maxRetries) {
             try {
                 $response = Http::withHeaders(['AccessToken' => $accessToken])
-                    ->timeout(30)
+                    ->timeout(300)
                     ->post($apiEndpoint, $apiPayload);
 
                 // Break the loop if the request is successful

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -70,5 +71,17 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
     }
-    
+    public function checkUserStatus(){
+        $userId = Auth::user()->id;
+        $account=Account::where('user_id', $userId)->first();
+        if($account){
+            if($account->status=='PND'){
+                return response()->json(['status' => 'pending'], 200);
+            }else{
+                return response()->json(['status' => 'active'], 200);
+            }
+
+        }
+    }
+
 }
