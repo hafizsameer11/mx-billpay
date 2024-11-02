@@ -289,7 +289,7 @@ class AccountController extends Controller
             $account->save();
             $pusherRouteResponse = Http::get(route('test-pusher', ['userId' => $userId]));
 
-            Log::info('Pusher Response:', $pusherRouteResponse->json());
+            Log::info('Pusher Response:');
             Log::info('Account released successfully:', $response->json());
 
             return response()->json(['message' => 'Account released successfully', 'data' => $response->json()], 200);
