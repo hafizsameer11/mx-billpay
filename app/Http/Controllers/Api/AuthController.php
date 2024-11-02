@@ -325,7 +325,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'userId' => 'required|exists:users,id',
             'newPassword' => 'required|min:6',
-            'confirmPassword' => 'required|same:new_password'
+            'confirmPassword' => 'required|same:newPassword'
         ], messages: [
             'userId.required' => 'User ID is required',
             'userId.exists' => 'User not found',
