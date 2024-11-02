@@ -121,7 +121,7 @@ class AuthController extends Controller
         }
 
         if (!$account->accountBalance) {
-            $this->accountEnquiry(new Request(['accountNo' => $account->account_number])); // Pass necessary parameters
+            $this->accountEnquiry(new Request(['accountNo' => $account->account_number]), $user->id); // Pass necessary parameters
             $account->refresh(); // Refresh to get updated account data
         }
 
@@ -133,7 +133,7 @@ class AuthController extends Controller
                 'firstName' => $user->account->firstName,
                 'lastName' => $user->account->lastName,
                 'email' => $user->email,
-                'phone'=> $user->account->phone,
+                'phone' => $user->account->phone,
                 'accountNumber' => $account->account_number,
                 'accountBalance' => $account->accountBalance,
                 'created_at' => $account->created_at,
@@ -145,9 +145,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function accountEnquiry(Request $request)
+    public function accountEnquiry(Request $request, $id = null)
     {
-        $userId = Auth::user()->id;
+        if (is_null($id)) {
+            $userId = Auth::user()->id;
+        } else {
+            $userId = $id;
+        }
 
         $accountNumber = Account::where('user_id', $userId)->first();
         $accountNumber1 = $accountNumber->account_number;
