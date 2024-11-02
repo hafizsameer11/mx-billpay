@@ -45,7 +45,9 @@ class BillPaymentController extends Controller
         $categories = BillerCategory::where('id', $categoryId)->first();
         $categories = [
             'id' => $categories->id,
-            'category' => $categories->category
+            'category' => $categories->category,
+            'icon'=>$categories->logo,
+            'iconColor'=>$categories->backgroundColor
         ];
 
         $items = BillerItem::where('category_id', $id)->get();
