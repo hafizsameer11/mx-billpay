@@ -156,8 +156,9 @@ class TransferApiController extends Controller
             $notification = new Notification();
             $notification->user_id = Auth::user()->id;
             $notification->title = "Transfer Successful";
-            $notification->type = "login";
-            $notification->message = "User Logged In Successfully";
+            $notification->type = "transfer";
+
+            $notification->message = "Payment to " . $request->toClient . " Successful";
             $notification->icon = asset('notificationLogos/profile2.png');
             $notification->iconColor = config('notification_colors.colors.Account');
             $notification->save();
