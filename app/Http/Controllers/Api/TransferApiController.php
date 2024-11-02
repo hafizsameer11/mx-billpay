@@ -52,6 +52,7 @@ class TransferApiController extends Controller
         // Check if the API request was successful
         if ($response->successful()) {
             // Check if the account number exists in the database
+            Log::info('API Response: beneficiaryEnquiry', $response->json());
             $userAccount = Account::where('account_number', $accountNo)->with('user')->first();
 
             if ($userAccount) {
@@ -77,9 +78,10 @@ class TransferApiController extends Controller
                 ], 200);
             }
         } else {
+            Log::info('API Error Response: beneficiaryEnquiry', $response->json());
             return response()->json([
                 'status' => 'error',
-                'message' => $response->json('message'), // Error message from the API
+                'message' => $response->json(key: 'message'), // Error message from the API
                 'data' => $response->json('data'),
             ], $response->status());
         }
