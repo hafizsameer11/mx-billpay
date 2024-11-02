@@ -303,10 +303,10 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'otp' => 'required',
-            'user_id' => 'required'
+            'userId' => 'required'
         ], [
             'otp.required' => 'Otp is required',
-            'user_id.required' => 'User Id Required'
+            'userId.required' => 'User Id Required'
         ]);
         if ($validator->fails()) {
             $errorMessage = $validator->errors()->first();
@@ -323,12 +323,12 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
+            'userId' => 'required|exists:users,id',
             'new_password' => 'required|min:6',
             'confirm_password' => 'required|same:new_password'
         ], [
-            'user_id.required' => 'User ID is required',
-            'user_id.exists' => 'User not found',
+            'userId.required' => 'User ID is required',
+            'userId.exists' => 'User not found',
             'new_password.required' => 'New password is required',
             'new_password.min' => 'Password must be at least 6 characters long',
             'confirm_password.required' => 'Please confirm your password',
