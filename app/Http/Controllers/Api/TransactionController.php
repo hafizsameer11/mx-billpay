@@ -20,7 +20,9 @@ class TransactionController extends Controller
             $transactions = Transaction::where('user_id', $user->id)
                 ->has('transfer')
                 ->with('transfer')
+                ->orderBy('created_at', 'desc')
                 ->get()
+
                 ->map(function ($transaction) {
                     return [
                         'transaction_id' => $transaction->id,
@@ -65,7 +67,7 @@ class TransactionController extends Controller
                 ->has('billpayment') // Only get transactions with non-null billpayments
                 ->with([
                     'billpayment.billerItem.category' // Eager load billpayment, billerItem, and billerCategory
-                ])
+                ])->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($transaction) {
                     return [
