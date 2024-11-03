@@ -108,5 +108,11 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
         // return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
     }
+    public function markAllAsRead()
+    {
+        $userId = Auth::user()->id;
+        $notifications = Notification::where('user_id', $userId)->update(['read' => 1]);
+        return response()->json(['status' => 'success', 'message' => 'All notifications marked as read'], 200);
+    }
 
 }
