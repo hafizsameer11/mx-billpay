@@ -104,8 +104,8 @@ class UserController extends Controller
         $notification->read = 1;
 
         $notification->save();
-        $notification=Notification::where('user_id', Auth::user()->id)->where('read', 0)->orderBy('created_at', 'desc')->get();
-        return response()->json(['status' => 'success', 'message' => 'Notification marked as read', 'data' => $notification], 200);
+        // $notification=Notification::where('user_id', Auth::user()->id)->where('read', 0)->orderBy('created_at', 'desc')->get();
+        return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
         // return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
     }
 
