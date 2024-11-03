@@ -161,8 +161,8 @@ class AccountController extends Controller
             }
         } else {
             Log::error('API call failed', ['response' => $response->json()]);
-            $responseData=$response->json();
-            if($responseData['status']=='929'){
+            $responseData = $response->json();
+            if ($responseData['status'] == '929') {
                 //log wit some details
                 Log::info('API call failed with status 929', ['response' => $response->json()]);
                 //call api again with the AccountNumber From the response
@@ -170,14 +170,14 @@ class AccountController extends Controller
                     ->timeout(300)
                     ->post($apiEndpoint, [
                         'previousAccountNo' => $responseData['data']['accountNo']
-                        ]);
-                if($response->successful()){
+                    ]);
+                if ($response->successful()) {
                     Log::info('API pass and new account created with status 929', ['response' => $response->json()]);
                     $responseData = $response->json();
                     $account->account_number = $responseData['data']['accountNo'];
                     $account->save();
-                    return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
-                }else{
+                    return response()->json(['status' => 'success', 'message' => 'Account created successfully', 'data' => $account], 200);
+                } else {
                     Log::info('API call failed again', ['response' => $response->json()]);
                     $account->delete();
                     return response()->json([
@@ -324,6 +324,9 @@ class AccountController extends Controller
             return response()->json(['message' => 'Account released successfully', 'data' => $response->json()], 200);
         } else {
             $errorResponse = $response->json();
+            $account = Account::where('user_id', $userId)->first();
+            $account->status = 'RELEASED';
+            $account->save();
             Log::error('API Error Response:', $errorResponse);
             return response()->json(['error' => $errorResponse['message']], $response->status());
         }
@@ -364,7 +367,7 @@ class AccountController extends Controller
             Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
-            $account=Account::where('status', 'PENDING')->update(['status' => 'RELEASED']);
+            $account = Account::where('status', 'PENDING')->update(['status' => 'RELEASED']);
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
             return response()->json(['message' => 'Account not found'], 404);
         }
