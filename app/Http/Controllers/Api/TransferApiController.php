@@ -198,7 +198,7 @@ class TransferApiController extends Controller
 
         //
         $notification = new Notification();
-        $notification->title = "Payment Transfer Successfully";
+        $notification->title = "Payment Transfer";
         $notification->type = "transfer";
         $notification->message = "Payment of " . $request->amount . " has been successful";
         $notification->user_id = Auth::user()->id;
