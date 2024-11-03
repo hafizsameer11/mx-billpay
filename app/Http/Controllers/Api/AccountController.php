@@ -107,8 +107,8 @@ class AccountController extends Controller
             $logFile = storage_path('logs/account_creation.log');
             $accountCreationInfo = "Account created successfully for user $userId with BVN $request->bvn";
             file_put_contents($logFile, $accountCreationInfo . PHP_EOL, FILE_APPEND);
-            $bvnStatusRecord=new BvnStatucRecorder();
-            $bvnStatusRecord->userId=$userId;
+            $bvnStatusRecord = new BvnStatucRecorder();
+            $bvnStatusRecord->userId = $userId;
             $bvnStatusRecord->save();
             switch ($responseData['status']) {
                 case "00":
@@ -191,14 +191,13 @@ class AccountController extends Controller
                         'response' => $response->json() ?? 'No response from API'
                     ], 400);
                 }
-            }else{
+            } else {
                 $account->delete();
                 return response()->json([
                     'status' => 'error',
                     'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
                     'response' => $response->json() ?? 'No response from API'
                 ], 400);
-
             }
         }
     }
@@ -271,9 +270,19 @@ class AccountController extends Controller
 
         $userId = Auth::user()->id;
         $validator = Validator::make($request->all(), [
-            'bvn' => 'required|string',
-            'type' => 'required|string',
+            'bvn' => 'nullable|string',
+            'type' => 'nullable|string',
         ]);
+        //if bvn not present than get it from account table
+        if (!$request->has('bvn')) {
+            $account = Account::where('user_id', $userId)->first();
+            if (!$account) {
+                return response()->json(['status' => 'Account not found'], 404);
+            }
+            $request->merge(['bvn' => $account->bvn]);
+            //also mark type o2
+            $request->merge(['type' => '02']);
+        }
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()], 422);
         }
@@ -374,12 +383,12 @@ class AccountController extends Controller
             Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
-           $accounts= Account::where('status','PND')->get();
-           foreach($accounts as $account){
-               $account->status = 'RELEASED';
-               $account->save();
-           }
-        //    Log::info('Accounts Released', $accounts);
+            $accounts = Account::where('status', 'PND')->get();
+            foreach ($accounts as $account) {
+                $account->status = 'RELEASED';
+                $account->save();
+            }
+            //    Log::info('Accounts Released', $accounts);
 
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
             return response()->json(['message' => 'Account not found'], 404);
