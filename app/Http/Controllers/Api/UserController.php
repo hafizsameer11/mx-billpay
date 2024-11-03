@@ -96,9 +96,10 @@ class UserController extends Controller
     {
         // return response()->json($request->id, 200);
         $notification = Notification::where('id', $request->id)->first();
-        if (!$notification) {
-            return response()->json(['status' => 'error', 'message' => 'Notification not found'], status: 404);
-        }
+        // if (!$notification) {
+        //     return response()->json(['status' => 'error', 'message' => 'Notification not found'], status: 404);
+        // }
+        return response()->json($notification);
         $notification->read = 1;
 
         $notification->save();
