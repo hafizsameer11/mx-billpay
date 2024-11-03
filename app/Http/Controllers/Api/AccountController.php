@@ -373,7 +373,7 @@ class AccountController extends Controller
                $account->status = 'RELEASED';
                $account->save();
            }
-           Log::info('Accounts Released', $accounts);
+        //    Log::info('Accounts Released', $accounts);
 
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
             return response()->json(['message' => 'Account not found'], 404);
