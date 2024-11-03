@@ -161,6 +161,11 @@ class AccountController extends Controller
             }
         } else {
             Log::error('API call failed', ['response' => $response->json()]);
+            $responseData=$response->json();
+            if($responseData['status']=='929'){
+                //log wit some details
+                Log::info('API call failed with status 929', ['response' => $response->json()]);
+            }
             $account->delete();
             return response()->json([
                 'status' => 'error',
