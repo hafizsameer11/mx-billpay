@@ -67,7 +67,9 @@ class UserController extends Controller
     public function unreadNotifications()
     {
         $userId = Auth::user()->id;
-        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->get();
+        //order by new first
+        // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
+        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
     }
