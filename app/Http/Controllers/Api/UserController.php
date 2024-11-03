@@ -84,6 +84,10 @@ class UserController extends Controller
                 return response()->json(['status' => 'active'], 200);
             }
 
+        }else{
+            //account not found
+            return response()->json(['status' => 'inactive'], status: 404);
+
         }
     }
 

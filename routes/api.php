@@ -63,9 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/get-billpayments', [TransactionController::class, 'getBillPayment']);
     Route::post('/update-email',[UserController::class,'updateEmail']);
     Route::post('/update-password',[UserController::class,'updatePassword']);
-    Route::geT('/check-user-status',[UserController::class,'checkUserStatus']);
+    Route::get('/check-user-status',[UserController::class,'checkUserStatus']);
     Route::get('/unread-notifications',[UserController::class,'unreadNotifjications']);
     Route::post('/mark-as-read',[UserController::class,'markAsRead']);
+    Route::get('edit-profile-details', [UserDetailController::class, 'editprofileDetail']);
 
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);

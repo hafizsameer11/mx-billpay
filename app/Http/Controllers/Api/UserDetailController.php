@@ -100,4 +100,39 @@ class UserDetailController extends Controller
             }
         return response()->json(['status'=> 'success','data' => $account,], 200);
     }
+    public function editprofileDetail()
+{
+    $userId = Auth::user()->id;
+    $account = Account::where('user_id', $userId)->with('user')->first();
+
+    if (!$account) {
+        $user = User::where('id', $userId)->first();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Account not found.',
+            'user' => [
+                'firstName' => $user->firstName ?? null,
+                'lastName' => $user->lastName ?? null,
+                'dob' => $user->dob ?? null,
+                'occupation' => $user->occupation ?? null,
+                'gender' => $user->gender ?? null,
+            ]
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'firstName' => $account->firstName,
+            'lastName' => $account->lastName,
+            'dob' => $account->dob,
+            'occupation' => $account->occupation,
+            'gender' => $account->gender,
+            'email' => $account->user->email ?? null, // from related User model
+            'phone'=> $account->phone ?? null,
+            // Add any other fields you want to include
+        ]
+    ], 200);
+}
+
 }
