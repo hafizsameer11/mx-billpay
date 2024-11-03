@@ -48,9 +48,9 @@ class UserDetailController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
+            'firstName' => 'nullable|string|max:255',
+            'lastName' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
             'nickName' => 'nullable|string|max:255',
             'gender' => 'nullable|string|in:male,female,other',
             'occupation' => 'nullable|string|max:255',
@@ -65,10 +65,19 @@ class UserDetailController extends Controller
         if (!$account) {
             return response()->json(['message' => 'Account not found.'], 404);
         }
+        if($request->filled('firstName')){
+            $account->firstName = $request->firstName;
+        }
+        if($request->filled('lastName')){
+            $account->lastName = $request->lastName;
+        }
+        if($request->filled('phone')){
+            $account->phone = $request->phone;
+            }
 
-        $account->firstName = $request->firstName;
-        $account->lastName = $request->lastName;
-        $account->phone = $request->phone;
+        // $account->firstName = $request->firstName;
+        // $account->lastName = $request->lastName;
+        // $account->phone = $request->phone;
 
         if ($request->filled('nickName')) {
             $account->nickName = $request->nickName;
