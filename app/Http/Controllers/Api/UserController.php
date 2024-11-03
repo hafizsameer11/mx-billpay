@@ -85,6 +85,7 @@ class UserController extends Controller
                 return response()->json(['status' => 'pending'], 200);
             }else{
                 $bvnStatus=BvnStatucRecorder::where('userId', $userId)->first();
+                log::info($bvnStatus);
                 if($bvnStatus){
                     $bvnStatus->status="checked";
                 }
