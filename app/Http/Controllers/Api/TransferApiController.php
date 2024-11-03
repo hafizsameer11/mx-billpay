@@ -195,6 +195,16 @@ class TransferApiController extends Controller
 
     private function recordTransaction(Request $request, $status, $reference, $responseData = null)
     {
+
+        //
+        $notification = new Notification();
+        $notification->title = "Payment Transfer Successfully";
+        $notification->type = "transfer";
+        $notification->message = "Payment of " . $request->amount . " has been successful";
+        $notification->user_id = Auth::user()->id;
+        $notification->icon = asset('notificationLogos/wallet.png');
+        $notification->iconColor = config('notification_colors.colors.Wallet');
+        $notification->save();
         $transaction = new Transaction();
         $transaction->user_id = Auth::user()->id;
         $transaction->transaction_type = "Funds Transfer";
@@ -231,6 +241,14 @@ class TransferApiController extends Controller
     private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount,Request $request)
     {
         // Create a new transaction for incoming funds
+        $notification = new Notification();
+        $notification->title = "Icoming Payments";
+        $notification->type = "transfer";
+        $notification->message = "Payment of " . $amount . " has been successful";
+        $notification->user_id = $userId;
+        $notification->icon = asset('notificationLogos/wallet.png');
+        $notification->iconColor = config('notification_colors.colors.Wallet');
+        $notification->save();
         $transaction = new Transaction();
         $transaction->user_id = $userId;
         $transaction->transaction_type = 'Inward Credit';
