@@ -101,7 +101,10 @@ class AccountController extends Controller
         // Handle the API response
         if ($response->successful()) {
             $responseData = $response->json();
-
+            //log the account creation info in a seperate log file
+            $logFile = storage_path('logs/account_creation.log');
+            $accountCreationInfo = "Account created successfully for user $userId with BVN $request->bvn";
+            file_put_contents($logFile, $accountCreationInfo . PHP_EOL, FILE_APPEND);
             switch ($responseData['status']) {
                 case "00":
                     // Successful creation
