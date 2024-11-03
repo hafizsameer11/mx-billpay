@@ -86,7 +86,7 @@ class UserController extends Controller
             }else{
                 $bvnStatus=BvnStatucRecorder::where('userId', $userId)->first();
                 if($bvnStatus){
-                    $bvnStatus="checked";
+                    $bvnStatus->status="checked";
                 }
                 return response()->json(['status' => 'active'], 200);
             }
