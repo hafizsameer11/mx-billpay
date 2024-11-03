@@ -6,6 +6,7 @@ use App\Events\AccountReleased;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\BvnConsent;
+use App\Models\BvnStatucRecorder;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +107,9 @@ class AccountController extends Controller
             $logFile = storage_path('logs/account_creation.log');
             $accountCreationInfo = "Account created successfully for user $userId with BVN $request->bvn";
             file_put_contents($logFile, $accountCreationInfo . PHP_EOL, FILE_APPEND);
+            $bvnStatusRecord=new BvnStatucRecorder();
+            $bvnStatusRecord->userId=$userId;
+            $bvnStatusRecord->save();
             switch ($responseData['status']) {
                 case "00":
                     // Successful creation

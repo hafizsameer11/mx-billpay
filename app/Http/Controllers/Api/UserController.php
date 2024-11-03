@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\BvnStatucRecorder;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,8 +81,13 @@ class UserController extends Controller
         $account=Account::where('user_id', $userId)->first();
         if($account){
             if($account->status=='PND'){
+
                 return response()->json(['status' => 'pending'], 200);
             }else{
+                $bvnStatus=BvnStatucRecorder::where('user_id', $userId)->first();
+                if($bvnStatus){
+                    $bvnStatus="checked";
+                }
                 return response()->json(['status' => 'active'], 200);
             }
 
@@ -90,6 +96,13 @@ class UserController extends Controller
             return response()->json(['status' => 'inactive'], status: 404);
 
         }
+    }
+    public function bvnStatusChecker(){
+
+        $userId = Auth::user()->id;
+        $bvnStatus=BvnStatucRecorder::where('user_id', $userId)->first();
+
+        return response()->json(['status' => $bvnStatus->status], 200);
     }
 
     //marking notification as read
