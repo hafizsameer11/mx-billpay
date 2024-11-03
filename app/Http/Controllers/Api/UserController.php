@@ -100,7 +100,7 @@ class UserController extends Controller
     public function bvnStatusChecker(){
 
         $userId = Auth::user()->id;
-        $bvnStatus=BvnStatucRecorder::where('user_id', $userId)->first();
+        $bvnStatus=BvnStatucRecorder::where('userId', $userId)->first();
 
         return response()->json(['status' => $bvnStatus->status], 200);
     }
