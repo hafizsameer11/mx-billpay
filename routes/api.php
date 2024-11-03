@@ -65,11 +65,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-password',[UserController::class,'updatePassword']);
     Route::get('/check-user-status',[UserController::class,'checkUserStatus']);
     Route::get('/unread-notifications',[UserController::class,'unreadNotifjications']);
-    Route::post('/mark-as-read',[UserController::class,'markAsRead']);
     Route::get('edit-profile-details', [UserDetailController::class, 'editprofileDetail']);
 
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 //Tranfser Routes
+Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
 Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
