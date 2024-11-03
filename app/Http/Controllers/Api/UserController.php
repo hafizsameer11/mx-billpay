@@ -86,4 +86,16 @@ class UserController extends Controller
         }
     }
 
+    //marking notification as read
+    public function markAsRead(Request $request)
+    {
+        $notification = Notification::find($request->id);
+        if (!$notification) {
+            return response()->json(['status' => 'error', 'message' => 'Notification not found'], status: 404);
+        }
+        $notification->read = 1;
+        $notification->save();
+        return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
+    }
+
 }

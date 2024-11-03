@@ -64,7 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-email',[UserController::class,'updateEmail']);
     Route::post('/update-password',[UserController::class,'updatePassword']);
     Route::geT('/check-user-status',[UserController::class,'checkUserStatus']);
-    Route::get('/unread-notifications',[UserController::class,'unreadNotifications']);
+    Route::get('/unread-notifications',[UserController::class,'unreadNotifjications']);
+    Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
