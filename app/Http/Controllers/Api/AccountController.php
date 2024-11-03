@@ -165,6 +165,26 @@ class AccountController extends Controller
             if($responseData['status']=='929'){
                 //log wit some details
                 Log::info('API call failed with status 929', ['response' => $response->json()]);
+                //call api again with the AccountNumber From the response
+                $response = Http::withHeaders(['AccessToken' => $accessToken])
+                    ->timeout(300)
+                    ->post($apiEndpoint, [
+                        'previousAccountNo' => $responseData['data']['accountNo']
+                        ]);
+                if($response->successful()){
+                    Log::info('API pass and new account created with status 929', ['response' => $response->json()]);
+                    $responseData = $response->json();
+                    $account->account_number = $responseData['data']['accountNo'];
+                    $account->save();
+                }else{
+                    Log::info('API call failed again', ['response' => $response->json()]);
+                    $account->delete();
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
+                        'response' => $response->json() ?? 'No response from API'
+                    ], 400);
+                }
             }
             $account->delete();
             return response()->json([
