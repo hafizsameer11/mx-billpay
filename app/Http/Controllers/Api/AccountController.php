@@ -176,6 +176,7 @@ class AccountController extends Controller
                     $responseData = $response->json();
                     $account->account_number = $responseData['data']['accountNo'];
                     $account->save();
+                    return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
                 }else{
                     Log::info('API call failed again', ['response' => $response->json()]);
                     $account->delete();
