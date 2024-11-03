@@ -88,6 +88,7 @@ class UserController extends Controller
                 log::info($bvnStatus);
                 if($bvnStatus){
                     $bvnStatus->status="checked";
+                    $bvnStatus->save();
                 }
                 return response()->json(['status' => 'active'], 200);
             }
