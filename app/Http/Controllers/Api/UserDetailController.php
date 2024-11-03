@@ -116,6 +116,7 @@ class UserDetailController extends Controller
                 'dob' => $user->dob ?? null,
                 'occupation' => $user->occupation ?? null,
                 'gender' => $user->gender ?? null,
+
             ]
         ], 404);
     }
@@ -130,6 +131,7 @@ class UserDetailController extends Controller
             'gender' => $account->gender,
             'email' => $account->user->email ?? null, // from related User model
             'phone'=> $account->phone ?? null,
+            'profilPicture'=>asset( $account->profile_picture) ?? null,
             // Add any other fields you want to include
         ]
     ], 200);
