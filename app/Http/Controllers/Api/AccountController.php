@@ -20,8 +20,7 @@ class AccountController extends Controller
     protected $accessToken;
     public function __construct()
     {
-        // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MzUiLCJ0b2tlbklkIjoiMmRjZWMyMDEtZWFiNy00YThlLWJjZGQtNmEyZTdjYmYwMzY2IiwiaWF0IjoxNzMwNjIzMzQ3LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.w-NNM-RxAMQn16L3izB4dgBS1otQCWyoEjNOFzceGmAfyygfNsGQzFRgRmloUxZDLm1RjUoquAI43ZuaLzZy3Q';
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
     }
     public function createIndividualAccount(Request $request)
     {
