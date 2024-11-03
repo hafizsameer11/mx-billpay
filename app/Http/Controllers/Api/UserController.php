@@ -64,12 +64,14 @@ class UserController extends Controller
                             password', 'error' => $e->getMessage()],  500);
         }
     }
-    public function unreadNotifications()
+    public function unreadNotifjications()
     {
         $userId = Auth::user()->id;
         //order by new first
-        // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
-        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->orderBy('created_at', 'desc')->get();
+        // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get(); fetch only 10
+        // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->paginate(10);
+        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->orderBy('created_at', 'desc')->paginate(10);
+
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
     }
