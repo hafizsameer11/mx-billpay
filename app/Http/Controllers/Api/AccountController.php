@@ -9,6 +9,7 @@ use App\Models\BvnConsent;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -367,7 +368,8 @@ class AccountController extends Controller
             Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
-            $account = Account::where('status', 'PND')->update(['status' => 'RELEASED']);
+            DB::table('accounts')->where('status', 'PENDING')->update(['status' => 'RELEASED']);
+
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
             return response()->json(['message' => 'Account not found'], 404);
         }
