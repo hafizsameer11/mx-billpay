@@ -94,8 +94,8 @@ class UserController extends Controller
     //marking notification as read
     public function markAsRead(Request $request)
     {
-        return response()->json($request->id, 200);
-        $notification = Notification::where('id', $request->id)->first();
+        // return response()->json($request->notificationId, 200);
+        $notification = Notification::where('id', $request->notificationId)->first();
         // if (!$notification) {
         //     return response()->json(['status' => 'error', 'message' => 'Notification not found'], status: 404);
         // }
