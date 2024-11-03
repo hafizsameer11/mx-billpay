@@ -55,7 +55,7 @@ class UserDetailController extends Controller
             'gender' => 'nullable|string|in:male,female,other',
             'occupation' => 'nullable|string|max:255',
             'dob' => 'nullable|date',
-            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $userId = Auth::user()->id;
@@ -74,11 +74,6 @@ class UserDetailController extends Controller
         if($request->filled('phone')){
             $account->phone = $request->phone;
             }
-
-        // $account->firstName = $request->firstName;
-        // $account->lastName = $request->lastName;
-        // $account->phone = $request->phone;
-
         if ($request->filled('nickName')) {
             $account->nickName = $request->nickName;
         }

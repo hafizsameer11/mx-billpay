@@ -160,7 +160,7 @@ class AccountController extends Controller
                     ], 500);
             }
         } else {
-            Log::error('API call failed', ['response' => $response->body()]);
+            Log::error('API call failed', ['response' => $response->json()]);
             $account->delete();
             return response()->json([
                 'status' => 'error',
