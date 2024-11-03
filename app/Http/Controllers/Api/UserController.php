@@ -99,7 +99,6 @@ class UserController extends Controller
         // if (!$notification) {
         //     return response()->json(['status' => 'error', 'message' => 'Notification not found'], status: 404);
         // }
-        return response()->json($notification);
         $notification->read = 1;
 
         $notification->save();
