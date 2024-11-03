@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('bvn_statuc_recorders', function (Blueprint $table) {
             $table->id();
             // $table->string('bvn');
+            $table->bigInteger('userId')->nullable();
             //userId
-            $table->foreignId('userId')->constrained()->onDelete('cascade');
+            // $table->foreignId('userId')->constrained()->onDelete('cascade');
             //status enum checked unchecked
             $table->enum('status', ['checked', 'unchecked'])->default('unchecked');
             // $table->string('status');
