@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BillPayment;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,32 +92,6 @@ class TransactionController extends Controller
                         'billerId' => $transaction->billpayment->billerItem->billerId,
                         'category_icon' => asset($transaction->billpayment->billerItem->category->logo),
                         'iconColor' => $transaction->billpayment->billerItem->category->backgroundColor
-                        // 'billpayment' => [
-                        //     'transaction_id' => $transaction->billpayment->id,
-                        //     'user_id' => $transaction->billpayment->user_id,
-                        //     'status' => $transaction->billpayment->status,
-
-
-                        //     'billPaymenDate' => $transaction->billpayment->created_at,
-                        //     'biller_item' => [
-                        //         'id' => $transaction->billpayment->billerItem->id,
-
-                        //         'paymentCode' => $transaction->billpayment->billerItem->paymentCode,
-                        //         'productId' => $transaction->billpayment->billerItem->productId,
-                        //         'paymentitemid' => $transaction->billpayment->billerItem->paymentitemid,
-                        //         'currencySymbol' => $transaction->billpayment->billerItem->currencySymbol,
-                        //         'isAmountFixed' => $transaction->billpayment->billerItem->isAmountFixed,
-                        //         'itemFee' => $transaction->billpayment->billerItem->itemFee,
-                        //         'itemCurrencySymbol' => $transaction->billpayment->billerItem->itemCurrencySymbol,
-                        //         'pictureId' => $transaction->billpayment->billerItem->pictureId,
-
-                        //         'fixed_commission' => $transaction->billpayment->billerItem->fixed_commission,
-                        //         'percentage_commission' => $transaction->billpayment->billerItem->percentage_commission,
-                        //         'created_at' => $transaction->billpayment->billerItem->created_at,
-                        //         'updated_at' => $transaction->billpayment->billerItem->updated_at,
-
-                        //     ],
-                        // ],
                     ];
                 });
 
@@ -127,6 +102,57 @@ class TransactionController extends Controller
             return response()->json(['status' => 'success', 'data' => $billpayments], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Failed to retrieve bill payments', 'error' => $e->getMessage()], 500);
+        }
+    }
+    public function transactionDetails($id)
+    {
+
+        $transaction = Transaction::where('id', $id)->has('transfer')->with('transfer')->first();
+
+        if (!$transaction) {
+            return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+        } else {
+            $response = [
+                'transaction_id' => $transaction->id,
+                'amount' => $transaction->amount,
+                'transaction_date' => $transaction->created_at,
+                'status' => $transaction->status,
+                'accountNumber' => $transaction->transfer->from_account_number,
+                'toAccountNumber' => $transaction->transfer->to_account_number,
+                'response_message' => $transaction->transfer->response_message,
+                'type' => $transaction->transfer->transfer_type,
+                'refference' => $transaction->transfer->reference
+
+            ];
+
+            return response()->json(['status' => 'success', 'data' => $response], 200);
+        }
+    }
+    public function billPaymentDetails($id)
+    {
+        $transaction = Transaction::where('id', $id)->has('billpayment') // Only get transactions with non-null billpayments
+            ->with([
+                'billpayment.billerItem.category'
+            ])->first();
+        if (!$transaction) {
+            return response()->json(['status' => 'error', 'message' => 'Bill payment not
+                found'], 404);
+        } else {
+            $response = [
+                'id' => $transaction->id,
+                'amount' => $transaction->amount,
+                'transaction_date' => $transaction->transaction_date,
+                'refference' => $transaction->billpayment->refference,
+                'customerId' => $transaction->billpayment->customerId,
+                'status' => $transaction->status,
+                'category' => $transaction->billpayment->billerItem->category->category,
+                'paymentitemname' => $transaction->billpayment->billerItem->paymentitemname,
+                'billerType' => $transaction->billpayment->billerItem->billerType,
+            ];
+            return response()->json(
+                ['status' => 'success', 'data' => $response],
+                200
+            );
         }
     }
 }

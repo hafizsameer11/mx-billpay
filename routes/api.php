@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/unread-notifications',[UserController::class,'unreadNotifjications']);
     Route::get('edit-profile-details', [UserDetailController::class, 'editprofileDetail']);
     Route::get('/mark-all-read', [UserController::class, 'markAllAsRead']);
+    //transactiondetails
+    Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 //Tranfser Routes

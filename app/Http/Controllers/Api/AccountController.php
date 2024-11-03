@@ -187,13 +187,15 @@ class AccountController extends Controller
                         'response' => $response->json() ?? 'No response from API'
                     ], 400);
                 }
+            }else{
+                $account->delete();
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
+                    'response' => $response->json() ?? 'No response from API'
+                ], 400);
+
             }
-            $account->delete();
-            return response()->json([
-                'status' => 'error',
-                'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
-                'response' => $response->json() ?? 'No response from API'
-            ], 400);
         }
     }
 
