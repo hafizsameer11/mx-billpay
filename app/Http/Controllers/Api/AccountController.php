@@ -367,7 +367,8 @@ class AccountController extends Controller
             Log::info('Account Released Response:', $releaseResponse->getData(true));
             return response()->json(['message' => 'Webhook received and processed successfully'], 200);
         } else {
-            $account = Account::where('status', 'PENDING')->update(['status' => 'RELEASED']);
+           DB::table('accounts')->where('status', 'PND')->update(['status' => 'RELEASED']);
+
             Log::error('No account found for BVN: ' . ($validatedData['data']['bvn'] ?? 'N/A'));
             return response()->json(['message' => 'Account not found'], 404);
         }
