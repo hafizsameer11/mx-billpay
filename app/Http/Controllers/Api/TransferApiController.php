@@ -301,61 +301,58 @@ class TransferApiController extends Controller
      */
     public function inwardCreditNotification(Request $request)
     {
-
+        try {
             Log::info('Inward Credit Notification Received: ', $request->all());
             // Capture incoming webhook data directly without validation
-        //     $reference = $request->input('reference');
-        //     $amount = $request->input('amount');
-        //     $accountNumber = $request->input('account_number');
-        //     $originatorAccountNumber = $request->input('originator_account_number');
-        //     $originatorAccountName = $request->input('originator_account_name');
-        //     $originatorBank = $request->input('originator_bank');
-        //     $originatorNarration = $request->input('originator_narration') ?? 'Inward Transfer';
-        //     $transactionChannel = $request->input('transaction_channel');
-        //     $sessionId = $request->input('session_id');
-        //     $timestamp = $request->input('timestamp');
+            $reference = $request->input('reference');
+            $amount = $request->input('amount');
+            $accountNumber = $request->input('account_number');
+            $originatorAccountNumber = $request->input('originator_account_number');
+            $originatorAccountName = $request->input('originator_account_name');
+            $originatorBank = $request->input('originator_bank');
+            $originatorNarration = $request->input('originator_narration') ?? 'Inward Transfer';
+            $transactionChannel = $request->input('transaction_channel');
+            $sessionId = $request->input('session_id');
+            $timestamp = $request->input('timestamp');
 
-        //     // Log incoming webhook data
+            // Log incoming webhook data
 
-        //     // Use a default user_id for unregistered accounts if necessary
-        //     $userId = optional(Account::where('account_number', $accountNumber)->first())->user_id;
+            // Use a default user_id for unregistered accounts if necessary
+            $userId = optional(Account::where('account_number', $accountNumber)->first())->user_id;
 
-        //     // Record the transaction if user_id is found
-        //     if ($userId !== null) {
-        //         $transaction = new Transaction();
-        //         $transaction->user_id = $userId;
-        //         $transaction->transaction_type = 'Inward Credit';
-        //         $transaction->amount = $amount;
-        //         $transaction->transaction_date = $timestamp;
-        //         $transaction->sign = 'positive';
-        //         $transaction->status = 'Completed';
-        //         $transaction->reference = $reference;
-        //         $transaction->save();
+            // Record the transaction if user_id is found
+            if ($userId !== null) {
+                $transaction = new Transaction();
+                $transaction->user_id = $userId;
+                $transaction->transaction_type = 'Inward Credit';
+                $transaction->amount = $amount;
+                $transaction->transaction_date = $timestamp;
+                $transaction->sign = 'positive';
+                $transaction->status = 'Completed';
+                $transaction->reference = $reference;
+                $transaction->save();
 
-        //         $transfer = new Transfer();
-        //         $transfer->transaction_id = $transaction->id;
-        //         $transfer->from_account_number = $originatorAccountNumber;
-        //         $transfer->to_account_number = $accountNumber;
-        //         $transfer->from_client_name = $originatorAccountName;
-        //         $transfer->to_client_name = optional($transaction->user)->email ?? 'Unregistered';
-        //         $transfer->amount = $amount;
-        //         $transfer->status = 'Completed';
-        //         $transfer->response_message = "Successful inward credit";
-        //         $transfer->originator_narration = $originatorNarration;
-        //         $transfer->transaction_channel = $transactionChannel;
-        //         $transfer->session_id = $sessionId;
-        //         $transfer->save();
+                $transfer = new Transfer();
+                $transfer->transaction_id = $transaction->id;
+                $transfer->from_account_number = $originatorAccountNumber;
+                $transfer->to_account_number = $accountNumber;
+                $transfer->from_client_name = $originatorAccountName;
+                $transfer->to_client_name = optional($transaction->user)->email ?? 'Unregistered';
+                $transfer->amount = $amount;
+                $transfer->status = 'Completed';
+                $transfer->response_message = "Successful inward credit";
+                $transfer->originator_narration = $originatorNarration;
+                $transfer->transaction_channel = $transactionChannel;
+                $transfer->session_id = $sessionId;
+                $transfer->save();
 
-        //         return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
-        //     } else {
-        //         return response()->json(['status' => 'error', 'message' => 'Account not found for the provided account number.'], 404);
-        //     }
-        // } catch (\Exception $e) {
-        //     Log::error('Error processing inward credit notification: ' . $e->getMessage());
-        //     return response()->json(['status' => 'error', 'message' => 'Failed to process inward credit notification.'], 500);
-        // }
-        return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
-
+                return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Account not found for the provided account number.'], 404);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error processing inward credit notification: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Failed to process inward credit notification.'], 500);
+        }
+    }
 }
-}
-
