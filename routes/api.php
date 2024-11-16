@@ -4,6 +4,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillPaymentController;
+use App\Http\Controllers\Api\CooperateAccountRequestController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
@@ -70,6 +71,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/mark-all-read', [UserController::class, 'markAllAsRead']);
     //transactiondetails
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
+    //creating cooperate account
+    Route::post('/company-details', [CooperateAccountRequestController::class, 'index']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 //Tranfser Routes
