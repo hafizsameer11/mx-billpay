@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
+use App\Http\Controllers\PinController;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -73,8 +74,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
     //creating cooperate account
     Route::post('/company-details', [CooperateAccountRequestController::class, 'index']);
+
+
+    //security settings
+    Route::post('/set-pin',[PinController::class,'setPin']);
+    Route::get('/verify-pin',[PinController::class,'setPin']);
+    Route::post('/change-pin',[PinController::class,'changePin']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
+
+
 //Tranfser Routes
 Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
