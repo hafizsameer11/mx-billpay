@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
     Route::post('accounts/bvn-consent', [AccountController::class, 'requestBvnConsent']);
     Route::post('accountEnquiry', [AccountController::class, 'accountEnquiry']);
-    Route::post('client/corporate', [AccountController::class, 'createCor` porateAccount']);
+    Route::post('accounts/corporate', [AccountController::class, 'createCorporateAccount']);
     Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
     //bill payment apis
 
