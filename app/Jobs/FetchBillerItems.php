@@ -35,7 +35,7 @@ class FetchBillerItems implements ShouldQueue
     {
         // Fetch billers for the category
         $response = Http::withHeaders(['AccessToken' =>$this->accessToken])
-            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore', [
+            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerlist', [
                 'categoryName' => $this->categoryName
             ]);
 
@@ -56,7 +56,7 @@ class FetchBillerItems implements ShouldQueue
     private function getBillerItems($billerId, $divisionId, $productId)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems/billerItems', [
                 'billerId' => $billerId,
                 'divisionId' => $divisionId,
                 'productId' => $productId,
