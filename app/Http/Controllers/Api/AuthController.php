@@ -122,10 +122,10 @@ class AuthController extends Controller
             ]);
         }
 
-        if (!$account->accountBalance) {
+
             $this->accountEnquiry(new Request(['accountNo' => $account->account_number]), $user->id); // Pass necessary parameters
-            $account->refresh(); // Refresh to get updated account data
-        }
+            $account->refresh();
+
 
         $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
         $notification = new ModelsNotification();
