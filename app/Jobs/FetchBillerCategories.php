@@ -32,7 +32,7 @@ class FetchBillerCategories implements ShouldQueue
         $accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiNTE0ZGQyMDUtNzQ4Ni00NzM0LWI1M2EtZTI5YjBlNDE1M2RkIiwiaWF0IjoxNzMxODc2NDk5LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9._gxpLMI4XbP6SyyN3GZKcmJ1HucPCWAYmWlC-B4xX1hqVKvZPTLwgzT1B_yPF_36M59YJ_5tfIT81yXAx31nrA';
 
         $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billercategory');
+            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore');
         if ($response->successful()) {
             $categories = $response->json()['data'];
             foreach ($categories as $category) {
