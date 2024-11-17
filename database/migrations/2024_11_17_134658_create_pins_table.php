@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pins', function (Blueprint $table) {
             $table->id();
             //forign key with users table
-            $table->foreignId('userId')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('pin')->nullable();
             $table->timestamps();
         });
