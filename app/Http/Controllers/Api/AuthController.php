@@ -122,11 +122,23 @@ class AuthController extends Controller
             ]);
         }
 
+        // if (!$account->accountBalance) {
+        //     $this->accountEnquiry(new Request(['accountNo' => $account->account_number]), $user->id); // Pass necessary parameters
+        //     $account->refresh(); // Refresh to get updated account data
+        // }
 
-            $this->accountEnquiry(new Request(['accountNo' => $account->account_number]), $user->id); // Pass necessary parameters
-            $account->refresh();
+        $accountNumber1 = $account->account_number;
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
+                'accountNumber' => $accountNumber1
+            ]);
+            $accountBalance=$account->accountBalance;
+        if ($response->successful()) {
+            $account->accountBalance=$response->json()['data']['accountBalance'];
+            $account->save();
+         $accountBalance=$response->json()['data']['accountBalance'];
 
-
+        }
         $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
         $notification = new ModelsNotification();
         $notification->user_id = $user->id;
