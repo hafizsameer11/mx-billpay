@@ -50,7 +50,7 @@ class CooperateAccountRequestController extends Controller
             'directorBvnNumber' => $request->input('directorBvnNumber'),
             'directorDob' => $request->input('directorDob'),
         ]);
-        //check if data is added in database and return response
+
         if ($companyDetail) {
             return response()->json([
                 'status' => 'success',

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\BvnConsent;
 use App\Models\BvnStatucRecorder;
+use App\Models\CooperateAccountRequest;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -210,59 +211,108 @@ class AccountController extends Controller
         // Validate the incoming request data
         $userId = Auth::user()->id;
         $validation = Validator::make($request->all(), [
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
             'phone' => 'required|string',
-            'rcNumber' => 'required|string',
-            'companyName' => 'required|string',
             'incorporationDate' => 'required|string', // Ensure proper date format
             'bvn' => 'required|string',
             'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional profile picture
+            'companyName' => 'required|string|max:255',
+            'companyAddress' => 'required|string|max:255',
+            'rcNumber' => 'required|string|max:100',
+            'cacCertificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'businessAddressVerification' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'directorIdVerification' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'directorNiNnumber' => 'nullable|string|max:20',
+            'directorBvnNumber' => 'nullable|string|max:20',
+            'directorDob' => 'nullable|date',
         ]);
 
         if ($validation->fails()) {
             $errorMessage = $validation->errors()->first();
             return response()->json(['message' => $errorMessage, 'errors' => $validation->errors(), 'status' => 'error'], 422);
         }
-
-        // Handle profile picture upload if present
         $profilePicturePath = null;
         if ($request->hasFile('profilePicture')) {
             $profilePicture = $request->file('profilePicture');
             $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
             $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
         }
+        $cacCertificatePath = $request->hasFile('cacCertificate')
+        ? $request->file('cacCertificate')->store('uploads/cac_certificates', 'public')
+        : null;
 
-        // Prepare the request for the external API
-        $accessToken = $this->accessToken;
-        $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->timeout(300)
-            ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
-                'rcNumber' => $request->rcNumber,
-                'companyName' => $request->companyName,
-                'incorporationDate' => $request->incorporationDate,
-                'bvn' => $request->bvn,
-            ]);
+    $businessAddressPath = $request->hasFile('businessAddressVerification')
+        ? $request->file('businessAddressVerification')->store('uploads/business_verifications', 'public')
+        : null;
 
-        $responseData = $response->json();
-        if ($response->successful() && $responseData['status'] == "00") {
-
+    $directorIdPath = $request->hasFile('directorIdVerification')
+        ? $request->file('directorIdVerification')->store('uploads/director_ids', 'public')
+        : null;
+        $companyDetail = CooperateAccountRequest::create([
+            'companyName' => $request->input('companyName'),
+            'companyAddress' => $request->input('companyAddress'),
+            'rcNumber' => $request->input('rcNumber'),
+            'cacCertificate' => $cacCertificatePath,
+            'businessAddressVerification' => $businessAddressPath,
+            'directorIdVerification' => $directorIdPath,
+            'directorNiNnumber' => $request->input('directorNiNnumber'),
+            'directorBvnNumber' => $request->input('directorBvnNumber'),
+            'directorDob' => $request->input('directorDob'),
+            'userId'=>$userId
+        ]);
+        if($companyDetail){
             $account = new Account();
             $account->user_id = $userId;
-            $account->account_number = $responseData['data']['accountNo'];
-            $account->account_type = 'corporate';
-            $account->status = 'PND';
-            $account->lastName = $request->lastName;
-            $account->firstName = $request->firstName;
+            $account->account_type = 'cooperate';
+            $account->status = 'pending';
+            $account->firstName = $request->companyName;
+            $account->lastName = "";
             $account->phone = $request->phone;
+            $account->account_number = "000"; // Placeholder until successful creation
             $account->bvn = $request->bvn;
-            $account->profile_picture = $profilePicturePath; // Save the image path
+            $account->profile_picture = $profilePicturePath;
             $account->save();
+            //check if account is created
+            if($account){
+                return response()->json(['message' => 'Request Submitted successfully . We will send you an email ', 'data' => $account, 'status' => 'success'], 200);
+            }else{
+                return response()->json(['message' => 'Failed to create account', 'status' => 'error'], 422);
+            }
 
-            return response()->json(['message' => 'Corporate account created successfully', 'data' => $account], 201);
-        } else {
-            return response()->json(['status' => 'error', 'message' => $responseData['message'] ?? 'Failed to create corporate account'], 400);
         }
+        else{
+            return response()->json(['message' => 'Failed to create company detail', 'errors' => $validation->errors(), 'status' => 'error'], 422);
+        }
+
+        // Prepare the request for the external API
+        // $accessToken = $this->accessToken;
+        // $response = Http::withHeaders(['AccessToken' => $accessToken])
+        //     ->timeout(300)
+        //     ->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/corporate', [
+        //         'rcNumber' => $request->rcNumber,
+        //         'companyName' => $request->companyName,
+        //         'incorporationDate' => $request->incorporationDate,
+        //         'bvn' => $request->bvn,
+        //     ]);
+
+        // $responseData = $response->json();
+        // if ($response->successful() && $responseData['status'] == "00") {
+
+        //     $account = new Account();
+        //     $account->user_id = $userId;
+        //     $account->account_number = $responseData['data']['accountNo'];
+        //     $account->account_type = 'corporate';
+        //     $account->status = 'PND';
+        //     $account->lastName = $request->lastName;
+        //     $account->firstName = $request->firstName;
+        //     $account->phone = $request->phone;
+        //     $account->bvn = $request->bvn;
+        //     $account->profile_picture = $profilePicturePath; // Save the image path
+        //     $account->save();
+
+        //     return response()->json(['message' => 'Corporate account created successfully', 'data' => $account], 201);
+        // } else {
+        //     return response()->json(['status' => 'error', 'message' => $responseData['message'] ?? 'Failed to create corporate account'], 400);
+        // }
     }
 
     public function requestBvnConsent(Request $request)
