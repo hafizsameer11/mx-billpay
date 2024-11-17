@@ -29,10 +29,10 @@ class FetchBillerCategories implements ShouldQueue
      */
     public function handle()
     {
-        $accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiNTE0ZGQyMDUtNzQ4Ni00NzM0LWI1M2EtZTI5YjBlNDE1M2RkIiwiaWF0IjoxNzMxODc2NDk5LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9._gxpLMI4XbP6SyyN3GZKcmJ1HucPCWAYmWlC-B4xX1hqVKvZPTLwgzT1B_yPF_36M59YJ_5tfIT81yXAx31nrA';
+        $accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
 
         $response = Http::withHeaders(['AccessToken' => $accessToken])
-            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billercategory');
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billercategory');
         if ($response->successful()) {
             $categories = $response->json()['data'];
             foreach ($categories as $category) {

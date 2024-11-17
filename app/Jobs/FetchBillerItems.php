@@ -24,7 +24,7 @@ class FetchBillerItems implements ShouldQueue
     {
         $this->categoryName = $categoryName;
 
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiNTE0ZGQyMDUtNzQ4Ni00NzM0LWI1M2EtZTI5YjBlNDE1M2RkIiwiaWF0IjoxNzMxODc2NDk5LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9._gxpLMI4XbP6SyyN3GZKcmJ1HucPCWAYmWlC-B4xX1hqVKvZPTLwgzT1B_yPF_36M59YJ_5tfIT81yXAx31nrA';
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
         $this->categoryId = $categoryId; // Set the category ID
     }
 
@@ -35,7 +35,7 @@ class FetchBillerItems implements ShouldQueue
     {
         // Fetch billers for the category
         $response = Http::withHeaders(['AccessToken' =>$this->accessToken])
-            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerlist', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerlist', [
                 'categoryName' => $this->categoryName
             ]);
 
@@ -48,15 +48,13 @@ class FetchBillerItems implements ShouldQueue
                 $this->getBillerItems($biller['id'], $biller['division'], $biller['product']);
             }
         } else {
-            //log error in details
-            Log::error('Faile to fetch billers for category: ' . $this->categoryName, ['error' => $response->json()]);
-            // Log::error('Failed to fetch billers for category: ' . $this->categoryName);
+            Log::error('Failed to fetch billers for category: ' . $this->categoryName);
         }
     }
     private function getBillerItems($billerId, $divisionId, $productId)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems/billerItems', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems', [
                 'billerId' => $billerId,
                 'divisionId' => $divisionId,
                 'productId' => $productId,
