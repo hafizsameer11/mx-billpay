@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,7 +14,10 @@ return new class extends Migration
     {
         Schema::table('accounts', function (Blueprint $table) {
             //forign key with tiers
-            $table->foreignId('tier_id')->constrained()->onDelete('cascade')->default(1);
+            //first record id of tier table
+            $tierId = DB::table('tiers')->first()->id;
+
+            $table->foreignId('tier_id')->constrained()->onDelete('cascade')->default($tierId);
 
         });
     }
@@ -24,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
-        
+
 
         });
     }
