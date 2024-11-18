@@ -40,7 +40,7 @@ Route::get('/fetch-banks', [BankController::class, 'index']);
 Route::get('/login', [AdminAuthenticateController::class, 'index'])->name('admin.login');
 Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admin.authenticate');
 
-Route::middleware(['admin','auth'])->group(function () {
+// Route::middleware(['admin','auth'])->group(function () {
     // dashoard routes
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/logout', [AdminAuthenticateController::class, 'logout'])->name('admin.logout');
@@ -81,7 +81,7 @@ Route::middleware(['admin','auth'])->group(function () {
     Route::get('/delete-faqs/{id}', [faqController::class, 'deleteFaqs'])->name('faq.delete');
 
 
-});
+// });
 
 // Route::get('/bill-categories', [BillerCategoryController::class, 'index'])->name('category.index');
 // Route::get('/fetch-biller-categories', [BillerCategoryController::class, 'fetchCategories'])->name('category.fetch');
