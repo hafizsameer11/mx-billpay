@@ -21,4 +21,7 @@ class Transaction extends Model
     {
         return $this->hasOne(BillPayment::class);
     }
+    public function account(){
+        return $this->belongsTo(Account::class,'user_id','id');
+    }
 }
