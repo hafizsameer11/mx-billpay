@@ -48,7 +48,7 @@ class FetchBillerItems implements ShouldQueue
                 $this->getBillerItems($biller['id'], $biller['division'], $biller['product']);
             }
         } else {
-            Log::error('Failed to fetch billers for category: ' . $this->categoryName);
+            Log::error('Failed to fetch billers for category: ' . $this->categoryName, ['response' => $response->json()]);
         }
     }
     private function getBillerItems($billerId, $divisionId, $productId)

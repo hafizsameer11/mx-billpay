@@ -17,7 +17,7 @@ class BillerCategoryController extends Controller
 
     public function __construct()
     {
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiMjdiOGNmZjEtYjExNS00MGMzLWIwNDAtMDVjNmViMjljNTk3IiwiaWF0IjoxNzMxOTExNDIyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.T4dMWHEwST4OUskaQzl1W-dS1rDhFpi7vgPsCfEM58itWKDnbYabnXJnfis4Vr7mIDobzrCaA-UKq9oVjdo49g'; // Replace with your access token logic
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA'; // Replace with your access token logic
     }
 
     public function fetchCategories(Request $request)
