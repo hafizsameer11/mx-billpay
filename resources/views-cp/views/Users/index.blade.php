@@ -3,37 +3,78 @@
 @section('main')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
-            <h4 class="mb-3 mb-md-0">Biller Items</h4>
+            <h4 class="mb-3 mb-md-0">Users</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
 
-            <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#bulkCommissionModal">Bulk Add Commission</button>
+            {{-- <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#bulkCommissionModal">Bulk Add Commission</button> --}}
         </div>
     </div>
     <div class="row">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title text-primary fs-5">Biller Items</h6>
+                <h6 class="card-title">Users</h6>
+                <div class="row d-flex justify-content-between mb-4">
+                    <form method="GET" action="{{ route('user.index') }}">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request('name') }}">
+                            </div>
+                
+                            <div class="col-md-2">
+                                <input type="text" name="email" class="form-control" placeholder="Email" value="{{ request('email') }}">
+                            </div>
+                
+                            <div class="col-md-2">
+                                <input type="text" name="phone" class="form-control" placeholder="Phone" value="{{ request('phone') }}">
+                            </div>
+                
+                            <div class="col-md-2">
+                                <input type="date" name="created_at" class="form-control" value="{{ request('created_at') }}">
+                            </div>
+                
+                            <div class="col-md-2">
+                                <input type="date" name="updated_at" class="form-control" value="{{ request('updated_at') }}">
+                            </div>
+                
+                            <div class="col-md-2 text-center">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
                 <div class="table-responsive">
-                    <table class="table table-hover p-2">
-                        <thead class="p-2 table-active">
-                            <tr class="py-2">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
                                 <th>#</th>
-                                <th>Item Name</th>
-                                <th>Payment Code</th>
-                                <th>Category</th>
-                                <th>Action</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Account Number</th>
+                                <th>Bvn</th>
+                                <th>Account Type</th>
+                                <th>Status</th>
+                                <th>Account Balance</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($billerItems as $item)
+                            @foreach ($users as $item)
                                 <tr>
                                     <th>{{ $loop->index + 1 }}</th>
-                                    <td>{{ $item->paymentitemname }}</td>
-                                    <td>{{ $item->paymentCode }}</td>
-                                    <td>{{ $item->category->category ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->firstName ?? 'N/A' }}</td>
+                                    <td>{{ $item->email }}</td>
+                                    <td>{{ $item->account->phone ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->account_number  ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->bvn  ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->account_type  ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->status  ?? 'N/A' }}</td>
+                                    <td>{{ $item->account->accountBalance  ?? 'N/A' }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#commissionModal" data-id="{{ $item->id }}" data-item-name="{{ $item->paymentitemname }}">Add Commission</button>
+                                        <a href="{{route('user.edit',$item->id)}}" class="btn btn-outline-primary">Edit</a>
+                                        <a href="{{route('user.show',$item->id)}}" class="btn btn-outline-secondary mx-2">View</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -43,10 +84,10 @@
                     <!-- Pagination Links -->
                     <div class="d-flex justify-content-between">
                         <div>
-                            Showing {{ $billerItems->firstItem() }} to {{ $billerItems->lastItem() }} of {{ $billerItems->total() }} entries
+                            Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
                         </div>
                         <div>
-                            {{ $billerItems->links('pagination::bootstrap-4') }} <!-- This generates the pagination links -->
+                            {{ $users->links('pagination::bootstrap-4') }} <!-- This generates the pagination links -->
                         </div>
                     </div>
 
@@ -56,7 +97,7 @@
     </div>
 
     <!-- Modal for adding commission -->
-    <div class="modal fade" id="commissionModal" tabindex="-1" aria-labelledby="commissionModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="commissionModal" tabindex="-1" aria-labelledby="commissionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -106,11 +147,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @section('additonal-script')
-    <script>
+    {{-- <script>
         @if (session('success'))
             Toastify({
                 text: "{{ session('success') }}",
@@ -198,5 +239,5 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 @endsection

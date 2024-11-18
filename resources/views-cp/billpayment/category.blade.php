@@ -1,7 +1,5 @@
 @extends('layouts.main')
 
-
-
 @section('main')
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
@@ -26,27 +24,23 @@
     <div class="row">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title text-primary fs-5">Categories</h6>
-                <div class="">
-                    <table class="table table-responsive table-hover">
-                        <div >
-                            <thead class="table-active">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>Action</th>
+                <h6 class="card-title">Categories</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Action</th>
 
-                                </tr>
-                            </thead>
-                        </div>
+                            </tr>
+                        </thead>
                         <tbody>
                             @foreach ($categories as $cat)
                                 <tr>
-                                    <th>{{ $loop->index + 1 }}</th>
+                                    <th>{{ $loop->index+1 }}</th>
                                     <td>{{ $cat->category }}</td>
-                                    <td><a class="btn  btn-sm btn-outline-primary"
-                                            href="{{ route('billitem.fetch', ['categoryName' => $cat->category]) }}">Import
-                                            Items</a></td>
+                                    <td><a class="btn  btn-sm btn-outline-primary" href="{{route('billitem.fetch',['categoryName'=>$cat->category])}}">Import Items</a></td>
                                     {{-- <td>Otto</td> --}}
                                     {{-- <td>@mdo</td> --}}
                                 </tr>

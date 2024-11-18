@@ -13,11 +13,11 @@
     <div class="row">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title text-primary fs-5">Biller Items</h6>
+                <h6 class="card-title">Biller Items</h6>
                 <div class="table-responsive">
-                    <table class="table table-hover p-2">
-                        <thead class="p-2 table-active">
-                            <tr class="py-2">
+                    <table class="table">
+                        <thead>
+                            <tr>
                                 <th>#</th>
                                 <th>Item Name</th>
                                 <th>Payment Code</th>

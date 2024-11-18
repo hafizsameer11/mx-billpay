@@ -1,7 +1,7 @@
 <nav class="sidebar">
     <div class="sidebar-header">
-      <a href="{{route('dashboard.index')}}" class="sidebar-brand">
-        MX-BillPay<span></span>
+      <a href="#" class="sidebar-brand">
+        Noble<span>UI</span>
       </a>
       <div class="sidebar-toggler">
         <span></span>
@@ -13,22 +13,22 @@
       <ul class="nav" id="sidebarNav">
         <li class="nav-item nav-category">Main</li>
         <li class="nav-item">
-          <a href="{{route('dashboard.index')}}" class="nav-link">
+          <a href="dashboard.html" class="nav-link">
             <i class="link-icon" data-feather="box"></i>
             <span class="link-title">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item nav-category">Manage Bills</li>
+        <li class="nav-item nav-category">web apps</li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false" aria-controls="emails">
             <i class="link-icon" data-feather="list"></i>
-            <span class="link-title">Services</span>
+            <span class="link-title">Bill Payment</span>
             <i class="link-arrow" data-feather="chevron-down"></i>
           </a>
           <div class="collapse" data-bs-parent="#sidebarNav" id="emails">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="{{route('category.index')}}" class="nav-link"> Categories</a>
+                <a href="{{route('category.index')}}" class="nav-link"> Cetgories</a>
               </li>
               <li class="nav-item">
                 <a href="{{route('billeritem.show')}}" class="nav-link">Services</a>
@@ -36,97 +36,19 @@
             </ul>
           </div>
         </li>
-        
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="collapse" href="#emails2" role="button" aria-expanded="false" aria-controls="emails2">
-            <i class="link-icon" data-feather="calendar"></i>
-            <span class="link-title">Bill History</span>
-            <i class="link-arrow" data-feather="chevron-down"></i>
+          <a href="pages/apps/chat.html" class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Chat</span>
           </a>
-          <div class="collapse" data-bs-parent="#sidebarNav" id="emails2">
-            <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="{{route('billPayments.transactions')}}" class="nav-link"> All bills</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('pending.billPayments.transactions')}}" class="nav-link">Pending Bills</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('complete.billPayments.transactions')}}" class="nav-link">Complete Bills</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('return.billPayments.transactions')}}" class="nav-link">Return Bills</a>
-              </li>
-            </ul>
-          </div>
         </li>
-        <li class="nav-item nav-category">User Panel</li>
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="collapse" href="#emails3" role="button" aria-expanded="false" aria-controls="emails3">
+          <a href="pages/apps/calendar.html" class="nav-link">
             <i class="link-icon" data-feather="calendar"></i>
-            <span class="link-title">Manage User</span>
-            <i class="link-arrow" data-feather="chevron-down"></i>
+            <span class="link-title">Calendar</span>
           </a>
-          <div class="collapse" data-bs-parent="#sidebarNav" id="emails3">
-            <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="{{route('user.index')}}" class="nav-link">All Users</a>
-              </li>
-            
-             
-            </ul>
-          </div>
         </li>
-        
-        <li class="nav-item nav-category">Transactions</li>
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="collapse" href="#emails1" role="button" aria-expanded="false" aria-controls="emails1">
-            <i class="link-icon" data-feather="calendar"></i>
-            <span class="link-title">Transactions</span>
-            <i class="link-arrow" data-feather="chevron-down"></i>
-          </a>
-          <div class="collapse" data-bs-parent="#sidebarNav" id="emails1">
-            <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="{{route('pending.transactions')}}" class="nav-link">Payment Request</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('completed.transactions')}}" class="nav-link">Payment log</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('all.transactions')}}" class="nav-link">Transactions List</a>
-              </li>
-              <li class="nav-item">
-                {{-- <a href="{{route('billPayments.transactions')}}" class="nav-link">Bill Payments</a> --}}
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="nav-item nav-category">Faqs</li>
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="collapse" href="#emails6" role="button" aria-expanded="false" aria-controls="emails6">
-            <i class="link-icon" data-feather="calendar"></i>
-            <span class="link-title">Faqs</span>
-            <i class="link-arrow" data-feather="chevron-down"></i>
-          </a>
-          <div class="collapse" data-bs-parent="#sidebarNav" id="emails6">
-            <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="{{route('faq.category')}}" class="nav-link">Faq Category</a>
-              </li>
-              <li class="nav-item">
-                {{-- <a href="{{route('')}}" class="nav-link">Faq Category</a> --}}
-              </li>
-              <li class="nav-item">
-                <a href="{{route('faq.addFaqs')}}" class="nav-link">Add Faqs</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('faq.show')}}" class="nav-link">Faqs</a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        {{-- <li class="nav-item nav-category">Components</li>
+        <li class="nav-item nav-category">Components</li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false" aria-controls="uiComponents">
             <i class="link-icon" data-feather="feather"></i>
@@ -206,8 +128,8 @@
               </li>
             </ul>
           </div>
-        </li> --}}
-        {{-- <li class="nav-item">
+        </li>
+        <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
             <i class="link-icon" data-feather="anchor"></i>
             <span class="link-title">Advanced UI</span>
@@ -386,9 +308,7 @@
             <i class="link-icon" data-feather="hash"></i>
             <span class="link-title">Documentation</span>
           </a>
-        </li> --}}
+        </li>
       </ul>
     </div>
   </nav>
-
-  
