@@ -22,7 +22,7 @@ class PinController extends Controller
         //create or update
         $pin=Pin::firstOrCreate(['user_id'=>$userId],['pin'=>$request->pin]);
 
-      
+
        if($pin){
         return response()->json(['status'=>'success','message'=>'Pin set successfully'],200);
        }else{
@@ -38,7 +38,7 @@ class PinController extends Controller
         if($validate->fails()){
             return response()->json(['message'=>$validate->errors()],400);
         }
-        $pin=Pin::where('userId',$userId)->first();
+        $pin=Pin::where('user_id',$userId)->first();
         if($pin->pin!=$request->oldPin){
             return response()->json(['status'=>'error','message'=>'Old pin is incorrect'],500);
         }
@@ -58,7 +58,7 @@ class PinController extends Controller
             if($validate->fails()){
                 return response()->json(['status'=>'error','message'=>$validate->errors()],400);
                 }
-        $pin=Pin::where('userId',$userId)->first();
+        $pin=Pin::where('user_id',$userId)->first();
         if($pin->pin==$request->pin){
             return response()->json(['status'=>'success','message'=>'Pin is correct'],200);
             }else{
