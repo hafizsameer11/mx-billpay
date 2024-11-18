@@ -21,7 +21,9 @@ return new class extends Migration
         Schema::table('accounts', function (Blueprint $table) {
 
 
-            $table->foreignId('tier_id')->constrained()->onDelete('cascade')->default($this->tierId);
+            $table->unsignedBigInteger('tier_id')->default($this->tierId); // Set default value
+            $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
+
         });
     }
 
