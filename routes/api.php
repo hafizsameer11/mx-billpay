@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
 use App\Http\Controllers\Api\TransactionController;
@@ -81,7 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 
-
+Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
 //Tranfser Routes
 Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
