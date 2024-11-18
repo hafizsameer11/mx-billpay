@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class faqController extends Controller
 {
 
-    public function faqs()
+    public function index()
     {
         $faqCategories = Faqcategory::all();
         return view('Faq.category', compact('faqCategories'));
