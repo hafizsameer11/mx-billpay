@@ -24,8 +24,7 @@
                         <div class="my-3">
                             <h6>Sender:</h6>
                             <div class="d-flex align-items-center">
-                                {{--  if image not exist show somet --}}
-                                {{-- <img src="{{ asset($user->account->profile_picture) ?? asset('assets/images/others/dummyImage.jpeg') }}" --}}
+                              
                                 @if (isset($user->account->profile_picture))
 
                                     <img src="{{ asset($user->account->profile_picture) }}" alt="Sender Avatar" class="rounded-circle mr-2" width="40" height="40">

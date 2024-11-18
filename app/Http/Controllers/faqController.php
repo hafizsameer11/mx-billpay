@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class faqController extends Controller
 {
 
-    public function index()
+    public function faqs()
     {
         $faqCategories = Faqcategory::all();
         return view('Faq.category', compact('faqCategories'));
@@ -90,7 +90,7 @@ class faqController extends Controller
         return redirect()->back()->with('success', 'Faq added successfully');
     }
 
-    
+
     public function editFaqs($id, Request $request)
     {
         $faq = Faq::find($id);
