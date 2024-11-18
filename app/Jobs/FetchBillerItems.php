@@ -24,7 +24,7 @@ class FetchBillerItems implements ShouldQueue
     {
         $this->categoryName = $categoryName;
 
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiMzQ2MmUzY2QtMWI4NC00ZjIzLWE2M2YtYmZlOTExZmY0YmQzIiwiaWF0IjoxNzMxOTExNzk2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.VR1kjRihNmodyRgUo4ZNs3eKOpbfPe-_JsUwJKa162RhqAB370schqnRLD9J_sgTz-GsrqXp4DILZ9HkuIeYhg';
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiYzVmOTA4OWMtODAyMS00ZWU3LThjNjYtNTMzMjEwZjQ0NjNkIiwiaWF0IjoxNzI5OTMyMzU2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.uIQKrplFvnc2ta7RMpwurkoK7guwIbYMBS00NopUxGwUlpP7TC1AqhM1_hns2NEQSw6scWABoeD2PLWpBkgPsA';
         $this->categoryId = $categoryId; // Set the category ID
     }
 
@@ -35,7 +35,7 @@ class FetchBillerItems implements ShouldQueue
     {
         // Fetch billers for the category
         $response = Http::withHeaders(['AccessToken' =>$this->accessToken])
-            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerlist', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerlist', [
                 'categoryName' => $this->categoryName
             ]);
 
@@ -48,15 +48,13 @@ class FetchBillerItems implements ShouldQueue
                 $this->getBillerItems($biller['id'], $biller['division'], $biller['product']);
             }
         } else {
-            //detail error log
-
-            Log::error('Faile to fetch billers for category: ' . $this->categoryName, ['response' => $response->json()]);
+            Log::error('Failed to fetch billers for category: ' . $this->categoryName);
         }
     }
     private function getBillerItems($billerId, $divisionId, $productId)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
+            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems', [
                 'billerId' => $billerId,
                 'divisionId' => $divisionId,
                 'productId' => $productId,
