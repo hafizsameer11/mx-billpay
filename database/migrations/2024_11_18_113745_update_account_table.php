@@ -28,6 +28,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
+//remove foreign key
+$table->dropForeign('accounts_tier_id_foreign');
+$table->dropColumn('tier_id');
 
 
         });
