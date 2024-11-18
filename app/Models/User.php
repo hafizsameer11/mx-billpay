@@ -50,4 +50,7 @@ class User extends Authenticatable
     public function notification(){
         return $this->hasMany(Notification::class,'user_id','id');
     }
+    public function tranaction(){
+        return $this->hasMany(Transaction::class,'user_id','id');
+     }
 }
