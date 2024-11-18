@@ -51,7 +51,7 @@ class FetchBillerItems implements ShouldQueue
             Log::error('Failed to fetch billers for category: ' . $this->categoryName, ['response' => $response->json()]);
         }
     }
-    private function getBillerItems($billerId, $divisionId, $productId,$billerName=null)
+    private function getBillerItems($billerId, $divisionId, $productId,$billerName)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems', [
