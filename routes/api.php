@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/company-details', [CooperateAccountRequestController::class, 'index']);
     //security settings
     Route::post('/set-pin',[PinController::class,'setPin']);
-    Route::get('/verify-pin',[PinController::class,'setPin']);
+    Route::post('/verify-pin',[PinController::class,'checkPin']);
     Route::post('/change-pin',[PinController::class,'changePin']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
