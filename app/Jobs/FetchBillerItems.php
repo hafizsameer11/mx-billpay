@@ -24,7 +24,7 @@ class FetchBillerItems implements ShouldQueue
     {
         $this->categoryName = $categoryName;
 
-        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiMjdiOGNmZjEtYjExNS00MGMzLWIwNDAtMDVjNmViMjljNTk3IiwiaWF0IjoxNzMxOTExNDIyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.T4dMWHEwST4OUskaQzl1W-dS1rDhFpi7vgPsCfEM58itWKDnbYabnXJnfis4Vr7mIDobzrCaA-UKq9oVjdo49g';
+        $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNjgiLCJ0b2tlbklkIjoiMzQ2MmUzY2QtMWI4NC00ZjIzLWE2M2YtYmZlOTExZmY0YmQzIiwiaWF0IjoxNzMxOTExNzk2LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.VR1kjRihNmodyRgUo4ZNs3eKOpbfPe-_JsUwJKa162RhqAB370schqnRLD9J_sgTz-GsrqXp4DILZ9HkuIeYhg';
         $this->categoryId = $categoryId; // Set the category ID
     }
 
