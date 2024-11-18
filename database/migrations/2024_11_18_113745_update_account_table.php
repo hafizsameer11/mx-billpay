@@ -25,6 +25,12 @@ return new class extends Migration
             $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
 
         });
+        Schema::table('kyc_documents', function (Blueprint $table) {
+
+
+         $table->string('title')->nullable();
+
+        });
     }
 
     /**
