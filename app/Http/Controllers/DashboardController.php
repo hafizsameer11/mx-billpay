@@ -16,16 +16,16 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $totalBillpayments = BillPayment::count();
         $totalTransaction = Transaction::count();
-        $transactionCount = Transaction::with(['user', 'account'])
-        ->latest() 
-        ->take(5)  
+        $transactionCount = Transaction::with('user', 'account')
+        ->latest()
+        ->take(5)
         ->get();
         $UsersCount = User::with('account')
-        ->latest() 
-        ->take(5)  
+        ->latest()
+        ->take(5)
         ->get();
         // dd($UsersCount);
-    
+
 
 
         $transactions = Transaction::select(DB::raw("SUM(amount) as total_amount"), DB::raw("DATE(created_at) as date"))
