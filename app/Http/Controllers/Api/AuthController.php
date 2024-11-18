@@ -113,6 +113,12 @@ class AuthController extends Controller
 
         // Fetch the user's account details
         $account = $user->account;
+        if($account->type=='cooperate' && $account->status=='pending'){
+            return response()->json([
+                'statuss' => 'error',
+                'message' => 'Your Request is Under Reveiw. Wait for admin approval',
+            ],401);
+        }
         if (!$account) {
             return response()->json([
                 'statuss' => 'pending',
