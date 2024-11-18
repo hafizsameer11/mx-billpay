@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
-            //forign key with tiers
-            //first record id of tier table
-            $tierId = DB::table('tiers')->first()->id;
+
+            $tierId = DB::table('tiers')->first();
+            $tierId=$tierId->id;
 
             $table->foreignId('tier_id')->constrained()->onDelete('cascade')->default($tierId);
 
