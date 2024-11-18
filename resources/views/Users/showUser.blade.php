@@ -24,8 +24,16 @@
                         <div class="my-3">
                             <h6>Sender:</h6>
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset($user->account->profile_picture) ?? asset('assets/images/others/dummyImage.jpeg') }}"
-                                    alt="Sender Avatar" class="rounded-circle mr-2" width="40" height="40">
+                                {{--  if image not exist show somet --}}
+                                {{-- <img src="{{ asset($user->account->profile_picture) ?? asset('assets/images/others/dummyImage.jpeg') }}" --}}
+                                @if (isset($user->account->profile_picture))
+
+                                    <img src="{{ asset($user->account->profile_picture) }}" alt="Sender Avatar" class="rounded-circle mr-2" width="40" height="40">
+                                    @else
+                                    <img src="{{ asset('assets/images/others/dummyImage.jpeg') }}" alt="Sender Avatar" class="rounded-circle mr-2" width="40" height="40">
+                                @endif
+
+
                                 <div>
                                     <strong>{{ $user->account->firstName ?? 'N/A' }}</strong><br>
                                     <small>{{ $user->email ?? 'N/A' }}</small>
