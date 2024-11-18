@@ -13,7 +13,7 @@ class BillerProviderController extends Controller
         $billerItems = \App\Models\BillerItem::all();
         $providers = [];
         foreach ($billerItems as $item) {
-            $providers[$item->provider_name][] = $item;
+          
             //save providers
             $provider=\App\Models\BillProviders::firstOrCreate(['title'=>$item->provider_name,'slug'=>\Illuminate\Support\Str::slug($item->provider_name)]);
             $provider->save();
