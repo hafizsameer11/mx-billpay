@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+// use Str;
 class BillerProviderController extends Controller
 {
     // set providers
@@ -14,6 +14,10 @@ class BillerProviderController extends Controller
         $providers = [];
         foreach ($billerItems as $item) {
             $providers[$item->provider_name][] = $item;
+            //save providers
+            $provider=\App\Models\BillProviders::firstOrCreate(['title'=>$item->provider_name,'slug'=>\Illuminate\Support\Str::slug($item->provider_name)]);
+            $provider->save();
+            $providers[]=$provider->name;
             }
 
         return response()->json($providers);

@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class BillProviders extends Model
 {
     use HasFactory;
+    protected $fillable=['title','slug'];
 }
