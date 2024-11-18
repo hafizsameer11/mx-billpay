@@ -13,6 +13,7 @@ class BillerItem extends Model
         'paymentitemid', 'currencySymbol', 'isAmountFixed', 'itemFee',
         'itemCurrencySymbol', 'pictureId', 'billerType', 'payDirectitemCode',
         'currencyCode', 'division', 'fixed_commission', 'percentage_commission','billerId'
+        ,'provider_name'
     ];
 
     public function category()
