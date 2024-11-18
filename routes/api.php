@@ -74,8 +74,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
     //creating cooperate account
     Route::post('/company-details', [CooperateAccountRequestController::class, 'index']);
-
-
     //security settings
     Route::post('/set-pin',[PinController::class,'setPin']);
     Route::get('/verify-pin',[PinController::class,'setPin']);

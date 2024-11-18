@@ -19,10 +19,10 @@ class PinController extends Controller
         if($validate->fails()){
             return response()->json(['message'=>$validate->errors()],400);
         }
-       $pin=new Pin();
-       $pin->pin=$request->pin;
-       $pin->user_id=$userId;
-       $pin->save();
+        //create or update
+        $pin=Pin::firstOrCreate(['user_id'=>$userId],['pin'=>$request->pin]);
+
+      
        if($pin){
         return response()->json(['status'=>'success','message'=>'Pin set successfully'],200);
        }else{
