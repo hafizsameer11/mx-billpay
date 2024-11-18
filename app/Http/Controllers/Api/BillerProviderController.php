@@ -13,7 +13,7 @@ class BillerProviderController extends Controller
         $billerItems = \App\Models\BillerItem::all();
         $providers = [];
         foreach ($billerItems as $item) {
-            $providers[$item->paymentitemname][] = $item;
+            $providers[$item->provider_name][] = $item;
             }
 
         return response()->json($providers);
