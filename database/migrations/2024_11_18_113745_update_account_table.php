@@ -12,25 +12,25 @@ return new class extends Migration
      * Run the migrations.
      */
     protected $tierId ;
-    public function __construct(){
-        // $this->tierId = DB::table('tier')->max('id'); get first id first id
-        $this->tierId=Tier::first()->id;
-    }
-    public function up(): void
-    {
-        Schema::table('accounts', function (Blueprint $table) {
+    // public function __construct(){
+    //     // $this->tierId = DB::table('tier')->max('id'); get first id first id
+    //     $this->tierId=Tier::first()->id;
+    // }
+    // public function up(): void
+    // {
+    //     Schema::table('accounts', function (Blueprint $table) {
 
 
-            $table->unsignedBigInteger('tier_id')->default($this->tierId); // Set default value
-            $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
+    //         $table->unsignedBigInteger('tier_id')->default($this->tierId); // Set default value
+    //         $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
 
-        });
-        Schema::table('kyc_documents', function (Blueprint $table) {
+    //     });
+    //     Schema::table('kyc_documents', function (Blueprint $table) {
 
-         $table->string('title')->nullable();
-         
-        });
-    }
+    //      $table->string('title')->nullable();
+
+    //     });
+    // }
 
     /**
      * Reverse the migrations.
