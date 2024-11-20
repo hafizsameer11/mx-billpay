@@ -18,6 +18,7 @@ class CooperateAccountRequest extends Model
         'director_nin_number',
         'director_bvn_number',
         'director_dob',
+        'incorporationDate'
     ];
 
 }

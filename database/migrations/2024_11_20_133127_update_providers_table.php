@@ -11,11 +11,11 @@ return new class extends Migration
      * Run the migrations.
      */
     protected $tierId;
-    public function __construct()
-    {
-        // $this->tierId = DB::table('tier')->max('id'); get first id first id
-        $this->tierId = Tier::first()->id ?? 0;
-    }
+    // public function __construct()
+    // {
+    //     // $this->tierId = DB::table('tier')->max('id'); get first id first id
+    //     $this->tierId = Tier::first()->id ?? 0;
+    // }
     public function up(): void
     {
         Schema::table('bill_providers', function (Blueprint $table) {
