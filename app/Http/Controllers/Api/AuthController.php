@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Notification as ModelsNotification;
 use App\Models\PasswordReset;
+use App\Models\Pin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,11 +114,11 @@ class AuthController extends Controller
 
         // Fetch the user's account details
         $account = $user->account;
-        if($account->type=='cooperate' && $account->status=='pending'){
+        if ($account->type == 'cooperate' && $account->status == 'pending') {
             return response()->json([
                 'statuss' => 'error',
                 'message' => 'Your Request is Under Reveiw. Wait for admin approval',
-            ],401);
+            ], 401);
         }
         if (!$account) {
             return response()->json([
@@ -133,20 +134,23 @@ class AuthController extends Controller
             ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
                 'accountNumber' => $accountNumber1
             ]);
-            $accountBalance=$account->accountBalance;
+        $accountBalance = $account->accountBalance;
         if ($response->successful()) {
-            $account->accountBalance=$response->json()['data']['accountBalance'];
+            $account->accountBalance = $response->json()['data']['accountBalance'];
             $account->save();
-         $accountBalance=$response->json()['data']['accountBalance'];
+            $accountBalance = $response->json()['data']['accountBalance'];
         }
+        $pin = Pin::where('user_id', $user->id)->first();
+        //check if pin is present
+        $has_pin = $pin ? true : false;
         $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
         $notification = new ModelsNotification();
         $notification->user_id = $user->id;
         $notification->type = "login";
         $notification->title = "User Logged In";
         $notification->message = "User Logged In Successfully";
-        $notification->icon=asset('notificationLogos/profile2.png');
-        $notification->iconColor=config('notification_colors.colors.Account');
+        $notification->icon = asset('notificationLogos/profile2.png');
+        $notification->iconColor = config('notification_colors.colors.Account');
         $notification->save();
         return response()->json([
             'message' => 'Login successful.',
@@ -155,6 +159,7 @@ class AuthController extends Controller
                 'lastName' => $user->account->lastName,
                 'email' => $user->email,
                 'phone' => $user->account->phone,
+                'hasPin'=>$has_pin,
                 'accountNumber' => $account->account_number,
                 'accountBalance' => $account->accountBalance,
                 'created_at' => $account->created_at,
@@ -307,7 +312,7 @@ class AuthController extends Controller
                 $message->to($request->email)
                     ->subject('Your OTP Code');
             });
-            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success', 'user_id' => $user->id,'otp'=>$otp], 200);
+            return response()->json(['message' => 'Otp sent successfully', 'status' => 'success', 'user_id' => $user->id, 'otp' => $otp], 200);
         }
     }
 

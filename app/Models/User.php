@@ -56,4 +56,7 @@ class User extends Authenticatable
      public function billPayment(){
         return $this->hasMany(BillPayment::class,'user_id','id');
     }
+    public function pin(){
+        return $this->hasMany(Pin::class,'user_id','id');
+    }
 }
