@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BillerCategory;
 use App\Models\BillProviders;
 use Illuminate\Http\Request;
 // use Str;
@@ -36,16 +37,12 @@ class BillerProviderController extends Controller
     {
         $providers = BillProviders::where('biller_category_id', $id)->first();
 
-        // $provde = [];
-        // foreach ($providers as $provider) {
-        //     if (isset($provider->id) && isset($provider->title) && isset($provider->logo)) {
-        //         $provde[] = [
-        //             'id' => $provider->id,
-        //             'title' => $provider->title,
-        //             'logo' => $provider->logo,
-        //         ];
-        //     }
-        // }
+       $provider=[
+        'title'=>$providers->title,
+        'slug'=>$providers->slug,
+        'logo'=>asset($providers->logo),
+        'category'=>BillerCategory::select('title')->where('id',$providers->biller_category_id)->get(),
+       ];
 
         return response()->json($providers);
     }
