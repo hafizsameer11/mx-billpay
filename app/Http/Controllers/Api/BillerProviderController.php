@@ -34,20 +34,20 @@ class BillerProviderController extends Controller
     }
     public function getProviders($id)
     {
-        $providers = BillProviders::where('biller_category_id', $id)->get();
+        $providers = BillProviders::where('biller_category_id', $id)->first();
 
-        $provde = [];
-        foreach ($providers as $provider) {
-            if (isset($provider->id) && isset($provider->title) && isset($provider->logo)) {
-                $provde[] = [
-                    'id' => $provider->id,
-                    'title' => $provider->title,
-                    'logo' => $provider->logo,
-                ];
-            }
-        }
+        // $provde = [];
+        // foreach ($providers as $provider) {
+        //     if (isset($provider->id) && isset($provider->title) && isset($provider->logo)) {
+        //         $provde[] = [
+        //             'id' => $provider->id,
+        //             'title' => $provider->title,
+        //             'logo' => $provider->logo,
+        //         ];
+        //     }
+        // }
 
-        return response()->json($provde);
+        return response()->json($providers);
     }
 
 }
