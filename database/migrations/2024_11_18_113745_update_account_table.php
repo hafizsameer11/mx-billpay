@@ -27,9 +27,8 @@ return new class extends Migration
         });
         Schema::table('kyc_documents', function (Blueprint $table) {
 
-
          $table->string('title')->nullable();
-
+         
         });
     }
 

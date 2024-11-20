@@ -263,7 +263,7 @@ class AccountController extends Controller
             $account = new Account();
             $account->user_id = $userId;
             $account->account_type = 'cooperate';
-            $account->status = 'pending';
+            $account->status = 'pending'; //PND
             $account->firstName = $request->companyName;
             $account->lastName = "";
             $account->phone = $request->phone;
@@ -273,6 +273,7 @@ class AccountController extends Controller
             $account->save();
             //check if account is created
             if($account){
+                
                 return response()->json(['message' => 'Request Submitted successfully . We will send you an email ', 'data' => $account, 'status' => 'success'], 200);
             }else{
                 return response()->json(['message' => 'Failed to create account', 'status' => 'error'], 422);
