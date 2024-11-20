@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 
 Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
-Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']);
+Route::get('/get-provider',[BillerProviderController::class,'getProviders']);
 //Tranfser Routes
 Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
