@@ -41,7 +41,7 @@ class BillerProviderController extends Controller
         'title'=>$providers->title,
         'slug'=>$providers->slug,
         'logo'=>asset($providers->logo),
-        'category'=>BillerCategory::select('title')->where('id',$providers->biller_category_id)->get(),
+        'category'=>BillerCategory::select('ctegory')->where('id',$providers->biller_category_id)->get(),
        ];
 
         return response()->json($providers);
