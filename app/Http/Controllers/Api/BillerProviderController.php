@@ -44,7 +44,7 @@ class BillerProviderController extends Controller
         'category'=>BillerCategory::select('category')->where('id',$providers->biller_category_id)->get(),
        ];
 
-        return response()->json($providers);
+        return response()->json($provider);
     }
 
 }
