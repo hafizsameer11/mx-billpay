@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BillProviders;
 use Illuminate\Http\Request;
 // use Str;
 class BillerProviderController extends Controller
@@ -29,6 +30,10 @@ class BillerProviderController extends Controller
             $providers[] = $provider->title;
         }
 
+        return response()->json($providers);
+    }
+    public function getProvders($id){
+        $providers=BillProviders::where('biller_category_id',$id)->get();
         return response()->json($providers);
     }
 

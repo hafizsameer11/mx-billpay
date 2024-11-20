@@ -9,4 +9,9 @@ class BillProviders extends Model
 {
     use HasFactory;
     protected $fillable=['title','slug','biller_category_id'];
+
+
+    public function category(){
+        return $this->hasMany(BillerCategory::class,'biller_category_id','id');
+    }
 }
