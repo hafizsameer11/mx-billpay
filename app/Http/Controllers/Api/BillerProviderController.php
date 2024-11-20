@@ -34,7 +34,15 @@ class BillerProviderController extends Controller
     }
     public function getProvders($id){
         $providers=BillProviders::where('biller_category_id',$id)->get();
-        return response()->json($providers);
+        $provde=[];
+        foreach ($providers as $provider) {
+            $provde[]=[
+                'id'=>$provider->id,
+                'title'=>$provider->title,
+                'logo'=>$provider->logo,
+            ];
+        }
+        return response()->json($provde);
     }
 
 }
