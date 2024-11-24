@@ -8,6 +8,8 @@ use App\Models\Account;
 use App\Models\BvnConsent;
 use App\Models\BvnStatucRecorder;
 use App\Models\CooperateAccountRequest;
+use App\Models\Profile;
+use App\Models\Wallet;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +35,6 @@ class AccountController extends Controller
             'lastName' => 'required|string',
             'dob' => 'required|string',
             'phone' => 'required|string',
-            'bvn' => 'required|string',
             'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -44,7 +45,7 @@ class AccountController extends Controller
 
         $userId = Auth::user()->id;
         $existingAccount = Account::where('user_id', $userId)
-            ->orWhere('bvn', $request->bvn)
+            ->orWhere('user_id', $userId)
             ->first();
 
         if ($existingAccount) {
@@ -62,8 +63,6 @@ class AccountController extends Controller
             $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
             $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public');
         }
-
-        // Create a new account
         $account = new Account();
         $account->user_id = $userId;
         $account->account_type = 'individual';
@@ -71,137 +70,38 @@ class AccountController extends Controller
         $account->lastName = $request->lastName;
         $account->firstName = $request->firstName;
         $account->phone = $request->phone;
-        $account->account_number = "000"; // Placeholder until successful creation
+        $account->account_number = "000";
         $account->bvn = $request->bvn;
         $account->profile_picture = $profilePicturePath;
+        $account->accountBalance= "0.0";
         $account->save();
-
-        // Prepare for API call
-        $accessToken = $this->accessToken;
-        $apiEndpoint = 'https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/client/individual';
-        $apiPayload = [
-            'firstname' => $request->firstName,
-            'lastname' => $request->lastName,
-            'dob' => $request->dob,
-            'phone' => $request->phone,
-            'bvn' => $request->bvn,
-        ];
-
-        // Make the API request
-        try {
-            $response = Http::withHeaders(['AccessToken' => $accessToken])
-                ->timeout(300)
-                ->post($apiEndpoint, $apiPayload);
-        } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            Log::error('Connection error while creating account', ['error' => $e->getMessage()]);
-            $account->delete();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'API connection error. Account not created.',
-            ], 400);
-        }
-
-        // Handle the API response
-        if ($response->successful()) {
-            $responseData = $response->json();
-            //log the account creation info in a seperate log file
-            $logFile = storage_path('logs/account_creation.log');
-            $accountCreationInfo = "Account created successfully for user $userId with BVN $request->bvn";
-            file_put_contents($logFile, $accountCreationInfo . PHP_EOL, FILE_APPEND);
-            $bvnStatusRecord = new BvnStatucRecorder();
-            $bvnStatusRecord->userId = $userId;
-            $bvnStatusRecord->save();
-            switch ($responseData['status']) {
-                case "00":
-                    // Successful creation
-                    $account->account_number = $responseData['data']['accountNo'];
-                    $account->save();
-                    return response()->json(['message' => 'Account created successfully', 'data' => $account], 200);
-
-                case "01":
-                    if (isset($responseData['data']['accountNo'])) {
-                        $account->account_number = $responseData['data']['accountNo'];
-                        $account->status = 'EXIST';
-                        $account->save();
-
-                        return response()->json([
-                            'status' => 'success',
-                            'message' => 'User already has an account, updated with existing account number.',
-                            'data' => $account
-                        ], 200);
-                    } else {
-                        $account->delete();
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => $responseData['message'],
-                        ], 400);
-                    }
-
-                case "929":
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => $responseData['message'] ?? 'Error creating client. Contact Admin.',
-                    ], 400);
-
-                case "199":
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => $responseData['message'],
-                    ], 403);
-
-                case "119":
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Not authorized to create clients.',
-                    ], 403);
-
-                default:
-                    $account->delete();
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Unexpected error occurred. Please try again.',
-                        'response' => $responseData
-                    ], 500);
-            }
-        } else {
-            Log::error('API call failed', ['response' => $response->json()]);
-            // $responseData = $response->json();
-            // if (isset($responseData['status']) && $responseData['status'] == '929') {
-            //     //log wit some details
-            //     Log::info('API call failed with status 929', ['response' => $response->json()]);
-            //     //call api again with the AccountNumber From the response
-            //     $response = Http::withHeaders(['AccessToken' => $accessToken])
-            //         ->timeout(300)
-            //         ->post($apiEndpoint, [
-            //             'previousAccountNo' => $responseData['data']['accountNo']
-            //         ]);
-            //     if ($response->successful()) {
-            //         Log::info('API pass and new account created with status 929', ['response' => $response->json()]);
-            //         $responseData = $response->json();
-            //         $account->account_number = $responseData['data']['accountNo'];
-            //         $account->save();
-            //         return response()->json(['status' => 'success', 'message' => 'Account created successfully', 'data' => $account], 200);
-            //     } else {
-            //         Log::info('API call failed again', ['response' => $response->json()]);
-            //         $account->delete();
-            //         return response()->json([
-            //             'status' => 'error',
-            //             'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
-            //             'response' => $response->json() ?? 'No response from API'
-            //         ], 400);
-            //     }
-            // } else {
-                $account->delete();
+        if ($account) {
+            $wallet = new Wallet();
+            $wallet->user_id = $userId;
+            $wallet->accountBalance = 0.0;
+            $wallet->save();
+            if ($wallet) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Account created successfully',
+                    'data' => $account
+                ], 201); // 201 Created status
+            } else {
                 return response()->json([
                     'status' => 'error',
-                    'message' => $response->json()['message'] ?? 'API call failed. Account not created.',
-                    'response' => $response->json() ?? 'No response from API'
-                ], 400);
-            // }
+                    'message' => 'Failed to create wallet',
+                    'data' => null
+                ], 500); // 500 Internal Server Error status
+            }
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create account',
+                'data' => null
+            ], 500); // 500 Internal Server Error status
         }
     }
+
 
 
 
@@ -237,16 +137,16 @@ class AccountController extends Controller
             $profilePicturePath = $profilePicture->storeAs('profile_pictures', $fileName, 'public'); // Save the file
         }
         $cacCertificatePath = $request->hasFile('cacCertificate')
-        ? $request->file('cacCertificate')->store('uploads/cac_certificates', 'public')
-        : null;
+            ? $request->file('cacCertificate')->store('uploads/cac_certificates', 'public')
+            : null;
 
-    $businessAddressPath = $request->hasFile('businessAddressVerification')
-        ? $request->file('businessAddressVerification')->store('uploads/business_verifications', 'public')
-        : null;
+        $businessAddressPath = $request->hasFile('businessAddressVerification')
+            ? $request->file('businessAddressVerification')->store('uploads/business_verifications', 'public')
+            : null;
 
-    $directorIdPath = $request->hasFile('directorIdVerification')
-        ? $request->file('directorIdVerification')->store('uploads/director_ids', 'public')
-        : null;
+        $directorIdPath = $request->hasFile('directorIdVerification')
+            ? $request->file('directorIdVerification')->store('uploads/director_ids', 'public')
+            : null;
         $companyDetail = CooperateAccountRequest::create([
             'companyName' => $request->input('companyName'),
             'companyAddress' => $request->input('companyAddress'),
@@ -257,9 +157,10 @@ class AccountController extends Controller
             'directorNiNnumber' => $request->input('directorNiNnumber'),
             'directorBvnNumber' => $request->input('directorBvnNumber'),
             'directorDob' => $request->input('directorDob'),
-            'userId'=>$userId,'incorporationDate'=>$request->input('incorporationDate'),
+            'userId' => $userId,
+            'incorporationDate' => $request->input('incorporationDate'),
         ]);
-        if($companyDetail){
+        if ($companyDetail) {
             $account = new Account();
             $account->user_id = $userId;
             $account->account_type = 'cooperate';
@@ -272,15 +173,13 @@ class AccountController extends Controller
             $account->profile_picture = $profilePicturePath;
             $account->save();
             //check if account is created
-            if($account){
+            if ($account) {
 
                 return response()->json(['message' => 'Request Submitted successfully . We will send you an email ', 'data' => $account, 'status' => 'success'], 200);
-            }else{
+            } else {
                 return response()->json(['message' => 'Failed to create account', 'status' => 'error'], 422);
             }
-
-        }
-        else{
+        } else {
             return response()->json(['message' => 'Failed to create company detail', 'errors' => $validation->errors(), 'status' => 'error'], 422);
         }
 

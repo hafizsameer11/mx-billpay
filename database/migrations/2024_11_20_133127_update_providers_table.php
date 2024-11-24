@@ -22,13 +22,13 @@ return new class extends Migration
             $table->unsignedBigInteger('biller_category_id');
             $table->foreign('biller_category_id')->references('id')->on('biller_categories')->onDelete('cascade');
         });
-        Schema::table('accounts', function (Blueprint $table) {
+        // Schema::table('accounts', function (Blueprint $table) {
 
 
-            $table->unsignedBigInteger('tier_id')->default($this->tierId); // Set default value
-            $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
+        //     $table->unsignedBigInteger('tier_id')->default($this->tierId); // Set default value
+        //     $table->foreign('tier_id')->references('id')->on('tiers')->onDelete('cascade'); // Add foreign key constraint
 
-        });
+        // });
         Schema::table('kyc_documents', function (Blueprint $table) {
 
             $table->string('title')->nullable();

@@ -16,16 +16,7 @@ use App\Models\Transfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+
 
 Route::post('webhook/bvn-consent', [AccountController::class, 'handleBvnConsentWebhook']);
 
@@ -71,11 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/unread-notifications',[UserController::class,'unreadNotifjications']);
     Route::get('edit-profile-details', [UserDetailController::class, 'editprofileDetail']);
     Route::get('/mark-all-read', [UserController::class, 'markAllAsRead']);
-    //transactiondetails
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
-    //creating cooperate account
-    Route::post('/company-details', [CooperateAccountRequestController::class, 'index']);
-    //security settings
     Route::post('/set-pin',[PinController::class,'setPin']);
     Route::post('/verify-pin',[PinController::class,'checkPin']);
     Route::post('/change-pin',[PinController::class,'changePin']);

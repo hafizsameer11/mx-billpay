@@ -38,8 +38,14 @@ class CooperateAccountController extends Controller
                 'bvn' => $bvn,
             ]);
             if($response->successful()){
-                $data=$response->json()['data'];
-
+                $responseData=$response->json();
+                if($responseData['status']=='00'){
+                    $account->account_number=$responseData['data']['accountNo'];
+                    $account->save();
+                    return response()->json(['status'=>'success','message'=>$responseData['message']],200);
+                }else{
+                    return response()->json(['status'=>'error','message'=>$responseData['message']],400);
+                }
 
             }else{
 
