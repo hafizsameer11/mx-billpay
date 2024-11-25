@@ -8,6 +8,7 @@ use App\Models\Notification as ModelsNotification;
 use App\Models\PasswordReset;
 use App\Models\Pin;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -111,15 +112,7 @@ class AuthController extends Controller
                 'status' => 'error'
             ], 401);
         }
-
-        // Fetch the user's account details
         $account = $user->account;
-        if ($account->type == 'cooperate' && $account->status == 'pending') {
-            return response()->json([
-                'statuss' => 'error',
-                'message' => 'Your Request is Under Reveiw. Wait for admin approval',
-            ], 401);
-        }
         if (!$account) {
             return response()->json([
                 'statuss' => 'pending',
@@ -128,20 +121,7 @@ class AuthController extends Controller
                 'token' => $user->createToken('API Token')->plainTextToken,
             ]);
         }
-
-        $accountNumber1 = $account->account_number;
-        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
-                'accountNumber' => $accountNumber1
-            ]);
-        $accountBalance = $account->accountBalance;
-        if ($response->successful()) {
-            $account->accountBalance = $response->json()['data']['accountBalance'];
-            $account->save();
-            $accountBalance = $response->json()['data']['accountBalance'];
-        }
         $pin = Pin::where('user_id', $user->id)->first();
-        //check if pin is present
         $has_pin = $pin ? true : false;
         $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
         $notification = new ModelsNotification();
@@ -152,6 +132,7 @@ class AuthController extends Controller
         $notification->icon = asset('notificationLogos/profile2.png');
         $notification->iconColor = config('notification_colors.colors.Account');
         $notification->save();
+        $wallet=Wallet::where('user_id',$user->id)->first();
         return response()->json([
             'message' => 'Login successful.',
             'user' => [
@@ -160,8 +141,8 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'phone' => $user->account->phone,
                 'hasPin'=>$has_pin,
-                'accountNumber' => $account->account_number,
-                'accountBalance' => $account->accountBalance,
+                'accountNumber' => $wallet->accountNumber,
+                'accountBalance' => $wallet->accountBalance,
                 'created_at' => $account->created_at,
                 'updated_at' => $account->updated_at,
                 'profilePicture' => $profilePictureUrl
@@ -171,45 +152,45 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function accountEnquiry(Request $request, $id = null)
-    {
-        if (is_null($id)) {
-            $userId = Auth::user()->id;
-        } else {
-            $userId = $id;
-        }
+    // public function accountEnquiry(Request $request, $id = null)
+    // {
+    //     if (is_null($id)) {
+    //         $userId = Auth::user()->id;
+    //     } else {
+    //         $userId = $id;
+    //     }
 
-        $accountNumber = Account::where('user_id', $userId)->first();
-        $accountNumber1 = $accountNumber->account_number;
-        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
-                'accountNumber' => $accountNumber1
-            ]);
-        if ($response->successful()) {
-            $accountData = $response->json()['data'];
-            $accountStatus = $response->json()['status'];
-            if ($accountStatus === '00') {
-                $account = Account::where('user_id', $userId)->first();
-                if ($account) {
-                    $account->accountBalance = $accountData['accountBalance'];
-                    $account->save();
-                    if (is_null($account->accountId)) {
-                        $account->accountId = $accountData['accountId'];
-                        $account->client = $accountData['client'];
-                        $account->clientId = $accountData['clientId'];
-                        $account->savingsProductName = $accountData['savingsProductName'];
-                        $account->save();
-                    }
-                    return response()->json($account, 200);
-                }
-                return response()->json(['message' => 'Account not found'], 404);
-            } else {
-                return response()->json(['error' => 'Invalid account status', 'status' => $accountStatus], 400);
-            }
-        } else {
-            return response()->json(['error' => 'Failed to fetch account details', 'details' => $response->json()], $response->status());
-        }
-    }
+    //     $accountNumber = Account::where('user_id', $userId)->first();
+    //     $accountNumber1 = $accountNumber->account_number;
+    //     $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+    //         ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
+    //             'accountNumber' => $accountNumber1
+    //         ]);
+    //     if ($response->successful()) {
+    //         $accountData = $response->json()['data'];
+    //         $accountStatus = $response->json()['status'];
+    //         if ($accountStatus === '00') {
+    //             $account = Account::where('user_id', $userId)->first();
+    //             if ($account) {
+    //                 $account->accountBalance = $accountData['accountBalance'];
+    //                 $account->save();
+    //                 if (is_null($account->accountId)) {
+    //                     $account->accountId = $accountData['accountId'];
+    //                     $account->client = $accountData['client'];
+    //                     $account->clientId = $accountData['clientId'];
+    //                     $account->savingsProductName = $accountData['savingsProductName'];
+    //                     $account->save();
+    //                 }
+    //                 return response()->json($account, 200);
+    //             }
+    //             return response()->json(['message' => 'Account not found'], 404);
+    //         } else {
+    //             return response()->json(['error' => 'Invalid account status', 'status' => $accountStatus], 400);
+    //         }
+    //     } else {
+    //         return response()->json(['error' => 'Failed to fetch account details', 'details' => $response->json()], $response->status());
+    //     }
+    // }
 
     // Logout method
     public function logout(Request $request)

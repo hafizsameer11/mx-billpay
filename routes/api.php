@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserDetailController;
+use App\Http\Controllers\Api\VirtualAccountController;
 use App\Http\Controllers\PinController;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
@@ -66,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/set-pin',[PinController::class,'setPin']);
     Route::post('/verify-pin',[PinController::class,'checkPin']);
     Route::post('/change-pin',[PinController::class,'changePin']);
+    //
+    Route::post('/fund-account',[VirtualAccountController::class,'fundAccount']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -19,13 +20,14 @@ class UserDetailController extends Controller
         $id = Auth::user()->id;;
         $user = User::where('id', $id)->with('account')->first();
         $userId = $user->id;
+        $wallet=Wallet::where('user_id', $id)->first();
         $email = $user->email;
         $account = Account::where('user_id', $id)->first();
         $firstName = $account->firstName;
         $lastName = $account->lastName;
         $profilePic = $account->profile_picture;
-        $accountNo = $account->account_number;
-        $balance = $account->accountBalance;
+        $accountNo = $wallet->accountNumber;
+        $balance = $wallet->accountBalance;
         if (!$user) {
             return response()->json(['message' => 'User not found', 'status' => 'error'], 404);
         } else {
