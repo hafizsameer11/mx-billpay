@@ -30,22 +30,29 @@ class VirtualAccountController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,
         ])->post($apiUrl, $payload);
-        if($response->successful() && $response->json()['status'] == '00'){
-            $history=new VirtualAccountHistory();
-            $history->user_id=$userId;;
-            $history->refference=$reference;
-            $history->status="active";
-            $history->accountNumber=$response->json()['accountNumber'];
+        if ($response->successful() && $response->json()['status'] == '00') {
+            $history = new VirtualAccountHistory();
+            $history->user_id = $userId;;
+            $history->refference = $reference;
+            $history->status = "active";
+            $history->accountNumber = $response->json()['accountNumber'];
             $history->save();
-            return response()->json(['status'=>'success','message'=>'Account funded successfully','accountNumber'=>$response->json()['accountNumber']],200);
-        }else{
-            $history=new VirtualAccountHistory();
-            $history->user_id=$userId;;
-            $history->refference=$reference;
-            $history->status="failed";
-            $history->accountNumber=$response->json()['accountNumber'] ?? '000';
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Account funded successfully',
+                'data' => [
+                    'accountNumber' => $response->json()['accountNumber']
+                ]
+
+            ], 200);
+        } else {
+            $history = new VirtualAccountHistory();
+            $history->user_id = $userId;;
+            $history->refference = $reference;
+            $history->status = "failed";
+            $history->accountNumber = $response->json()['accountNumber'] ?? '000';
             $history->save();
-            return response()->json(['status'=>'error','message'=>'Failed to fund account'],400);
+            return response()->json(['status' => 'error', 'message' => 'Failed to fund account'], 400);
         }
 
         // return response()->json($response->json());
