@@ -126,6 +126,7 @@ class BillPaymentController extends Controller
             ], $response->status());
         }
     }
+
     public function payBills(Request $request)
     {
         $validator = Validator::make($request->all(), [

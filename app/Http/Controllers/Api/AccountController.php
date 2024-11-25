@@ -71,7 +71,7 @@ class AccountController extends Controller
         $account->firstName = $request->firstName;
         $account->phone = $request->phone;
         $account->account_number = "000";
-        $account->bvn = $request->bvn;
+        $account->bvn = "000000";
         $account->profile_picture = $profilePicturePath;
         $account->accountBalance= "0.0";
         $account->save();
@@ -102,7 +102,7 @@ class AccountController extends Controller
         }
     }
 
- 
+
     // Method to handle API responses
     private function handleApiResponse($response)
     {
