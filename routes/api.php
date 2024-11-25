@@ -68,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/verify-pin',[PinController::class,'checkPin']);
     Route::post('/change-pin',[PinController::class,'changePin']);
     //
-    Route::post('/fund-account',[VirtualAccountController::class,'fundAccount']);
+    Route::get('/fund-account',[VirtualAccountController::class,'fundAccount']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 
