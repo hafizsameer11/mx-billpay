@@ -26,7 +26,7 @@ class BillerProviderController extends Controller
                         'slug' => \Illuminate\Support\Str::slug($providerName . '-' . $categoryId),
                     ]
                 );
-    
+
                 $providers[] = $provider->title;
             }
         }
@@ -40,10 +40,12 @@ class BillerProviderController extends Controller
         $caat=BillerCategory::select('category')->where('id',$providers->biller_category_id)->first();
         $category=$caat->category;
        $provider=[
+        'id'=>$providers->id,
         'title'=>$providers->title,
         'slug'=>$providers->slug,
         'logo'=>asset($providers->logo),
         'category'=>$category,
+        'category_id'=>$caat->id
        ];
 
         return response()->json(['status'=>'success','data'=>$provider],200);
