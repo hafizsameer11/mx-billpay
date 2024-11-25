@@ -36,19 +36,30 @@ class BillerProviderController extends Controller
 
     public function getProviders($id)
     {
-        $providers = BillProviders::where('biller_category_id', $id)->first();
-        $caat=BillerCategory::select('category','id')->where('id',$providers->biller_category_id)->first();
-        $category=$caat->category;
-       $provider=[
-        'id'=>$providers->id,
-        'title'=>$providers->title,
-        'slug'=>$providers->slug,
-        'logo'=>asset($providers->logo),
-        'category'=>$category,
-        'category_id'=>$caat->id
-       ];
+        $providers = BillProviders::where('biller_category_id', $id)->get();
+        $categoryData = BillerCategory::select('category', 'id')->where('id', $id)->first();
 
-        return response()->json(['status'=>'success','data'=>$provider],200);
+        // Ensure category data exists
+        if (!$categoryData) {
+            return response()->json(['status' => 'error', 'message' => 'Category not found'], 404);
+        }
+
+        $category = $categoryData->category;
+        $providerList = [];
+
+        foreach ($providers as $provider) {
+            $providerList[] = [
+                'id' => $provider->id,
+                'title' => $provider->title,
+                'slug' => $provider->slug,
+                'logo' => asset($provider->logo),
+                'category' => $category,
+                'category_id' => $categoryData->id,
+            ];
+        }
+
+        return response()->json(['status' => 'success', 'data' => $providerList], 200);
     }
+
 
 }
