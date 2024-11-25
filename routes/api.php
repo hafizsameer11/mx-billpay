@@ -30,7 +30,7 @@ Route::post('auth/reset-password-otp-verification', [AuthController::class, 'ver
 Route::post('auth/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('auth/user-clear', [AuthController::class, 'tableclear']);
 Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBillerCategories']);
-Route::get('/biller-items-fetch/{id}', [BillPaymentController::class, 'fetchBillerItems']);
+Route::get('/biller-items-fetch/{categoryId}/{providerId}', [BillPaymentController::class, 'fetchBillerItems']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
 Route::middleware('auth:sanctum')->group(function () {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
 use App\Models\BillPayment;
+use App\Models\BillProviders;
 use App\Models\Notification;
 use App\Models\Transaction;
 use Illuminate\Container\RewindableGenerator;
@@ -39,10 +40,11 @@ class BillPaymentController extends Controller
             'data' => $categories
         ]);
     }
-    public function fetchBillerItems($id)
+    public function fetchBillerItems($categoryId, $providerId)
     {
-        // Fetching query parameters
-        $categoryId = $id;
+
+        // $categoryId = $categoryId;
+
         $categories = BillerCategory::where('id', $categoryId)->first();
         $categories = [
             'id' => $categories->id,
@@ -50,15 +52,16 @@ class BillPaymentController extends Controller
             'icon' => asset($categories->logo),
             'iconColor' => $categories->backgroundColor
         ];
-
-        $items = BillerItem::where('category_id', $id)->get();
-
+        $provider=BillProviders::where('id', $providerId)->first();
+        $items = BillerItem::where('category_id', $categoryId)->where('provider_name',$provider->title)->get();
+        $provider=[
+            'id'=>$provider->id,
+            'title'=>$provider->title,
+        ];
         $items = $items->map(function ($item) {
             return [
-
                 'id' => $item->id,
                 'paymentitemname' => $item->paymentitemname
-
             ];
         });
         if ($items->isEmpty()) {
@@ -72,9 +75,10 @@ class BillPaymentController extends Controller
 
             'data' => [
                 'category' => $categories,
-                'itemList' => $items
+                'itemList' => $items,
+                'provider'=>$provider
             ],
-        ], 200); // 200 OK
+        ], 200);
     }
     public function validateCustomer(Request $request)
     {
@@ -117,7 +121,7 @@ class BillPaymentController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => $response->json('message').' Customer does not Exist', // Error message from the API
+                'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
                 'data' => $response->json('data'),
             ], $response->status());
         }
