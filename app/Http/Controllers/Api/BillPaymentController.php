@@ -44,7 +44,7 @@ class BillPaymentController extends Controller
     {
 
         // $categoryId = $categoryId;
-
+        return response()->json('recevied');
         $categories = BillerCategory::where('id', $categoryId)->first();
         $categories = [
             'id' => $categories->id,
