@@ -12,27 +12,28 @@ class BillerProviderController extends Controller
     // set providers
     public function setProviders()
     {
-        // Fetch all biller items and group by provider_name
         $billerItems = \App\Models\BillerItem::all()->groupBy('provider_name');
         $providers = [];
 
         foreach ($billerItems as $providerName => $items) {
-            // Create or fetch the provider once for each unique provider_name
-            $provider = \App\Models\BillProviders::firstOrCreate(
-                [
-                    'title' => $providerName,
-                ],
-                [
-                    'slug' => \Illuminate\Support\Str::slug($providerName),
-                    'biller_category_id' => $items->first()->category_id,
-                ]
-            );
-
-            $providers[] = $provider->title;
+            foreach ($items->groupBy('category_id') as $categoryId => $groupedItems) {
+                $provider = BillProviders::firstOrCreate(
+                    [
+                        'title' => $providerName,
+                        'biller_category_id' => $categoryId,
+                    ],
+                    [
+                        'slug' => \Illuminate\Support\Str::slug($providerName . '-' . $categoryId),
+                    ]
+                );
+    
+                $providers[] = $provider->title;
+            }
         }
 
         return response()->json($providers);
     }
+
     public function getProviders($id)
     {
         $providers = BillProviders::where('biller_category_id', $id)->first();
