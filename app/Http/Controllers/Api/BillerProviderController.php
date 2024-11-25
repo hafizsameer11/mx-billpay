@@ -37,7 +37,7 @@ class BillerProviderController extends Controller
     public function getProviders($id)
     {
         $providers = BillProviders::where('biller_category_id', $id)->first();
-        $caat=BillerCategory::select('category')->where('id',$providers->biller_category_id)->first();
+        $caat=BillerCategory::select('category','id')->where('id',$providers->biller_category_id)->first();
         $category=$caat->category;
        $provider=[
         'id'=>$providers->id,
