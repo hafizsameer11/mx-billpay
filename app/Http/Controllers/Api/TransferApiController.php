@@ -7,6 +7,8 @@ use App\Models\Account;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\Transfer;
+use App\Models\VirtualAccountHistory;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -171,7 +173,7 @@ class TransferApiController extends Controller
                 $beneficiaryAccount = Account::where('account_number', $request->toAccount)->first();
                 if ($beneficiaryAccount) {
                     // Record the incoming funds for the beneficiary
-                    $this->recordIncomingFunds($beneficiaryAccount->user_id, $request->amount, $reference, $beneficiaryAccount,$request);
+                    $this->recordIncomingFunds($beneficiaryAccount->user_id, $request->amount, $reference, $beneficiaryAccount, $request);
                 }
             }
 
@@ -238,7 +240,7 @@ class TransferApiController extends Controller
         }
     }
 
-    private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount,Request $request)
+    private function recordIncomingFunds($userId, $amount, $reference, $beneficiaryAccount, Request $request)
     {
         // Create a new transaction for incoming funds
         $notification = new Notification();
@@ -315,12 +317,8 @@ class TransferApiController extends Controller
             $sessionId = $request->input('session_id');
             $timestamp = $request->input('timestamp');
 
-            // Log incoming webhook data
-
-            // Use a default user_id for unregistered accounts if necessary
-            $userId = optional(Account::where('account_number', $accountNumber)->first())->user_id;
-
-            // Record the transaction if user_id is found
+            $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->first();
+            $userId = $virtualAccount ? $virtualAccount->user_id : null;
             if ($userId !== null) {
                 $transaction = new Transaction();
                 $transaction->user_id = $userId;
@@ -332,19 +330,21 @@ class TransferApiController extends Controller
                 $transaction->reference = $reference;
                 $transaction->save();
 
-                $transfer = new Transfer();
-                $transfer->transaction_id = $transaction->id;
-                $transfer->from_account_number = $originatorAccountNumber;
-                $transfer->to_account_number = $accountNumber;
-                $transfer->from_client_name = $originatorAccountName;
-                $transfer->to_client_name = optional($transaction->user)->email ?? 'Unregistered';
-                $transfer->amount = $amount;
-                $transfer->status = 'Completed';
-                $transfer->response_message = "Successful inward credit";
-                $transfer->originator_narration = $originatorNarration;
-                $transfer->transaction_channel = $transactionChannel;
-                $transfer->session_id = $sessionId;
-                $transfer->save();
+                if ($virtualAccount) {
+
+                    Log::info('Inward Credit Notification Received: for the authenticated user', $request->all());
+                    $wallet = Wallet::where('user_id', Auth::user()->id)->first();
+                    $wallet->accountBalance = $amount;
+                    $wallet->save();
+                    $notification = new Notification();
+                    $notification->title = "Icoming Payments";
+                    $notification->type = "transfer";
+                    $notification->message = "Payment of " . $amount . " has been successful";
+                    $notification->user_id = $userId;
+                    $notification->icon = asset('notificationLogos/wallet.png');
+                    $notification->iconColor = config('notification_colors.colors.Wallet');
+                    $notification->save();
+                }
 
                 return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
             } else {
