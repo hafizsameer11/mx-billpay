@@ -327,7 +327,7 @@ class TransferApiController extends Controller
                 $transaction->transaction_date = $timestamp;
                 $transaction->sign = 'positive';
                 $transaction->status = 'Completed';
-                $transaction->reference = $reference;
+                // $transaction->reference = $reference;
                 $transaction->save();
 
                 if ($virtualAccount) {
