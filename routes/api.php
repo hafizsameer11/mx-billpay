@@ -69,6 +69,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/change-pin',[PinController::class,'changePin']);
     //
     Route::get('/fund-account',[VirtualAccountController::class,'fundAccount']);
+
+    Route::post('/set-fcm-token',[UserController::class,'setFcmToken']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 

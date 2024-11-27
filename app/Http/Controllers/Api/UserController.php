@@ -130,4 +130,15 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'All notifications marked as read'], 200);
     }
 
+    //set fcm
+    public function setFcmToken(Request $request){
+        $userId = Auth::user()->id;
+        $fcmToken = $request->fcmToken;
+        $user=User::where('id', $userId)->first();
+        $user->fcmToken=$fcmToken;
+        $user->save();
+        return response()->json(['status' => 'success', 'message' => 'FCM token set successfully'], 200);
+
+    }
+
 }

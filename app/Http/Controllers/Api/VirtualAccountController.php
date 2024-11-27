@@ -43,7 +43,6 @@ class VirtualAccountController extends Controller
                 'data' => [
                     'accountNumber' => $response->json()['accountNumber']
                 ]
-
             ], 200);
         } else {
             $history = new VirtualAccountHistory();
@@ -54,7 +53,5 @@ class VirtualAccountController extends Controller
             $history->save();
             return response()->json(['status' => 'error', 'message' => 'Failed to fund account'], 400);
         }
-
-        // return response()->json($response->json());
     }
 }
