@@ -14,6 +14,7 @@ use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class BillPaymentController extends Controller
@@ -97,10 +98,8 @@ class BillPaymentController extends Controller
                 'data' => [],
             ], 400);
         }
-
         $customerId = $request->input('customerId');
         $id = $request->id;
-
         $billerItem = BillerItem::where('id', $id)->first();
         $divisionId = $billerItem->division;
         $paymentItem = $billerItem->paymentCode;
@@ -114,8 +113,6 @@ class BillPaymentController extends Controller
             'customerId' => $customerId,
             'billerId' => $billerId,
         ]);
-
-        // Check if the API request was successful
         if ($response->successful()) {
             return response()->json([
                 'status' => 'success',
@@ -205,6 +202,8 @@ class BillPaymentController extends Controller
                 'amount' => $amount,
                 'response' => json_encode($response->json())
             ]);
+            //log
+            Log::info('Bill Payment Response: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->save();
             return response()->json([
