@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class VirtualAccountController extends Controller
 {
@@ -59,7 +60,7 @@ class VirtualAccountController extends Controller
             $history->accountNumber = $response->json()['accountNumber'];
             $history->expiryDate = Carbon::createFromTimestamp( Carbon::now()->addMinutes(4320)->timestamp)->toDateTimeString(); // Store as timestamp
             $history->save();
-
+            Log::info('Virtual Account: ' . $reference, ['billers' => $response->json()]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account funded successfully',
