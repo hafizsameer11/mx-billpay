@@ -14,7 +14,8 @@ class VirtualAccountController extends Controller
     protected $accessToken;
     public function __construct()
     {
-        $this->accessToken = config('access_token.test_token');
+        $this->accessToken = config('access_token.live_token');
+        // $this->accessToken = config('access_token.test_token');
     }
     public function fundAccount() {
         $userId = Auth::user()->id;
