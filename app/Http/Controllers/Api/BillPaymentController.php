@@ -176,7 +176,7 @@ class BillPaymentController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
-        if ($response->successful()) {
+        if ($response->successful() && $response->json('status') == '99') {
             $transaction = new Transaction();
             $transaction->user_id = $userId;
             $transaction->transaction_type = "Bill Payment";
