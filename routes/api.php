@@ -57,6 +57,7 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::get('/get-transfer', [TransactionController::class, 'getTransactions']);
     Route::get('/get-billpayments', [TransactionController::class, 'getBillPayment']);
     Route::post('/update-email',[UserController::class,'updateEmail']);
+    Route::post('/verify-user',[UserController::class,'verifyUser']);
     Route::post('/update-password',[UserController::class,'updatePassword']);
     Route::get('/check-user-status',[UserController::class,'checkUserStatus']);
     Route::get('/check-bvn-status',[UserController::class,'bvnStatusChecker']);

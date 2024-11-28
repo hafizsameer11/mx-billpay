@@ -140,5 +140,14 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'FCM token set successfully'], 200);
 
     }
+    public function verifyUser(Request $request){
+        $userId = Auth::user()->id;
+        $passWord=$request->password;
+        $user=User::where('id', $userId)->first();
+        if(Hash::check($passWord, $user->password)){
+            return response()->json(['status' => 'success', 'message' => 'User verified successfully'], 200);
+        }
+        return response()->json(['status' => 'error', 'message' => 'User verification failed'], 200);
+    }
 
 }
