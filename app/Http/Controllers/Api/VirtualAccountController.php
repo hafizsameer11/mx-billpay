@@ -20,13 +20,13 @@ class VirtualAccountController extends Controller
     {
         $userId = Auth::user()->id;
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
-        if ($virtualAccount && $virtualAccount->expiry_date >= Carbon::now()) {
+        if ($virtualAccount && $virtualAccount->expirexpiryDatey_date >= Carbon::now()) {
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account funded successfully',
                 'data' => [
-                    'accountNumber' => $virtualAccount->accountNumber,'expiryDate'=>$virtualAccount->expiry_date ?? null
+                    'accountNumber' => $virtualAccount->accountNumber,'expiryDate'=>$virtualAccount->expiryDate ?? null
                 ]
             ], 200);
         }
@@ -48,14 +48,14 @@ class VirtualAccountController extends Controller
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
-            $history->expiry_date = now()->addMinutes(4320);
+            $history->expiryDate = now()->addMinutes(4320);
             $history->save();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account funded successfully',
                 'data' => [
                     'accountNumber' => $response->json()['accountNumber'],
-                    'expiryDate'=>$history->expiry_date ?? now()->addMinutes(4320)
+                    'expiryDate'=>$history->expiryDate ?? now()->addMinutes(4320)
                 ]
             ], 200);
         } else {
