@@ -202,9 +202,10 @@ class BillPaymentController extends Controller
                 'transaction_id' => $transaction->id,
                 'customerId' => $customerId,
                 'phoneNumber' => $phoneNumber,
-
+                'amount' => $amount,
+                'response' => json_encode($response->json()['data'])
             ]);
-            $wallet->accountBalance=$wallet->accountBalance-$amount;
+            $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->save();
             return response()->json([
                 'status' => 'success',
