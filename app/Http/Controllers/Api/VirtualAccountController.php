@@ -21,7 +21,7 @@ class VirtualAccountController extends Controller
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
         return response()->json([
             'date'=>Carbon::now(),
-            'expiryDate'=>Carbon::createFromTimestamp($virtualAccount->expiryDate),
+           'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
         ]);
         if ($virtualAccount && Carbon::createFromTimestamp($virtualAccount->expiryDate)->greaterThan(Carbon::now())) {
             return response()->json([
