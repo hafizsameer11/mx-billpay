@@ -32,7 +32,7 @@ class StatisticsController extends Controller
             ];
         });
 
-        return response()->json($data);
+        return response()->json(['status'=>'success','data' => $data], 200);
     }
 
     public function quarterlyStats()
@@ -57,7 +57,7 @@ class StatisticsController extends Controller
             ];
         });
 
-        return response()->json($data);
+        return response()->json(['status'=>'success','data' => $data], 200);
     }
 
     public function yearlyStats()
@@ -79,7 +79,7 @@ class StatisticsController extends Controller
             ];
         });
 
-        return response()->json($data);
+        return response()->json(['status'=>'success','data' => $data], 200);
     }
 
     public function monthlyStats()
@@ -102,6 +102,6 @@ class StatisticsController extends Controller
             ];
         });
 
-        return response()->json($data);
+        return response()->json(['status'=>'success','data' => $data], 200);
     }
 }
