@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('billpayments', function (Blueprint $table) {
+        Schema::table('bill_payments', function (Blueprint $table) {
             //field forr storing json response from paystack
             $table->json('response')->nullable();
             $table->decimal('amount', 15, 2); // Amount of the transaction
