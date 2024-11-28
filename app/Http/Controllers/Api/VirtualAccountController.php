@@ -20,7 +20,7 @@ class VirtualAccountController extends Controller
     {
         $userId = Auth::user()->id;
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
-        if ($virtualAccount && $virtualAccount->expirexpiryDatey_date >= Carbon::now()) {
+        if ($virtualAccount && $virtualAccount->expiryDate >= Carbon::now()) {
 
             return response()->json([
                 'status' => 'success',
