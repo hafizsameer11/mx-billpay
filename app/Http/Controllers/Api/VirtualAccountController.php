@@ -30,7 +30,7 @@ class VirtualAccountController extends Controller
                 'message' => 'Account Already Valid',
                 'data' => [
                     'accountNumber' => $virtualAccount->accountNumber,
-                    'expiryDate' => $virtualAccount->expiryDate ?? null,
+                    'expiryDate' => strtotime($virtualAccount->expiryDate),
                 ]
             ], 200);
         }
