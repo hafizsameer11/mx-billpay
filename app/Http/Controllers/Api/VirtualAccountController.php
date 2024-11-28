@@ -19,17 +19,22 @@ class VirtualAccountController extends Controller
     public function fundAccount()
     {
         $userId = Auth::user()->id;
-        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
-        if ($virtualAccount && $virtualAccount->expiryDate >= Carbon::now()) {
 
+        // Retrieve the virtual account for the user
+        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
+
+        // Check if the expiry date is still valid
+        if ($virtualAccount && Carbon::createFromTimestamp(strtotime($virtualAccount->expiryDate))->greaterThanOrEqualTo(Carbon::now())) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account Already Valid',
                 'data' => [
-                    'accountNumber' => $virtualAccount->accountNumber,'expiryDate'=>$virtualAccount->expiryDate ?? null
+                    'accountNumber' => $virtualAccount->accountNumber,
+                    'expiryDate' => $virtualAccount->expiryDate ?? null,
                 ]
             ], 200);
         }
+
         $apiUrl = "https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/virtualaccount";
         $reference = 'mxBillPay-' . mt_rand(1000, 99999);
         $payload = [
@@ -42,29 +47,32 @@ class VirtualAccountController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,
         ])->post($apiUrl, $payload);
+
         if ($response->successful() && $response->json()['status'] == '00') {
             $history = new VirtualAccountHistory();
-            $history->user_id = $userId;;
+            $history->user_id = $userId;
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
-            $history->expiryDate = now()->addMinutes(4320);
+            $history->expiryDate = now()->addMinutes(4320)->timestamp; // Store expiry date as timestamp
             $history->save();
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account funded successfully',
                 'data' => [
                     'accountNumber' => $response->json()['accountNumber'],
-                    'expiryDate'=>$history->expiryDate ?? now()->addMinutes(4320)
+                    'expiryDate' => $history->expiryDate,
                 ]
             ], 200);
         } else {
             $history = new VirtualAccountHistory();
-            $history->user_id = $userId;;
+            $history->user_id = $userId;
             $history->refference = $reference;
             $history->status = "failed";
             $history->accountNumber = $response->json()['accountNumber'] ?? '000';
             $history->save();
+
             return response()->json(['status' => 'error', 'message' => 'Failed to fund account'], 400);
         }
     }
