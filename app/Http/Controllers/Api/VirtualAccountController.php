@@ -20,9 +20,9 @@ class VirtualAccountController extends Controller
         $userId = Auth::user()->id;
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
         $timestamp = 1733049629; // Example timestamp
-$readableDate = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
-return response()->json($readableDate
-, 200);
+// $readableDate = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
+// return response()->json(Carbon::now()->addMinutes(4320)->timestamp
+// , 200);
         if ($virtualAccount && Carbon::createFromTimestamp($virtualAccount->expiryDate)->greaterThan(Carbon::now())) {
             return response()->json([
                 'status' => 'success',
@@ -54,7 +54,7 @@ return response()->json($readableDate
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
-            $history->expiryDate = Carbon::now()->addMinutes(4320); // Store as timestamp
+            $history->expiryDate = Carbon::createFromTimestamp( Carbon::now()->addMinutes(4320)->timestamp)->toDateTimeString(); // Store as timestamp
             $history->save();
 
             return response()->json([
