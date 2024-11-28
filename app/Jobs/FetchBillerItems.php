@@ -67,18 +67,19 @@ class FetchBillerItems implements ShouldQueue
             $items = $response->json()['data']['paymentitems'];
 
             // Log the number of items fetched
-            Log::info('Fetched items for Biller ID: ' . $billerId, ['items' => $items]);
+            // Log::info('Fetched items for Biller ID: ' . $billerId, ['items' => $items]);
 
             foreach ($items as $item) {
+                Log::info('Item details: ' . $item);
                 BillerItem::updateOrCreate(
-                    ['paymentitemid' => $item['paymentitemid'], 'category_id' => $this->categoryId],
+                    ['paymentitemid' => $item['paymentitemid']??'N/A', 'category_id' => $this->categoryId],
                     [
                         'provider_name'=>$billerName ?? 'N/A',
-                        'billerId'=>$billerId,
-                        'paymentitemname' => $item['paymentitemname'],
-                        'paymentCode' => $item['paymentCode'],
-                        'productId' => $item['productId'],
-                        'currencySymbol' => $item['currencySymbol'],
+                        'billerId'=>$billerId??'N/A',
+                        'paymentitemname' => $item['paymentitemname']??'N/A',
+                        'paymentCode' => $item['paymentCode']??'N/A',
+                        'productId' => $item['productId']??'N/A',
+                        'currencySymbol' => $item['currencySymbol']??'N/A',
                         'isAmountFixed' => $item['isAmountFixed'] ? 1 : 0,
                         'itemFee' => $item['itemFee'],
                         'itemCurrencySymbol' => $item['itemCurrencySymbol'],
