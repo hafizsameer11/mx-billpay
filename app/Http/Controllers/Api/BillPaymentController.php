@@ -107,7 +107,7 @@ class BillPaymentController extends Controller
 
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/customervalidate', [
+        ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
             'customerId' => $customerId,
@@ -174,7 +174,7 @@ class BillPaymentController extends Controller
         ];
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
+        ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
         if ($response->successful()) {
             $transaction = new Transaction();
             $transaction->user_id = $userId;
