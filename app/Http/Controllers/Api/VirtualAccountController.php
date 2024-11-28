@@ -51,7 +51,7 @@ class VirtualAccountController extends Controller
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
-            $history->expiryDate = Carbon::now()->addMinutes(4320)->timestamp; // Store as timestamp
+            $history->expiryDate = Carbon::now()->addMinutes(4320); // Store as timestamp
             $history->save();
 
             return response()->json([
