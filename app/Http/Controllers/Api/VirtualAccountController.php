@@ -62,7 +62,7 @@ class VirtualAccountController extends Controller
                 'message' => 'Account funded successfully',
                 'data' => [
                     'accountNumber' => $response->json()['accountNumber'],
-                    'expiryDate' => Carbon::createFromTimestamp($history->expiryDate)->toDateTimeString(),
+                    'expiryDate' => Carbon::createFromTimestamp( Carbon::now()->addMinutes(4320)->timestamp)->toDateTimeString(),
                 ]
             ], 200);
         } else {
