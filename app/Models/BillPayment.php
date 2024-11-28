@@ -26,4 +26,7 @@ class BillPayment extends Model
     public function transaction(){
         return $this->belongsTo(Transaction::class ,'transaction_id','id'); ;
     }
+    public function account(){
+        return $this->belongsTo(Account::class);
+    }
 }
