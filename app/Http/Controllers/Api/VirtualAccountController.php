@@ -24,7 +24,7 @@ class VirtualAccountController extends Controller
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
 
         // Check if the expiry date is still valid
-        if ($virtualAccount && Carbon::createFromTimestamp(strtotime($virtualAccount->expiryDate))->greaterThanOrEqualTo(Carbon::now())) {
+        if ($virtualAccount && Carbon::createFromTimestamp(strtotime($virtualAccount->expiryDate))->lessThanOrEqualTo(Carbon::now())) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account Already Valid',
