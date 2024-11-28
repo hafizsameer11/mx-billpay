@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\VirtualAccountHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 
 class VirtualAccountController extends Controller
@@ -18,6 +19,17 @@ class VirtualAccountController extends Controller
     public function fundAccount()
     {
         $userId = Auth::user()->id;
+        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
+        if ($virtualAccount && $virtualAccount->expiry_date >= Carbon::now()) {
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Account funded successfully',
+                'data' => [
+                    'accountNumber' => $virtualAccount->accountNumber,'expiryDate'=>$virtualAccount->expiry_date ?? null
+                ]
+            ], 200);
+        }
         $apiUrl = "https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/virtualaccount";
         $reference = 'mxBillPay-' . mt_rand(1000, 99999);
         $payload = [
@@ -36,12 +48,14 @@ class VirtualAccountController extends Controller
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
+            $history->expiry_date = now()->addMinutes(4320);
             $history->save();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account funded successfully',
                 'data' => [
-                    'accountNumber' => $response->json()['accountNumber']
+                    'accountNumber' => $response->json()['accountNumber'],
+                    'expiryDate'=>$history->expiry_date ?? now()->addMinutes(4320)
                 ]
             ], 200);
         } else {
