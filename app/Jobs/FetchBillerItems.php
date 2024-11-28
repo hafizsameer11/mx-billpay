@@ -82,7 +82,7 @@ class FetchBillerItems implements ShouldQueue
                         'isAmountFixed' => $item['isAmountFixed'] ? 1 : 0,
                         'itemFee' => $item['itemFee'],
                         'itemCurrencySymbol' => $item['itemCurrencySymbol'],
-                        'pictureId' => $item['pictureId'],
+                        'pictureId' => $item['pictureId']??'N/A',
                         'billerType' => $item['billerType'],
                         'payDirectitemCode' => $item['payDirectitemCode'] ?? 'N/A',
                         'currencyCode' => $item['currencyCode'],
