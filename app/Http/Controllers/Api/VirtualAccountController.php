@@ -54,7 +54,8 @@ class VirtualAccountController extends Controller
             $history->refference = $reference;
             $history->status = "active";
             $history->accountNumber = $response->json()['accountNumber'];
-            $history->expiryDate = now()->addMinutes(4320)->timestamp; // Store expiry date as timestamp
+            $history->expiryDate = now()->addMinutes(4320)->toDateTimeString(); // Convert to datetime format
+
             $history->save();
 
             return response()->json([
