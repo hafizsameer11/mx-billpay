@@ -54,7 +54,7 @@ class FetchBillerItems implements ShouldQueue
     private function getBillerItems($billerId, $divisionId, $productId,$billerName)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-            ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/billerItems', [
+            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
                 'billerId' => $billerId,
                 'divisionId' => $divisionId,
                 'productId' => $productId,
