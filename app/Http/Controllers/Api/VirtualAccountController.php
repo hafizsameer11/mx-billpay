@@ -24,11 +24,8 @@ class VirtualAccountController extends Controller
         ->orderBy('created_at', 'desc') // Order by created_at in descending order
         ->first();
 
-        // return response()->json([
-        //     'date'=>Carbon::now(),
-        //    'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
-        // ]);
-        if ($virtualAccount && $virtualAccount->expiryDate->greaterThan(Carbon::now())) {
+        if ($virtualAccount ) {
+            if($virtualAccount->expiryDate->greaterThan(Carbon::now())){
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account Already Valid',
@@ -37,6 +34,7 @@ class VirtualAccountController extends Controller
                     'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
                 ]
             ], 200);
+        }
         }
 
         $apiUrl = "https://api-apps.vfdbank.systems/vtech-wallet/api/v1/wallet2/virtualaccount";
