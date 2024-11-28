@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('accounts/corporate', [AccountController::class, 'createCorporateAccount']);
     Route::post('auth/verify-email', [AuthController::class, 'verifyEmail']);
     //bill payment apis
-
+Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::post('/Validate-Customer', [BillPaymentController::class, 'validateCustomer']);
     Route::post('/payBills', [BillPaymentController::class, 'payBills']);
     Route::get('/transaction-Status', [BillPaymentController::class, 'transactionStatus']);

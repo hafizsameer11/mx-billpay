@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\VirtualAccountHistory;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
@@ -79,6 +80,14 @@ class VirtualAccountController extends Controller
 
             return response()->json(['status' => 'error', 'message' => 'Failed to fund account'], 400);
         }
+    }
+    public function balance(){
+        $userId = Auth::user()->id;
+        $wallet=Wallet::where('user_id', $userId)->first();
+        return response()->json([
+            'status'=>'success',
+            'balance'=>$wallet->accountBalance
+        ]);
     }
 
 }
