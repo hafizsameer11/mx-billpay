@@ -30,7 +30,7 @@ class VirtualAccountController extends Controller
                 'message' => 'Account Already Valid',
                 'data' => [
                     'accountNumber' => $virtualAccount->accountNumber,
-                    'expiryDate' => strtotime($virtualAccount->expiryDate),
+                    'expiryDate' => Carbon::createFromTimestamp(strtotime($virtualAccount->expiryDate)),
                 ]
             ], 200);
         }
