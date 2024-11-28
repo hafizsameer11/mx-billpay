@@ -65,18 +65,15 @@ class FetchBillerItems implements ShouldQueue
 
         if ($response->successful()) {
             $items = $response->json()['data']['paymentitems'];
-
-            // Log the number of items fetched
-            // Log::info('Fetched items for Biller ID: ' . $billerId, ['items' => $items]);
-
             foreach ($items as $item) {
                 Log::info('Item details: ' , [$item]);
                 BillerItem::updateOrCreate(
-                    ['paymentitemid' => $item['paymentitemid']??'N/A', 'category_id' => $this->categoryId],
+                    [ 'paymentitemname' => $item['paymentitemname']??'N/A', 'category_id' => $this->categoryId],
                     [
                         'provider_name'=>$billerName ?? 'N/A',
                         'billerId'=>$billerId??'N/A',
-                        'paymentitemname' => $item['paymentitemname']??'N/A',
+                        'paymentitemid' => $item['paymentitemid']??'N/A',
+
                         'paymentCode' => $item['paymentCode']??'N/A',
                         'productId' => $item['productId']??'N/A',
                         'currencySymbol' => $item['currencySymbol']??'N/A',
@@ -88,8 +85,8 @@ class FetchBillerItems implements ShouldQueue
                         'payDirectitemCode' => $item['payDirectitemCode'] ?? 'N/A',
                         'currencyCode' => $item['currencyCode'],
                         'division' => $item['division'],
-                        'fixed_commission' => 0, // Default commission
-                        'percentage_commission' => 0, // Default commission
+                        'fixed_commission' => 0,
+                        'percentage_commission' => 0,
                     ]
                 );
             }
