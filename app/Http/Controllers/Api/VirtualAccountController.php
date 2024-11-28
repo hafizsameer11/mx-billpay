@@ -38,7 +38,7 @@ class VirtualAccountController extends Controller
             ], 200);
         }
 
-        $apiUrl = "https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/virtualaccount";
+        $apiUrl = "https://api-apps.vfdbank.systems/vtech-wallet/api/v1/wallet2/virtualaccount";
         $reference = 'mxBillPay-' . mt_rand(1000, 99999);
         $payload = [
             'amount' => '1000',
