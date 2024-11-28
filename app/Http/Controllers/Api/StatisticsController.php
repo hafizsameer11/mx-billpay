@@ -39,47 +39,53 @@ class StatisticsController extends Controller
     {
         $userId = Auth::user()->id;
 
-        // Fetch Quarterly data
+        // Get the start and end dates of the current quarter
         $startOfQuarter = Carbon::now()->startOfQuarter();
         $endOfQuarter = Carbon::now()->endOfQuarter();
 
+        // Fetch Quarterly data grouped by month
         $billPayments = BillPayment::where('user_id', $userId)
             ->whereBetween('created_at', [$startOfQuarter, $endOfQuarter])
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+            ->get()
+            ->groupBy(function ($payment) {
+                return $payment->created_at->format('F'); // Group by month name
+            });
 
         // Format the data
-        $data = $billPayments->map(function ($payment) {
+        $data = $billPayments->map(function ($payments, $month) {
             return [
-                'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => $payment->amount,
+                'name' => $month, // Month name
+                'expense' => $payments->sum('amount'), // Sum of expenses for the month
             ];
-        });
+        })->values(); // Re-index the collection
 
-        return response()->json(['status'=>'success','data' => $data], 200);
+        return response()->json(['status' => 'success', 'data' => $data], 200);
     }
+
 
     public function yearlyStats()
     {
         $userId = Auth::user()->id;
 
-        // Fetch Yearly data
+        // Fetch Yearly data grouped by month
         $billPayments = BillPayment::where('user_id', $userId)
             ->whereYear('created_at', Carbon::now()->year)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+            ->get()
+            ->groupBy(function ($payment) {
+                return $payment->created_at->format('F'); // Group by month name
+            })
+            ->sortKeysDesc() // Sort months in descending order
+            ->take(5); // Take the latest 5 months
 
         // Format the data
-        $data = $billPayments->map(function ($payment) {
+        $data = $billPayments->map(function ($payments, $month) {
             return [
-                'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => $payment->amount,
+                'name' => $month, // Month name
+                'expense' => $payments->sum('amount'), // Sum of expenses for the month
             ];
-        });
+        })->values(); // Re-index the collection
 
-        return response()->json(['status'=>'success','data' => $data], 200);
+        return response()->json(['status' => 'success', 'data' => $data], 200);
     }
 
     public function monthlyStats()
