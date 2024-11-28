@@ -76,6 +76,7 @@ class VirtualAccountController extends Controller
             $history->status = "failed";
             $history->accountNumber = $response->json()['accountNumber'] ?? '000';
             $history->save();
+            Log::info('Virtual Account: ' . $reference, ['account' => $response->json()]);
 
             return response()->json(['status' => 'error', 'message' => 'Failed to fund account'], 400);
         }
