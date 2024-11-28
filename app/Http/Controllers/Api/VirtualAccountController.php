@@ -19,7 +19,7 @@ class VirtualAccountController extends Controller
     public function fundAccount() {
         $userId = Auth::user()->id;
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
-        if ($virtualAccount && $virtualAccount->expiryDate < Carbon::now()) {
+        if ($virtualAccount && $virtualAccount->expiryDate > Carbon::now()) {
 
             return response()->json([
                 'status' => 'success',
