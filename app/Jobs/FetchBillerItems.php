@@ -84,7 +84,7 @@ class FetchBillerItems implements ShouldQueue
                         'itemCurrencySymbol' => $item['itemCurrencySymbol'],
                         'pictureId' => $item['pictureId'],
                         'billerType' => $item['billerType'],
-                        'payDirectitemCode' => $item['payDirectitemCode'],
+                        'payDirectitemCode' => $item['payDirectitemCode'] ?? 'N/A',
                         'currencyCode' => $item['currencyCode'],
                         'division' => $item['division'],
                         'fixed_commission' => 0, // Default commission
