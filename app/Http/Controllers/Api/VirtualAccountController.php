@@ -18,7 +18,10 @@ class VirtualAccountController extends Controller
     }
     public function fundAccount() {
         $userId = Auth::user()->id;
-        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
+        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)
+        ->orderBy('created_at', 'desc') // Order by created_at in descending order
+        ->first();
+
         // return response()->json([
         //     'date'=>Carbon::now(),
         //    'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
