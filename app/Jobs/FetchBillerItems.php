@@ -70,7 +70,7 @@ class FetchBillerItems implements ShouldQueue
             // Log::info('Fetched items for Biller ID: ' . $billerId, ['items' => $items]);
 
             foreach ($items as $item) {
-                Log::info('Item details: ' . [$item]);
+                Log::info('Item details: ' , [$item]);
                 BillerItem::updateOrCreate(
                     ['paymentitemid' => $item['paymentitemid']??'N/A', 'category_id' => $this->categoryId],
                     [
