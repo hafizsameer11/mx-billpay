@@ -54,7 +54,7 @@ class VirtualAccountController extends Controller
                 'message' => 'Account funded successfully',
                 'data' => [
                     'accountNumber' => $response->json()['accountNumber'],
-                    'expiryDate'=>$history->expiryDate ?? now()->addMinutes(4320)
+                    'expiryDate'=>Carbon::now()
                 ]
             ], 200);
         } else {
