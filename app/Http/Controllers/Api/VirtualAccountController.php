@@ -19,11 +19,11 @@ class VirtualAccountController extends Controller
     public function fundAccount() {
         $userId = Auth::user()->id;
         $virtualAccount = VirtualAccountHistory::where('user_id', $userId)->first();
-        return response()->json([
-            'date'=>Carbon::now(),
-           'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
-        ]);
-        if ($virtualAccount && Carbon::createFromTimestamp($virtualAccount->expiryDate)->greaterThan(Carbon::now())) {
+        // return response()->json([
+        //     'date'=>Carbon::now(),
+        //    'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
+        // ]);
+        if ($virtualAccount && $virtualAccount->expiryDate->greaterThan(Carbon::now())) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Account Already Valid',
