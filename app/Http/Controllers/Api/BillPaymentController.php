@@ -53,6 +53,7 @@ class BillPaymentController extends Controller
             'iconColor' => $categories->backgroundColor
         ];
         $provider=BillProviders::where('id', $providerId)->first();
+        // if()
         $items = BillerItem::where('category_id', $categoryId)->where('provider_name',$provider->title)->get();
         $provider=[
             'id'=>$provider->id,
