@@ -45,7 +45,6 @@ class AccountController extends Controller
 
         $userId = Auth::user()->id;
         $existingAccount = Account::where('user_id', $userId)
-            ->orWhere('user_id', $userId)
             ->first();
 
         if ($existingAccount) {

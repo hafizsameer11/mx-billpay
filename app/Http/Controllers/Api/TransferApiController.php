@@ -327,11 +327,8 @@ class TransferApiController extends Controller
                 $transaction->transaction_date = $timestamp;
                 $transaction->sign = 'positive';
                 $transaction->status = 'Completed';
-                // $transaction->reference = $reference;
                 $transaction->save();
-
                 if ($virtualAccount) {
-
                     Log::info('Inward Credit Notification Received: for the authenticated user', $request->all());
                     $wallet = Wallet::where('user_id', $userId)->first();
                     $wallet->accountBalance = $amount;
@@ -345,7 +342,6 @@ class TransferApiController extends Controller
                     $notification->iconColor = config('notification_colors.colors.Wallet');
                     $notification->save();
                 }
-
                 return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Account not found for the provided account number.'], 404);
