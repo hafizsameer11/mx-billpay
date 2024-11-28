@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
+use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
@@ -70,6 +71,12 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::post('/change-pin',[PinController::class,'changePin']);
     Route::get('/fund-account',[VirtualAccountController::class,'fundAccount']);
     Route::post('/set-fcm-token',[UserController::class,'setFcmToken']);
+    //routes for statistics
+    Route::get('/monthly-stats',[StatisticsController::class,'monthlyStats']);
+    Route::get('/yearly-stats',[StatisticsController::class,'yearlyStats']);
+    Route::get('/quarterly-stats',[StatisticsController::class,'quarterlyStats']);
+    Route::get('/yty-stats',[StatisticsController::class,'ytyStats']);
+
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 
