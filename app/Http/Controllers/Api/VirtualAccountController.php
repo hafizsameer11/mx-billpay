@@ -20,22 +20,22 @@ class VirtualAccountController extends Controller
     }
     public function fundAccount() {
         $userId = Auth::user()->id;
-        $virtualAccount = VirtualAccountHistory::where('user_id', $userId)
-        ->orderBy('created_at', 'desc') // Order by created_at in descending order
-        ->first();
+        // $virtualAccount = VirtualAccountHistory::where('user_id', $userId)
+        // ->orderBy('created_at', 'desc')
+        // ->first();
 
-        if ($virtualAccount ) {
-            if($virtualAccount->expiryDate->greaterThan(Carbon::now())){
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Account Already Valid',
-                'data' => [
-                    'accountNumber' => $virtualAccount->accountNumber,
-                    'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
-                ]
-            ], 200);
-        }
-        }
+        // if ($virtualAccount ) {
+        //     if($virtualAccount->expiryDate->greaterThan(Carbon::now())){
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'message' => 'Account Already Valid',
+        //         'data' => [
+        //             'accountNumber' => $virtualAccount->accountNumber,
+        //             'expiryDate' => $virtualAccount->expiryDate->toIso8601String(),
+        //         ]
+        //     ], 200);
+        // }
+        // }
 
         $apiUrl = "https://api-apps.vfdbank.systems/vtech-wallet/api/v1/wallet2/virtualaccount";
         $reference = 'mxBillPay-' . mt_rand(1000, 99999);
