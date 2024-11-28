@@ -9,6 +9,7 @@ use App\Models\BillPayment;
 use App\Models\BillProviders;
 use App\Models\Notification;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,19 +53,19 @@ class BillPaymentController extends Controller
             'icon' => asset($categories->logo),
             'iconColor' => $categories->backgroundColor
         ];
-        $provider=BillProviders::where('id', $providerId)->first();
+        $provider = BillProviders::where('id', $providerId)->first();
         // if()
-        $items = BillerItem::where('category_id', $categoryId)->where('provider_name',$provider->title)->get();
-        $provider=[
-            'id'=>$provider->id,
-            'title'=>$provider->title,
+        $items = BillerItem::where('category_id', $categoryId)->where('provider_name', $provider->title)->get();
+        $provider = [
+            'id' => $provider->id,
+            'title' => $provider->title,
         ];
         $items = $items->map(function ($item) {
             return [
                 'id' => $item->id,
                 'paymentitemname' => $item->paymentitemname,
 
-                'percentageComission'=>$item->percentage_commission
+                'percentageComission' => $item->percentage_commission
             ];
         });
         if ($items->isEmpty()) {
@@ -79,7 +80,7 @@ class BillPaymentController extends Controller
             'data' => [
                 'category' => $categories,
                 'itemList' => $items,
-                'provider'=>$provider
+                'provider' => $provider
             ],
         ], 200);
     }
@@ -145,6 +146,15 @@ class BillPaymentController extends Controller
             ], 400);
         }
         $userId = Auth::user()->id;
+        $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
+        if ($wallet->accountBalance < $request->amount) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Insufficient balance',
+                'data' => [],
+
+            ], 400);
+        }
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -194,6 +204,8 @@ class BillPaymentController extends Controller
                 'phoneNumber' => $phoneNumber,
 
             ]);
+            $wallet->accountBalance=$wallet->accountBalance-$amount;
+            $wallet->save();
             return response()->json([
                 'status' => 'success',
                 'refference' => $reference,
