@@ -24,7 +24,7 @@ class VirtualAccountController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Account funded successfully',
+                'message' => 'Account Already Valid',
                 'data' => [
                     'accountNumber' => $virtualAccount->accountNumber,'expiryDate'=>$virtualAccount->expiryDate ?? null
                 ]
