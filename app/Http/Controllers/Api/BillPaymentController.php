@@ -215,6 +215,24 @@ class BillPaymentController extends Controller
                 'data' => $response->json('data'),
             ], 200);
         } else {
+            $transaction = new Transaction();
+            $transaction->user_id = $userId;
+            $transaction->transaction_type = "Bill Payment";
+            $transaction->status = 'failed';
+            $transaction->sign = 'negative';
+            $transaction->amount = $amount;
+            $transaction->save();
+            BillPayment::create([
+                'biller_item_id' => $request->billerItemId,
+                'user_id' => $userId,
+                'refference' => $reference,
+                'status' => 'failed',
+                'transaction_id' => $transaction->id,
+                'customerId' => $customerId,
+                'phoneNumber' => $phoneNumber,
+                'amount' => $amount,
+                'response' => json_encode($response->json())
+            ]);
             return response()->json([
                 'status' => 'error',
                 'message' => $response->json('message'),
