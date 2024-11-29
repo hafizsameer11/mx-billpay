@@ -160,6 +160,7 @@ class BillPaymentController extends Controller
         $amount = $request->amount;
         $billerItem = BillerItem::where('id', $billerItem)->first();
         $billerId = $billerItem->billerId;
+        $category=BillerCategory::where('id', $billerItem->category_id)->first();
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
@@ -208,11 +209,19 @@ class BillPaymentController extends Controller
             Log::info('Bill Payment Respo .;ppnse: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->save();
+            $data=[
+                'amount'=>$amount,
+                'reference'=>$reference,
+                'status'=>'success',
+                'item'=>$billerItem->billerId,
+                'category'=>$category->category,
+                'response'=>$response->json('data')
+            ];
             return response()->json([
                 'status' => 'success',
                 'refference' => $reference,
                 'message' => 'Successful payment',
-                'data' => $response->json('data'),
+                'data' => $data,
             ], 200);
         } else {
             $transaction = new Transaction();
