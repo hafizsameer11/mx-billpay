@@ -210,12 +210,12 @@ class BillPaymentController extends Controller
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->save();
             $data=[
-                'amount'=>$amount,
-                'reference'=>$reference,
                 'status'=>'success',
                 'item'=>$billerItem->billerId,
+                'provider'=>$billerItem->provider_name,
                 'category'=>$category->category,
-                'response'=>$response->json('data')
+                'transactionId'=>$reference,
+                'transactionDate'=>now()->format('Y-m-d'),
             ];
             return response()->json([
                 'status' => 'success',
