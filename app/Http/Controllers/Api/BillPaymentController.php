@@ -127,7 +127,7 @@ class BillPaymentController extends Controller
                 'status' => 'error',
                 'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
                 'data' => $response->json('data'),
-            ], $response->status());
+            ], 400);
         }
     }
 
