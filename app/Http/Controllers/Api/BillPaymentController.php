@@ -205,8 +205,7 @@ class BillPaymentController extends Controller
                 'amount' => $amount,
                 'response' => json_encode($response->json())
             ]);
-            //log
-            Log::info('Bill Payment Response: ', $response->json());
+            Log::info('Bill Payment Respo .;ppnse: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->save();
             return response()->json([
@@ -218,12 +217,11 @@ class BillPaymentController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => $response->json('message'), // Error message from the API
+                'message' => $response->json('message'),
                 'data' => $response->json('data'),
             ], $response->status());
         }
     }
-
     public function transactionStatus(Request $request)
     {
         $validator = Validator::make($request->all(), [
