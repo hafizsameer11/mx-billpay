@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class faqsController extends Controller
 {
-    public function faqs()
+    public function index()
     {
 
         $faqs = Faq::with('category')->get();

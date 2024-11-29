@@ -76,7 +76,7 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
 
     // answers question
     Route::get('/faqs-add', [faqController::class, 'addFaqs'])->name('faq.addFaqs');
-    Route::get('/faqs', [faqController::class, 'faqs'])->name('faq.show');
+    Route::get('/faqs', [faqController::class, 'index'])->name('faq.show');
     Route::post('/faqs-store', [faqController::class, 'storeFaqs'])->name('faq.store');
     Route::get('/edit-faqs/{id}', [faqController::class, 'editFaqs'])->name('faq.edit');
     Route::put('/update-faqs/{id}', [faqController::class, 'updateFaq'])->name('faq.update');
@@ -91,7 +91,7 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
     Route::get('delete-access-token/{id}', [ApiHandlingController::class, 'deleteToken'])->name('deleteToken');
 
 
-    // service provider api 
+    // service provider api
     Route::get('/service-providers', [BillerProviderController::class, 'index'])->name('service.provider');
     Route::post('/service-providers-logo', [BillerProviderController::class, 'logoStore'])->name('service.provider.logo');
 
