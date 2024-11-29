@@ -39,7 +39,7 @@
             </ul>
           </div>
         </li>
-        
+
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#emails2" role="button" aria-expanded="false" aria-controls="emails2">
             <i class="link-icon" data-feather="calendar"></i>
@@ -75,12 +75,13 @@
               <li class="nav-item">
                 <a href="{{route('user.index')}}" class="nav-link">All Users</a>
               </li>
-            
-             
+          
+
+
             </ul>
           </div>
         </li>
-        
+
         <li class="nav-item nav-category">Transactions</li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#emails1" role="button" aria-expanded="false" aria-controls="emails1">
@@ -412,4 +413,3 @@
     </div>
   </nav>
 
-  

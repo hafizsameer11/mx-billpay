@@ -20,8 +20,9 @@
                             <tr class="py-2">
                                 <th>#</th>
                                 <th>Item Name</th>
-                                <th>Payment Code</th>
                                 <th>Category</th>
+                                <th>Provider</th>
+                                {{-- <th>Category</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -29,9 +30,9 @@
                             @foreach ($billerItems as $item)
                                 <tr>
                                     <th>{{ $loop->index + 1 }}</th>
-                                    <td>{{ $item->paymentitemname }}</td>
                                     <td>{{ $item->paymentCode }}</td>
                                     <td>{{ $item->category->category ?? 'N/A' }}</td>
+                                    <td>{{ $item->provider_name }}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#commissionModal" data-id="{{ $item->id }}" data-item-name="{{ $item->paymentitemname }}">Add Commission</button>
                                     </td>
