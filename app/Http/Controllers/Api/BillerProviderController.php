@@ -62,9 +62,14 @@ class BillerProviderController extends Controller
 
         return response()->json(['status' => 'success', 'data' => $providerList], 200);
     }
-
-    public function index(){
-        $serviceProviders = BillProviders::with('category')->paginate(10);
+    public function index(Request $request){
+        $title = $request->input('title');
+        $serviceProviders = BillProviders::with('category')->
+    when($title, function ($query) use ($title) {
+            $query->where(function ($query) use ($title) {
+                $query->where('title', 'like', '%' . $title . '%'); // Searching in account's firstName
+            });
+        })->paginate(10);
         return view('billpayment.serviceprovider',compact('serviceProviders'));
     }
 

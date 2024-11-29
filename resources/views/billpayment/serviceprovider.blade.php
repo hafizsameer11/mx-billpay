@@ -6,13 +6,30 @@
             <h4 class="mb-3 mb-md-0">Biller Items</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
-            <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#bulkCommissionModal">Bulk Add Commission</button>
+            <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal" data-bs-target="#bulkCommissionModal">Bulk Add
+                Commission</button>
         </div>
     </div>
     <div class="row">
         <div class="card">
             <div class="card-body">
-                <h6 class="card-title text-primary fs-5">Biller Items</h6>
+                <div class="d-flex justify-content-between align-items-center my-4">
+                    <h6 class="card-title text-primary fs-5">Biller Items</h6>
+                    <form method="GET" action="{{ route('service.provider') }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="title" class="form-control" placeholder="Title"
+                                    value="{{ request('title') }}">
+                            </div>
+
+
+
+                            <div class="col-md-2 text-center">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-hover p-2">
                         <thead class="p-2 table-active">
@@ -32,17 +49,16 @@
                                     <td>{{ $item->category->category }}</td>
                                     <td>
                                         @if ($item->logo)
-                                            <img src="{{ asset($item->logo) }}" alt="Logo" style="width: 50px; height: auto;">
+                                            <img src="{{ asset($item->logo) }}" alt="Logo"
+                                                style="width: 50px; height: auto;">
                                         @else
                                             N/A
                                         @endif
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary update-logo-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#commissionModal"
-                                                data-id="{{ $item->id }}"
-                                                data-title="{{ $item->title }}">
+                                            data-bs-toggle="modal" data-bs-target="#commissionModal"
+                                            data-id="{{ $item->id }}" data-title="{{ $item->title }}">
                                             Update Logo
                                         </button>
                                     </td>
@@ -54,7 +70,8 @@
                     <!-- Pagination Links -->
                     <div class="d-flex justify-content-between mt-3">
                         <div>
-                            Showing {{ $serviceProviders->firstItem() }} to {{ $serviceProviders->lastItem() }} of {{ $serviceProviders->total() }} entries
+                            Showing {{ $serviceProviders->firstItem() }} to {{ $serviceProviders->lastItem() }} of
+                            {{ $serviceProviders->total() }} entries
                         </div>
                         <div>
                             {{ $serviceProviders->links('pagination::bootstrap-4') }}
@@ -87,16 +104,15 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('additonal-script')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const updateLogoButtons = document.querySelectorAll('.update-logo-btn');
 
             updateLogoButtons.forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const itemId = this.getAttribute('data-id');
                     const itemTitle = this.getAttribute('data-title');
 
