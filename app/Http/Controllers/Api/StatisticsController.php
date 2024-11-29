@@ -28,11 +28,11 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payment) {
             return [
                 'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => $payment->amount,
+                'expense' => floatval($payment->amount),
             ];
         });
 
-        return response()->json(['status'=>'success','data' => $data], 200);
+        return response()->json(['status' => 'success', 'data' => $data], 200);
     }
 
     public function quarterlyStats()
@@ -55,7 +55,7 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payments, $month) {
             return [
                 'name' => $month, // Month name
-                'expense' => $payments->sum('amount'), // Sum of expenses for the month
+                'expense' => floatval($payments->sum('amount')), // Sum of expenses for the month
             ];
         })->values(); // Re-index the collection
 
@@ -81,7 +81,7 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payments, $month) {
             return [
                 'name' => $month, // Month name
-                'expense' => $payments->sum('amount'), // Sum of expenses for the month
+                'expense' => floatval($payments->sum('amount')), // Sum of expenses for the month
             ];
         })->values(); // Re-index the collection
 
@@ -104,10 +104,10 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payment) {
             return [
                 'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => $payment->amount,
+                'expense' => floatval($payment->amount),
             ];
         });
 
-        return response()->json(['status'=>'success','data' => $data], 200);
+        return response()->json(['status' => 'success', 'data' => $data], 200);
     }
 }

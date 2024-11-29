@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\BillerCategory;
 use App\Models\BillProviders;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 // use Str;
 class BillerProviderController extends Controller
 {
@@ -60,6 +62,38 @@ class BillerProviderController extends Controller
 
         return response()->json(['status' => 'success', 'data' => $providerList], 200);
     }
+
+    public function index(){
+        $serviceProviders = BillProviders::paginate(10);
+        return view('billpayment.serviceprovider',compact('serviceProviders'));
+    }
+
+    public function logoStore(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'item_id' => 'required|exists:bill_providers,id',
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator->errors())->withInput();
+    }
+
+    $serviceProvider = BillProviders::find($request->item_id);
+
+    if ($request->hasFile('logo')) {
+        $file = $request->file('logo');
+        $logoPath = '/images/serviceProvider/' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('/images/serviceProvider/'), $logoPath);
+
+        // Assign the file path to the model
+        $serviceProvider->logo = $logoPath;
+    }
+
+    $serviceProvider->save();
+
+    return redirect()->back()->with('success', 'Logo updated successfully');
+}
 
 
 }

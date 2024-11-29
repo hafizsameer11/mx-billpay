@@ -65,7 +65,7 @@
                                 <tr>
                                     <th>{{ $loop->index + 1 }}</th>
                                     <td>{{ $item->account->firstName ?? 'N/A' }}{{$item->account->lastName ?? ''}}</td>
-                                    <td>{{ $item->user->email }}</td>
+                                    <td>{{ $item->user->email ?? 'N/A'}}</td>
                                     <td>{{ $item->account->phone ?? 'N/A' }}</td>
                                     <td>{{ $item->account->account_number ?? 'N/A' }}</td>
                                     <td>{{ $item->account->bvn ?? 'N/A' }}</td>
