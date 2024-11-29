@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bill_providers', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('logo')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('bill_providers', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('title');
+        //     $table->string('slug')->unique();
+        //     $table->string('logo')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
