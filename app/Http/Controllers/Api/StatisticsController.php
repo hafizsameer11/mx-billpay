@@ -25,10 +25,12 @@ class StatisticsController extends Controller
             ->get();
 
         // Format the data
+        //check if amount is zero or null
+
         $data = $billPayments->map(function ($payment) {
             return [
                 'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' =>floatval($payment->amount),
+                'expense' =>floatval($payment->amount)??0,
             ];
         });
 
@@ -55,7 +57,7 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payments, $month) {
             return [
                 'name' => $month, // Month name
-                'expense' =>floatval( $payments->sum('amount')), // Sum of expenses for the month
+                'expense' =>floatval( $payments->sum('amount'))??0, // Sum of expenses for the month
             ];
         })->values(); // Re-index the collection
 
@@ -81,7 +83,7 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payments, $month) {
             return [
                 'name' => $month, // Month name
-                'expense' =>floatval( $payments->sum('amount')), // Sum of expenses for the month
+                'expense' =>floatval( $payments->sum('amount'))??0, // Sum of expenses for the month
             ];
         })->values(); // Re-index the collection
 
@@ -104,7 +106,7 @@ class StatisticsController extends Controller
         $data = $billPayments->map(function ($payment) {
             return [
                 'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => floatval($payment->amount),
+                'expense' => floatval($payment->amount)??0,
             ];
         });
 
