@@ -211,6 +211,7 @@ class BillPaymentController extends Controller
             $wallet->save();
             $data=[
                 'status'=>'success',
+                'amount'=>$amount,
                 'item'=>$billerItem->billerId,
                 'provider'=>$billerItem->provider_name,
                 'category'=>$category->category,
