@@ -29,7 +29,7 @@
                                 <tr>
                                     <th>{{ $item->id }}</th> <!-- Unique ID -->
                                     <td>{{ $item->title }}</td>
-                                    <td>{{ $item->category }}</td>
+                                    <td>{{ $item->category->category }}</td>
                                     <td>
                                         @if ($item->logo)
                                             <img src="{{ asset($item->logo) }}" alt="Logo" style="width: 50px; height: auto;">
