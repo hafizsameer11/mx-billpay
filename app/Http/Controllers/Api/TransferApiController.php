@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\FreeFund;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\Transfer;
@@ -357,8 +358,17 @@ class TransferApiController extends Controller
                     $notification->icon = asset('notificationLogos/wallet.png');
                     $notification->iconColor = config('notification_colors.colors.Wallet');
                     $notification->save();
+                    return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
+                } else {
+                    $freeFund = new FreeFund();
+                    $freeFund->amount = $amount;
+                    $freeFund->accountNumber = $accountNumber;
+                    $freeFund->originatorBank = $originatorBank;
+                    $freeFund->originatorAccount = $originatorAccountName;
+                    $freeFund->originatorAccountNumber = $originatorAccountNumber;
+                    $freeFund->save();
+                    return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
                 }
-                return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Account not found for the provided account number.'], 404);
             }
