@@ -320,7 +320,7 @@ class TransferApiController extends Controller
             $timestamp = $request->input('timestamp');
             $account = Account::where('user_id', Auth::user()->id)->first();
 
-            $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->first();
+            $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->orderBy('created_at', 'desc') ->first();
             $userId = $virtualAccount ? $virtualAccount->user_id : null;
             if ($userId !== null) {
                 $transaction = new Transaction();
