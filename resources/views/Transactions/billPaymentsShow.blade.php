@@ -19,11 +19,11 @@
                             </h6>
                             <p class="text-muted mb-0">{{ $transactions->transaction->transaction_date ?? 'N/A' }}</p>
                         </div>
-        
+
                         <div class="my-4">
                             <h6 class="text-secondary font-weight-bold">Sender:</h6>
                             <div class="d-flex align-items-center mt-2">
-                                <img src="{{ asset($transactions->account->profile_picture) ?? asset('assets/images/others/dummyImage.jpeg') }}"
+                                <img src="{{ asset($transactions->account->profile_picture) ?? asset('assets/images/others/dummyImage.jpg') }}"
                                      alt="Sender Avatar" class="rounded-circle me-3 shadow-sm" width="50" height="50">
                                 <div>
                                     <strong>{{ $transactions->account->firstName ?? 'N/A' }}</strong><br>
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
                         </div>
-        
+
                         <!-- Properly aligned details with space between label and value -->
                         <div class="d-flex justify-content-between my-3">
                             <p class="mb-0"><strong>Customer ID:</strong></p>
@@ -64,13 +64,13 @@
                     </div>
                 </div>
             </div>
-        
+
             <!-- Right Column (Bill Information) -->
             <div class="col-md-6">
                 <div class="card shadow-sm rounded">
                     <div class="card-body">
                         <h6 class="card-title text-primary font-weight-bold mb-4">Bill Information</h6>
-        
+
                         <!-- Properly aligned details with space between label and value -->
                         <div class="d-flex justify-content-between my-3">
                             <p class="mb-0"><strong>Category:</strong></p>
@@ -99,8 +99,8 @@
                         <div class="d-flex justify-content-between my-3">
                             <p class="mb-0"><strong>Payable Amount:</strong></p>
                             <p class="text-muted mb-0">
-                                {{ isset($transactions->transaction->amount, $transactions->billerItem->itemFee) 
-                                    ? number_format($transactions->transaction->amount + $transactions->billerItem->itemFee, 2) . ' NGN' 
+                                {{ isset($transactions->transaction->amount, $transactions->billerItem->itemFee)
+                                    ? number_format($transactions->transaction->amount + $transactions->billerItem->itemFee, 2) . ' NGN'
                                     : 'N/A' }}
                             </p>
                         </div>
@@ -108,8 +108,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
 
         <div class="d-flex justify-content-end">
             <a href="{{route('billPayments.transactions')}}" class="btn btn-primary mt-3">Back</a>
