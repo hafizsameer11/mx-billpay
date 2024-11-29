@@ -225,6 +225,9 @@ class BillPaymentController extends Controller
                 'data' => $data,
             ], 200);
         } else {
+            //log into a seperate file seperately for now
+            
+            Log::info('Bill Payment Response: ', $response->json());
             $transaction = new Transaction();
             $transaction->user_id = $userId;
             $transaction->transaction_type = "Bill Payment";
