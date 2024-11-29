@@ -113,7 +113,7 @@ class StatisticsController extends Controller
     // Add dummy data if $data is empty
     if ($data->isEmpty()) {
         $data = collect([
-            ['name' => '01', 'expense' => 1],
+            ['name' => '29', 'expense' => 10],
 
         ]);
     }
