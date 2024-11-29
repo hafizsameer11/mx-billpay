@@ -21,17 +21,17 @@
                             <div class="col-md-2">
                                 <input type="text" name="category" class="form-control" placeholder="Category" value="{{ request('category') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="text" name="type" class="form-control" placeholder="Type" value="{{ request('type') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request('name') }}">
                             </div>
-                
-                            
-                
+
+
+
                             <div class="col-md-2 text-center">
                                 <select name="status" id="status" class="form-control">
                                     <option value="" class="text-center">--Select Status--</option>
@@ -43,16 +43,16 @@
                             <div class="col-md-2">
                                 <input type="date" name="created_at" class="form-control" value="{{ request('created_at') }}" >
                             </div>
-                
+
                             <div class="col-md-2 text-center">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                
-                
-                
+
+
+
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -61,7 +61,7 @@
                                 <th>Category</th>
                                 <th>Type</th>
                                 <th>Amount</th>
-                                <th>Charge</th>
+<th>Percentage Charges</th>
                                 <th>User</th>
                                 <th>Status</th>
                                 <th>Created Time</th>
@@ -75,7 +75,7 @@
                                     <td>{{ $item->billerItem->category->category ?? 'N/A' }}</td>
                                     <td>{{ $item->billerItem->paymentitemname ?? 'N/A' }}</td>
                                     <td>{{ $item->transaction->amount }}</td>
-                                    <td>{{ $item->billerItem->itemFee ?? 'N/A' }}</td>
+                                    <td>{{ $item->billerItem->percentage_commision ?? 'N/A' }}</td>
                                     <td>{{ $item->account->firstName ?? 'N/A' }} {{ $item->account->lastName ?? 'N/A' }}
                                     </td>
                                     <td>{{ $item->status ?? 'N/A' }}</td>
@@ -124,7 +124,7 @@
                     console.log(xhr.responseText); // Log any error for debugging
                 }
             });
-           
+
         });
     });
 </script> --}}
