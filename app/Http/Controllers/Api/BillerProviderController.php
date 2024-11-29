@@ -64,7 +64,7 @@ class BillerProviderController extends Controller
     }
 
     public function index(){
-        $serviceProviders = BillProviders::paginate(10);
+        $serviceProviders = BillProviders::with('category')->paginate(10);
         return view('billpayment.serviceprovider',compact('serviceProviders'));
     }
 

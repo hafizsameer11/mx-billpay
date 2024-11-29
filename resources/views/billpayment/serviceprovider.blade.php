@@ -19,7 +19,7 @@
                             <tr class="py-2">
                                 <th>#</th>
                                 <th>Title</th>
-                                <th>Slug</th>
+                                <th>Category</th>
                                 <th>Logo</th>
                                 <th>Action</th>
                             </tr>
@@ -29,7 +29,7 @@
                                 <tr>
                                     <th>{{ $item->id }}</th> <!-- Unique ID -->
                                     <td>{{ $item->title }}</td>
-                                    <td>{{ $item->slug }}</td>
+                                    <td>{{ $item->category->category }}</td>
                                     <td>
                                         @if ($item->logo)
                                             <img src="{{ asset($item->logo) }}" alt="Logo" style="width: 50px; height: auto;">
@@ -38,8 +38,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary update-logo-btn" 
-                                                data-bs-toggle="modal" 
+                                        <button class="btn btn-sm btn-outline-primary update-logo-btn"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#commissionModal"
                                                 data-id="{{ $item->id }}"
                                                 data-title="{{ $item->title }}">
