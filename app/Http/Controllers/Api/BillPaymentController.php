@@ -21,9 +21,11 @@ class BillPaymentController extends Controller
 {
     //
     protected $accessToken;
+    protected $baseUrl;
     public function __construct()
     {
-        $this->accessToken = config('access_token.live_token');
+        $this->accessToken = config('access_token.test_token');
+        $this->baseUrl ='https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore';
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
     public function fetchBillerCategories()
@@ -108,7 +110,7 @@ class BillPaymentController extends Controller
 
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
+        ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/customervalidate', [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
             'customerId' => $customerId,
@@ -175,7 +177,7 @@ class BillPaymentController extends Controller
         ];
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
+        ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
         if ($response->successful() && $response->json('status') == '99') {
             $transaction = new Transaction();
             $transaction->user_id = $userId;
