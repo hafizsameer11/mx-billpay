@@ -91,25 +91,34 @@ class StatisticsController extends Controller
     }
 
     public function monthlyStats()
-    {
-        $userId = Auth::user()->id;
+{
+    $userId = Auth::user()->id;
 
-        // Fetch Monthly data
-        $billPayments = BillPayment::where('user_id', $userId)
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+    // Fetch Monthly data
+    $billPayments = BillPayment::where('user_id', $userId)
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
 
-        // Format the data
-        $data = $billPayments->map(function ($payment) {
-            return [
-                'name' => $payment->created_at->format('d'), // Day of the month
-                'expense' => floatval($payment->amount)??0,
-            ];
-        });
+    // Format the data
+    $data = $billPayments->map(function ($payment) {
+        return [
+            'name' => $payment->created_at->format('d'), // Day of the month
+            'expense' => floatval($payment->amount) ?? 0,
+        ];
+    });
 
-        return response()->json(['status' => 'success', 'data' => $data], 200);
+    // Add dummy data if $data is empty
+    if ($data->isEmpty()) {
+        $data = collect([
+            ['name' => '01', 'expense' => 0],
+
+        ]);
     }
+
+    return response()->json(['status' => 'success', 'data' => $data], 200);
+}
+
 }
