@@ -25,6 +25,7 @@
     <div class="row">
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1 my-4">
+                <!-- Cards Section -->
                 <div class="col-xl-4 col-lg-4 data">
                     <div class="card l-bg-blue-dark">
                         <div class="card-statistic-3 p-4">
@@ -38,9 +39,7 @@
                                         {{ $totalUsers }}
                                     </h2>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -57,9 +56,7 @@
                                         {{ $totalBillpayments }}
                                     </h2>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -76,49 +73,32 @@
                                         {{ $totalTransaction }}
                                     </h2>
                                 </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                {{-- <div class="col-md-4 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="icon icon-box-success mr-3 me-5">
-                                    <i class="fa-solid fa-users" style="font-size: 50px"></i>
-                                </div>
-                                <div>
-                                    <h6 class="card-title mb-0" style="font-size: 30px">Active User</h6>
-                                    <h3 class="mb-0">64</h3>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="icon icon-box-success mr-3 me-5">
-                                    <i class="fa-solid fa-users" style="font-size: 50px"></i>
-                                </div>
-                                <div>
-                                    <h6 class="card-title mb-0" style="font-size: 30px">Total User</h6>
-                                    <h3 class="mb-0">64</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-
-
             </div>
+    
+            <!-- Graph Section -->
+            
         </div>
     </div> <!-- row -->
+    <div class="row my-5">
+        <div class="col-12">
+            <div class="card" style="height: 500px; width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title">Bill Payments - Weekly, Monthly & Yearly</h5>
+                    <canvas id="billPaymentsChart" style="height: 100%; width: 100%;"></canvas>
+                    <p class="mt-4">
+                        <strong>Total Revenue from Bill Payments:</strong> Rs. {{ number_format($totalRevenue, 2) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-12 col-xl-12 grid-margin stretch-card">
             <div class="card overflow-hidden">
                 <div class="card-body">
@@ -164,7 +144,7 @@
                 </div>
             </div>
         </div>
-    </div> <!-- row -->
+    </div> <!-- row --> --}}
 
 
 
@@ -299,3 +279,51 @@
         });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('billPaymentsChart').getContext('2d');
+
+        // Data for the chart
+        const weeklyBillPayments = {{ $weeklyBillPayments }};
+        const monthlyBillPayments = {{ $monthlyBillPayments }};
+        const yearlyBillPayments = {{ $yearlyBillPayments }};
+        const totalRevenue = {{ $totalRevenue }}; // Revenue from backend
+
+        new Chart(ctx, {
+            type: 'bar', // Bar graph
+            data: {
+                labels: ['Weekly', 'Monthly', 'Yearly'], // X-axis labels
+                datasets: [{
+                    label: 'Bill Payments',
+                    data: [weeklyBillPayments, monthlyBillPayments, yearlyBillPayments],
+                    backgroundColor: ['#4CAF50', '#FFC107', '#2196F3'], // Different colors
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Count'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            footer: (tooltipItems) => {
+                                return `Total Revenue: Rs. ${totalRevenue}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+

@@ -33,6 +33,9 @@
               <li class="nav-item">
                 <a href="{{route('billeritem.show')}}" class="nav-link">Services</a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('service.provider')}}" class="nav-link">Services Provider</a>
+              </li>
             </ul>
           </div>
         </li>
@@ -122,6 +125,24 @@
               </li>
               <li class="nav-item">
                 <a href="{{route('faq.show')}}" class="nav-link">Faqs</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item nav-category">Access Token</li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="collapse" href="#emails7" role="button" aria-expanded="false" aria-controls="emails7">
+            <i class="link-icon" data-feather="calendar"></i>
+            <span class="link-title">Access Token</span>
+            <i class="link-arrow" data-feather="chevron-down"></i>
+          </a>
+          <div class="collapse" data-bs-parent="#sidebarNav" id="emails7">
+            <ul class="nav sub-menu">
+              <li class="nav-item">
+                <a href="{{route('AccessToken')}}" class="nav-link">Access Tokens</a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('addToken')}}" class="nav-link">Add Access Token</a>
               </li>
             </ul>
           </div>

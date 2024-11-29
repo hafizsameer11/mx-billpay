@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminAuthenticateController;
+use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\TransferController;
+use App\Http\Controllers\ApiHandlingController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
 use App\Http\Controllers\DashboardController;
@@ -80,6 +82,18 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
     Route::put('/update-faqs/{id}', [faqController::class, 'updateFaq'])->name('faq.update');
     Route::get('/delete-faqs/{id}', [faqController::class, 'deleteFaqs'])->name('faq.delete');
 
+    // access token api
+    Route::get('access-token', [ApiHandlingController::class, 'AccessToken'])->name('AccessToken');
+    Route::get('access-token-add', [ApiHandlingController::class, 'addToken'])->name('addToken');
+    Route::post('access-token-store', [ApiHandlingController::class, 'storeToken'])->name('storeToken');
+    Route::get('edit-access-token/{id}', [ApiHandlingController::class, 'editAccessToken'])->name('editAccessToken');
+    Route::put('edit-access-token/{id}', [ApiHandlingController::class, 'updateToken'])->name('updateToken');
+    Route::get('delete-access-token/{id}', [ApiHandlingController::class, 'deleteToken'])->name('deleteToken');
+
+
+    // service provider api 
+    Route::get('/service-providers', [BillerProviderController::class, 'index'])->name('service.provider');
+    Route::post('/service-providers-logo', [BillerProviderController::class, 'logoStore'])->name('service.provider.logo');
 
 // });
 
