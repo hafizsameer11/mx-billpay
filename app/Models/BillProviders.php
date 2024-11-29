@@ -12,6 +12,6 @@ class BillProviders extends Model
 
 
     public function category(){
-        return $this->hasMany(BillerCategory::class,'biller_category_id','id');
+        return $this->hasMany(BillerCategory::class,'category_id','id');
     }
 }
