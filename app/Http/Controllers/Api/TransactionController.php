@@ -28,19 +28,24 @@ class TransactionController extends Controller
                 ->map(function ($transaction) {
                     if ($transaction->billpayment) {
                         return [
+                            'transaction_id' => $transaction->id,
                             'amount' => $transaction->amount,
                             'type' => 'Bill Payment',
                             'category' => $transaction->billpayment->billerItem->category->category,
                             'item' => $transaction->billpayment->billerItem->paymentitemname,
+                            'logo'=>$transaction->billpayment->billerItem->category->logo
                         ];
                     }
 
                     if ($transaction->transfer) {
                         return [
+                            'transaction_id' => $transaction->id,
                             'amount' => $transaction->amount,
                             'type' => 'Fund Transfer',
                             'category' => 'Fund',
                             'item' => 'Incoming Fund',
+                            'logo'=>asset('notificationLogos/wallet.png')
+
                         ];
                     }
                     return null; // Skip transactions that are neither bill payments nor transfers
