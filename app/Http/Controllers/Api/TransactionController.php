@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    public function getAllTransactions()
+    public function getTransactions()
     {
         try {
             $user = Auth::user();
