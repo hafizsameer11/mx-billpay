@@ -318,10 +318,16 @@ class TransferApiController extends Controller
             $transactionChannel = $request->input('transaction_channel');
             $sessionId = $request->input('session_id');
             $timestamp = $request->input('timestamp');
-            $account = Account::where('user_id', Auth::user()->id)->first();
 
             $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->orderBy('created_at', 'desc') ->first();
             $userId = $virtualAccount ? $virtualAccount->user_id : null;
+            //if user id is not null
+            if ($userId) {
+                $account = Account::where('user_id', $userId)->first();
+                $toclientName=$account->firstName;
+            }else{
+                $toclientName=null;
+            }
             if ($userId !== null) {
                 $transaction = new Transaction();
                 $transaction->user_id = $userId;
@@ -331,7 +337,6 @@ class TransferApiController extends Controller
                 $transaction->sign = 'positive';
                 $transaction->status = 'Completed';
                 $transaction->save();
-                //create transfer transaction
                 $transfer = new Transfer();
                 $transfer->transaction_id = $transaction->id;
                 $transfer->from_account_number = $originatorAccountNumber;
@@ -339,16 +344,16 @@ class TransferApiController extends Controller
                 $transfer->from_client_id = "149383";
                 $transfer->to_client_id = '1234';
                 $transfer->status = 'Completed';
-                $transfer->to_client_name = $account->firstName;
+                $transfer->to_client_name = $toclientName;
                 $transfer->from_client_name = $originatorAccountName;
                 $transfer->amount = $amount;
                 $transfer->reference = $reference;
                 $transfer->save();
-
                 if ($virtualAccount) {
                     Log::info('Inward Credit Notification Received: for the authenticated user', $request->all());
                     $wallet = Wallet::where('user_id', $userId)->first();
                     $wallet->accountBalance = $amount;
+                    $wallet->totalIncome=$wallet->totalIncome+$amount;
                     $wallet->save();
                     $notification = new Notification();
                     $notification->title = "Icoming Payments";

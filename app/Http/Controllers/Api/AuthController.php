@@ -145,6 +145,8 @@ class AuthController extends Controller
                 'accountBalance' => $wallet->accountBalance,
                 'created_at' => $account->created_at,
                 'updated_at' => $account->updated_at,
+                'totalIncome' => $wallet->totalIncome,
+                'totalBillPayment' => $wallet->totalBillPayment,
                 'profilePicture' => $profilePictureUrl
             ],
             'token' => $user->createToken('API Token')->plainTextToken,

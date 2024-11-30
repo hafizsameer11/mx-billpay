@@ -208,6 +208,7 @@ class BillPaymentController extends Controller
             ]);
             Log::info('Bill Payment Respo .;ppnse: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
+            $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
             $wallet->save();
             $data=[
                 'status'=>'success',
@@ -226,7 +227,7 @@ class BillPaymentController extends Controller
             ], 200);
         } else {
             //log into a seperate file seperately for now
-            
+
             Log::info('Bill Payment Response: ', $response->json());
             $transaction = new Transaction();
             $transaction->user_id = $userId;
