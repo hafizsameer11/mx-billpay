@@ -86,7 +86,9 @@ class VirtualAccountController extends Controller
         $wallet=Wallet::where('user_id', $userId)->first();
         return response()->json([
             'status'=>'success',
-            'balance'=>$wallet->accountBalance
+            'balance'=>$wallet->accountBalance,
+            'totalIncome'=>$wallet->totalIncome,
+            'totalBillPayment'=>$wallet->totalBillPayment
         ]);
     }
 
