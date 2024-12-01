@@ -248,10 +248,19 @@ class BillPaymentController extends Controller
                 'amount' => $amount,
                 'response' => json_encode($response->json())
             ]);
+            $data=[
+                'status'=>'success',
+                'amount'=>floatval($amount),
+                'item'=>$billerItem->billerId,
+                'provider'=>$billerItem->provider_name,
+                'category'=>$category->category,
+                'transactionId'=>$reference,
+                'transactionDate'=>now()->format('Y-m-d'),
+            ];
             return response()->json([
                 'status' => 'error',
                 'message' => $response->json('message'),
-                'data' => $response->json('data'),
+                'data' => $data,
             ], 400);
         }
     }
