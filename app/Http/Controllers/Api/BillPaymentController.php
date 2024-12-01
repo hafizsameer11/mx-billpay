@@ -179,6 +179,7 @@ class BillPaymentController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
+        Log::info('Bill Payment Payload: ', $response->json());
         if ($response->successful() && $response->json('status') == '99') {
             $transaction = new Transaction();
             $transaction->user_id = $userId;
@@ -251,7 +252,7 @@ class BillPaymentController extends Controller
                 'status' => 'error',
                 'message' => $response->json('message'),
                 'data' => $response->json('data'),
-            ], $response->status());
+            ], 400);
         }
     }
     public function transactionStatus(Request $request)

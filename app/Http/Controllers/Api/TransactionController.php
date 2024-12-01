@@ -33,7 +33,8 @@ class TransactionController extends Controller
                             'type' => 'Bill Payment',
                             'category' => $transaction->billpayment->billerItem->category->category,
                             'item' => $transaction->billpayment->billerItem->paymentitemname,
-                            'logo'=>$transaction->billpayment->billerItem->category->logo
+                            'logo'=>asset( $transaction->billpayment->billerItem->category->logo),
+                            'date'=>$transaction->created_at
                         ];
                     }
 
@@ -44,7 +45,8 @@ class TransactionController extends Controller
                             'type' => 'Fund Transfer',
                             'category' => 'Fund',
                             'item' => 'Incoming Fund',
-                            'logo'=>asset('notificationLogos/wallet.png')
+                            'logo'=>asset('notificationLogos/wallet.png'),
+                            'date'=>$transaction->created_at
 
                         ];
                     }
