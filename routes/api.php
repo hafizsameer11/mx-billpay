@@ -76,6 +76,7 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::get('/yearly-stats',[StatisticsController::class,'yearlyStats']);
     Route::get('/quarterly-stats',[StatisticsController::class,'quarterlyStats']);
     Route::get('/yty-stats',[StatisticsController::class,'ytyStats']);
+    Route::get('/slides',[StatisticsController::class,'slides']);
 
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);

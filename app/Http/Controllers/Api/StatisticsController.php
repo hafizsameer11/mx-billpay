@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BillPayment;
+use App\Models\Slide;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -120,5 +121,14 @@ class StatisticsController extends Controller
 
     return response()->json(['status' => 'success', 'data' => $data], 200);
 }
+public function slides(){
+    $slides = Slide::all();
+    //process image url
+    $slides = $slides->map(function($slide){
+        $slide->image_url = asset($slide->image);
+        return $slide;
+    });
+    return response()->json(['status' => 'success', 'data' => $slides], 200);
 
+}
 }
