@@ -15,6 +15,10 @@ return new class extends Migration
             //
             $table->string('select_title')->nullable();
         });
+        Schema::table('biller_categories', function (Blueprint $table) {
+            //
+            $table->string('select_title')->nullable();
+        });
     }
 
     /**
