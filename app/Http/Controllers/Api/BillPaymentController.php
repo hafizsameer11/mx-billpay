@@ -38,6 +38,7 @@ class BillPaymentController extends Controller
         return [
             'id' => $category->id,
             'category' => $category->category,
+            'categoryTitle' => $category->category_title,
             'isCategory' => $category->isCategory,
             'icon' => asset($category->logo),
             'iconColor' => $category->backgroundColor
