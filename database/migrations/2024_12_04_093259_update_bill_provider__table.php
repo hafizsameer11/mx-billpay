@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('bill_providers', function (Blueprint $table) {
             //
-            $table->string('select_title')->nullable();
+            // $table->string('select_title')->nullable();
         });
         Schema::table('biller_categories', function (Blueprint $table) {
             //
