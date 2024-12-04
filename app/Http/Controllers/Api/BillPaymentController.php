@@ -31,6 +31,9 @@ class BillPaymentController extends Controller
     public function fetchBillerCategories()
     {
         $categories = BillerCategory::all();
+        //order by order_id asc
+        $categories = $categories->sortBy('order_id');
+
         $categories = $categories->map(function ($category) {
             return [
                 'id' => $category->id,
