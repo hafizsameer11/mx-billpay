@@ -160,6 +160,7 @@ class UserController extends Controller
                 'icon'=>asset($link->icon)
             ];
         });
+        return response()->json(['status' => 'success', 'data'=>$links], 200);
     }
 
 }
