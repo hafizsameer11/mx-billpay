@@ -27,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bill_providers', function (Blueprint $table) {
-            //
+          $table->dropColumn('select_title');
         });
     }
 };
