@@ -8,6 +8,7 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\faqController;
+use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -94,7 +95,23 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
     // service provider api
     Route::get('/service-providers', [BillerProviderController::class, 'index'])->name('service.provider');
     Route::post('/service-providers-logo', [BillerProviderController::class, 'logoStore'])->name('service.provider.logo');
-
+    
+    
+    // update 
+    Route::post('/category/store-or-update', [BillerCategoryController::class, 'storeOrUpdateCategoryTitle'])->name('category.storeOrUpdate');
+    Route::post('/description/store-or-update', [BillerCategoryController::class, 'storeOrUpdateDescription'])->name('description.storeOrUpdate');
+    Route::post('/selectTitle/store-or-update', [BillerCategoryController::class, 'storeOrUpdateSelectTitle'])->name('selectTitle.storeOrUpdate');
+    
+    Route::post('/provider/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProvider'])->name('provider.storeOrUpdate');
+    Route::post('/provider-description/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProviderDescription'])->name('provider.description.storeOrUpdate');
+    Route::post('/provider-select-title/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProviderSelectTitle'])->name('provider.selectTitle.storeOrUpdate');
+    
+    Route::get('/social-media', [SocialMediaController::class, 'index'])->name('social.media.index');
+    Route::get('/social-media-create', [SocialMediaController::class, 'create'])->name('social.media.create');
+    Route::post('/social-media-store', [SocialMediaController::class, 'store'])->name('social.media.store');
+    Route::get('/social-media-edit/{id}', [SocialMediaController::class, 'edit'])->name('social.media.edit');
+    Route::put('/social-media-update/{id}', [SocialMediaController::class, 'update'])->name('social.media.update');
+    Route::get('/social-media-delete/{id}', [SocialMediaController::class, 'delete'])->name('social.media.delete');
 // });
 
 // Route::get('/bill-categories', [BillerCategoryController::class, 'index'])->name('category.index');

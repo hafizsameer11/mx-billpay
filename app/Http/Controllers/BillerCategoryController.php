@@ -7,6 +7,7 @@ use App\Jobs\FetchBillerItems;
 
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
+use App\Models\BillProviders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -84,4 +85,87 @@ class BillerCategoryController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Commission added successfully.']);
     }
+
+
+    public function storeOrUpdateCategoryTitle(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'category_title' => 'required|string|max:255',
+    ]);
+
+    $category = BillerCategory::find($request->id);
+    $category->category_title = $request->category_title;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Category title saved successfully!');
+}
+    public function storeOrUpdateDescription(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'category_description' => 'required|string|max:255',
+    ]);
+
+    $category = BillerCategory::find($request->id);
+    $category->category_description = $request->category_description;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Category title saved successfully!');
+}
+    public function storeOrUpdateSelectTitle(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'select_title' => 'required|string|max:255',
+    ]);
+
+    $category = BillerCategory::find($request->id);
+    $category->select_title = $request->select_title;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Select title saved successfully!');
+}
+    public function storeOrUpdateProvider(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'provider_title' => 'required|string|max:255',
+    ]);
+
+    $category = BillProviders::find($request->id);
+    $category->provider_title = $request->provider_title;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Provider title saved successfully!');
+}
+    public function storeOrUpdateProviderDescription(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'provider_description' => 'required|string|max:255',
+    ]);
+
+    $category = BillProviders::find($request->id);
+    $category->provider_description = $request->provider_description;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Provider title saved successfully!');
+}
+
+
+    public function storeOrUpdateProviderSelectTitle(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'select_title' => 'required|string|max:255',
+    ]);
+
+    $category = BillProviders::find($request->id);
+    $category->select_title = $request->select_title;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Select title saved successfully!');
+}
+
 }
