@@ -80,7 +80,7 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
 
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
-
+Route::get('/social-media-links',[UserController::class,'socialMedialinks']);
 Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
 Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']);
 //Tranfser Routes
