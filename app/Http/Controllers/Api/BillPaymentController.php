@@ -30,22 +30,7 @@ class BillPaymentController extends Controller
     }
     public function fetchBillerCategories()
     {
-        // Define the custom order
-        $customOrder = [
-            'Fund Wallet',
-            'Transactions',
-            'Betting',
-            'Electricity',
-            'Cable TV',
-            'Airtime',
-            'Data Bundle',
-            'Internet'
-        ];
-
-        // Fetch all categories
         $categories = BillerCategory::all();
-
-        // Map the categories with the required fields
         $categories = $categories->map(function ($category) {
             return [
                 'id' => $category->id,
@@ -55,19 +40,11 @@ class BillPaymentController extends Controller
                 'iconColor' => $category->backgroundColor
             ];
         });
-
-        // Sort the categories based on the custom order
-        $sortedCategories = $categories->sortBy(function ($category) use ($customOrder) {
-            return array_search($category['category'], $customOrder);
-        })->values(); // Reindex the array after sorting
-
-        // Return the response
         return response()->json([
             'message' => 'Categories fetched successfully',
-            'data' => $sortedCategories
+            'data' => $categories
         ]);
     }
-
     public function fetchBillerItems($categoryId, $providerId)
     {
 
