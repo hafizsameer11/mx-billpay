@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\BvnStatucRecorder;
 use App\Models\Notification;
+use App\Models\SocialMediaLinks;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -148,6 +149,18 @@ class UserController extends Controller
             return response()->json(['status' => 'success', 'message' => 'User verified successfully'], 200);
         }
         return response()->json(['status' => 'error', 'message' => 'User verification failed'], 200);
+    }
+    public function socialMedialinks(){
+        $links=SocialMediaLinks::all();
+        $links=$links->map(function($link){
+            return [
+                'id'=>$link->id,
+                'title'=>$link->title,
+                'link'=>$link->link,
+                'icon'=>asset($link->icon)
+            ];
+        });
+        return response()->json(['status' => 'success', 'data'=>$links], 200);
     }
 
 }
