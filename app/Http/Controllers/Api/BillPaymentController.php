@@ -32,7 +32,7 @@ class BillPaymentController extends Controller
     {
         $categories = BillerCategory::all();
         //order by order_id asc
-        $categories = $categories->sortBy('order_id');
+        
 
         $categories = $categories->map(function ($category) {
             return [
