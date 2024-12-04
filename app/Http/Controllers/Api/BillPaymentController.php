@@ -29,25 +29,28 @@ class BillPaymentController extends Controller
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
     public function fetchBillerCategories()
-    {
-        $categories = BillerCategory::all();
-        //order by order_id asc
-        
+{
+    // Fetch categories ordered by `order_id` in ascending order
+    $categories = BillerCategory::orderBy('order_id', 'asc')->get();
 
-        $categories = $categories->map(function ($category) {
-            return [
-                'id' => $category->id,
-                'category' => $category->category,
-                'isCategory' => $category->isCategory,
-                'icon' => asset($category->logo),
-                'iconColor' => $category->backgroundColor
-            ];
-        });
-        return response()->json([
-            'message' => 'Categories fetched successfully',
-            'data' => $categories
-        ]);
-    }
+    // Map the categories with the required fields
+    $categories = $categories->map(function ($category) {
+        return [
+            'id' => $category->id,
+            'category' => $category->category,
+            'isCategory' => $category->isCategory,
+            'icon' => asset($category->logo),
+            'iconColor' => $category->backgroundColor
+        ];
+    });
+
+    // Return the response
+    return response()->json([
+        'message' => 'Categories fetched successfully',
+        'data' => $categories
+    ]);
+}
+
     public function fetchBillerItems($categoryId, $providerId)
     {
 
