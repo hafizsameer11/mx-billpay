@@ -81,6 +81,7 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     //Live chat apis
     Route::post('/messages',[MessageController::class,'index']);
     Route::post('/send-message',[MessageController::class,'store']);
+    Route::post('/send-admin-message',[MessageController::class,'sendAdminMessage']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 Route::get('/social-media-links',[UserController::class,'socialMedialinks']);

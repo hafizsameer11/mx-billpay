@@ -61,4 +61,32 @@ class MessageController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Failed to send message', 'data' => $msg], 500);
         }
     }
+    public function sendAdminMessage(Request $request)
+    {
+        $userId = Auth::user()->id;
+        $profilePicturePath = null;
+        if ($request->hasFile('attachment')) {
+            $profilePicture = $request->file('attachment');
+            $fileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
+            $profilePicturePath = $profilePicture->storeAs('attachments', $fileName, 'public');
+        }
+        $message = new Message();
+        $message->user_id = $userId;
+        $message->message = $request->input('message');
+        $message->attachment = $profilePicturePath;
+        $message->sender = 'admin';
+        $message->save();
+
+        if ($message) {
+            $msg = [
+                'id' => $message->id,
+                'message' => $message->message,
+                'attachment' => $message->attachment ? asset('storage/' . $message->attachment) : null,
+            ];
+            return response()->json(['status' => 'success', 'message' => 'Message sent successfully', 'data' => $msg], 200);
+        } else {
+            $msg = [];
+            return response()->json(['status' => 'error', 'message' => 'Failed to send message', 'data' => $msg], 500);
+        }
+    }
 }
