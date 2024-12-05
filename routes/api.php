@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
@@ -77,7 +78,9 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::get('/quarterly-stats',[StatisticsController::class,'quarterlyStats']);
     Route::get('/yty-stats',[StatisticsController::class,'ytyStats']);
     Route::get('/slides',[StatisticsController::class,'slides']);
-
+    //Live chat apis
+    Route::post('/messages',[MessageController::class,'index']);
+    Route::post('/send-message',[MessageController::class,'store']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
 Route::get('/social-media-links',[UserController::class,'socialMedialinks']);
