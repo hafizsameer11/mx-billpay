@@ -75,7 +75,7 @@
               <li class="nav-item">
                 <a href="{{route('user.index')}}" class="nav-link">All Users</a>
               </li>
-          
+
 
 
             </ul>
@@ -106,7 +106,7 @@
             </ul>
           </div>
         </li>
-        <li class="nav-item nav-category">Faqs</li>
+        {{-- <li class="nav-item nav-category">Faqs</li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#emails6" role="button" aria-expanded="false" aria-controls="emails6">
             <i class="link-icon" data-feather="calendar"></i>
@@ -119,7 +119,6 @@
                 <a href="{{route('faq.category')}}" class="nav-link">Faq Category</a>
               </li>
               <li class="nav-item">
-                {{-- <a href="{{route('')}}" class="nav-link">Faq Category</a> --}}
               </li>
               <li class="nav-item">
                 <a href="{{route('faq.addFaqs')}}" class="nav-link">Add Faqs</a>
@@ -129,7 +128,7 @@
               </li>
             </ul>
           </div>
-        </li>
+        </li> --}}
         <li class="nav-item nav-category">Access Token</li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#emails7" role="button" aria-expanded="false" aria-controls="emails7">
@@ -163,7 +162,7 @@
               <li class="nav-item">
                 <a href="{{route('social.media.create')}}" class="nav-link">Add Socail Media</a>
               </li>
-              
+
             </ul>
           </div>
         </li>
