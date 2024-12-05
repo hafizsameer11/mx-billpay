@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\SocialMediaLinks;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
@@ -84,7 +85,7 @@ Route::get('/balance',[VirtualAccountController::class,'balance']);
     Route::post('/send-admin-message',[MessageController::class,'sendAdminMessage']);
 });
 Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCreditNotification']);
-Route::get('/social-media-links',[UserController::class,'socialMedialinks']);
+Route::get('/social-media-links',[SocialMediaLinks::class,'index']);
 Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
 Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']);
 //Tranfser Routes
