@@ -31,6 +31,9 @@ class MessageController extends Controller
                 'created_at' => $message->created_at,
             ];
         });
+        //mark all messages read which have been fetched now
+        Message::where('user_id', $userId)->where('created_at', '<', $before)->update(['read' => 1]);
+
         return response()->json(['status' => 'success', 'data' => $messages], 200);
     }
     public function store(Request $request)
