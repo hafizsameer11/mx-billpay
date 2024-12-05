@@ -53,6 +53,9 @@ class BillerProviderController extends Controller
             $providerList[] = [
                 'id' => $provider->id,
                 'title' => $provider->title,
+                'providerTitle'=>$provider->provider_title,
+                'description' => $provider->provider_description,
+                'selectTitle' => $provider->select_title,
                 'slug' => $provider->slug,
                 'logo' => asset($provider->logo),
                 'category' => $category,
