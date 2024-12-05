@@ -38,7 +38,7 @@ class MessageController extends Controller
     }
     public function newMessages(){
         $userId = Auth::user()->id;
-        $messages = Message::where('user_id', $userId)->where('status', 'unread')->get();
+        $messages = Message::where('user_id', $userId)->where('sender', 'admin')-> where('status', 'unread')->get();
 
         $messages=$messages->map(function ($message) {
             return [
@@ -67,7 +67,7 @@ class MessageController extends Controller
         $message->message = $request->input('message');
         $message->attachment = $profilePicturePath;
         $message->sender = 'user';
-        $message->status = 'read';
+        $message->status = 'unread';
         $message->save();
 
         if ($message) {
