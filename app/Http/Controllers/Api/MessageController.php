@@ -63,7 +63,7 @@ class MessageController extends Controller
     }
     public function sendAdminMessage(Request $request)
     {
-        $userId = Auth::user()->id;
+        $userId = $request->input('user_id');
         $profilePicturePath = null;
         if ($request->hasFile('attachment')) {
             $profilePicture = $request->file('attachment');
