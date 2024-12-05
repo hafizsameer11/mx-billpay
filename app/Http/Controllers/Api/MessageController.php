@@ -17,7 +17,7 @@ class MessageController extends Controller
         $limit = $request->input('limit', 20); // Default limit of 20
         $before = $request->input('before', now()); // Default to current time
 
-        $messages = Message::where('user_id', $request->user_id)
+        $messages = Message::where('user_id', $userId)
             ->where('created_at', '<', $before)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
