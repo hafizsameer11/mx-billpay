@@ -39,6 +39,7 @@ class MessageController extends Controller
     public function newMessages(){
         $userId = Auth::user()->id;
         $messages = Message::where('user_id', $userId)->where('status', 'unread')->get();
+
         $messages=$messages->map(function ($message) {
             return [
                 'id' => $message->id,
@@ -48,6 +49,8 @@ class MessageController extends Controller
                 'created_at' => $message->created_at,
             ];
         });
+        //now  update that new messages
+        Message::where('user_id', $userId)->update(['status' => 'read']);
         return response()->json(['status' => 'success', 'data' => $messages], 200);
     }
     public function store(Request $request)
