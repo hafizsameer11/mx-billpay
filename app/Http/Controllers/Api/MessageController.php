@@ -36,6 +36,20 @@ class MessageController extends Controller
 
         return response()->json(['status' => 'success', 'data' => $messages], 200);
     }
+    public function newMessages(){
+        $userId = Auth::user()->id;
+        $messages = Message::where('user_id', $userId)->where('status', 'unread')->get();
+        $messages=$messages->map(function ($message) {
+            return [
+                'id' => $message->id,
+                'message' => $message->message,
+                'attachment' => $message->attachment ? asset('storage/' . $message->attachment) : null,
+                'sender' => $message->sender,
+                'created_at' => $message->created_at,
+            ];
+        });
+        return response()->json(['status' => 'success', 'data' => $messages], 200);
+    }
     public function store(Request $request)
     {
         $userId = Auth::user()->id;
