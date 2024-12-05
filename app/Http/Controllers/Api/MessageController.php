@@ -67,6 +67,7 @@ class MessageController extends Controller
         $message->message = $request->input('message');
         $message->attachment = $profilePicturePath;
         $message->sender = 'user';
+        $message->status = 'read';
         $message->save();
 
         if ($message) {
