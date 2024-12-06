@@ -292,7 +292,7 @@
                             } = response.data;
 
                             const messageHtml = `
-                    <li class="message-item me">
+                    <li class="message-item me"  data-time="${created_at}">
                         <img src="https://via.placeholder.com/36x36" class="img-xs rounded-circle" alt="avatar">
                         <div class="content">
                             <div class="message">
