@@ -218,6 +218,7 @@
                     data: {
                         user_id: userId,
                         last_message_time: oldestMessageTime,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.status === 'success') {
@@ -264,6 +265,8 @@
                 const formData = new FormData();
                 formData.append('user_id', userId);
                 formData.append('message', message);
+                //append the csrf token
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
                 if (attachment) {
                     formData.append('attachment', attachment);
                 }
@@ -328,6 +331,7 @@
                     data: {
                         user_id: userId,
                         last_message_time: lastMessageTime,
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         if (response.status === 'success') {
