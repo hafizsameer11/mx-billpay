@@ -34,7 +34,7 @@ class AccountController extends Controller
         $validation = Validator::make($request->all(), [
             'firstName' => 'required|string',
             'lastName' => 'required|string',
-            'dob' => 'required|string',
+            'dob' => 'nullable|string',
             'phone' => 'required|string',
             'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
