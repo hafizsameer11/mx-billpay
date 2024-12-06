@@ -162,5 +162,12 @@ class UserController extends Controller
         });
         return response()->json(['status' => 'success', 'data'=>$links], 200);
     }
-
+public function deleteAccount(){
+    $userId = Auth::user()->id;
+    $user=User::where('id', $userId)->first();
+    //delete from every table
+    
+    $user->delete();
+    return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
+}
 }
