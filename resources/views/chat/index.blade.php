@@ -8,19 +8,19 @@
             margin-top: 5px;
             display: block;
         }
+
         .bubble img {
-    max-width: 100%;
-    width: 200px;
-    height: auto;
-    border-radius: 5px;
-}
+            max-width: 100%;
+            width: 200px;
+            height: auto;
+            border-radius: 5px;
+        }
 
-.bubble a {
-    text-decoration: underline;
-    font-weight: bold;
-    color: #007bff;
-}
-
+        .bubble a {
+            text-decoration: underline;
+            font-weight: bold;
+            color: #007bff;
+        }
     </style>
     <div class="row chat-wrapper">
         <div class="col-md-12">
@@ -118,56 +118,62 @@
                                 <button id="loadEarlierButton" class="btn btn-secondary btn-sm mb-3">Load Earlier</button>
                                 <ul class="messages">
                                     @foreach ($messages as $message)
-                                    @if ($message->sender === 'admin')
-                                        <!-- Admin message (me) -->
-                                        <li class="message-item me" data-time="{{ $message->created_at }}">
-                                            <img src="https://via.placeholder.com/36x36" class="img-xs rounded-circle" alt="avatar">
-                                            <div class="content">
-                                                <div class="message">
-                                                    <div class="bubble">
-                                                        @if ($message->attachment)
-                                                            <!-- If the attachment is an image -->
-                                                            @if (in_array(pathinfo($message->attachment, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
-                                                                <img src="{{ asset('storage/' . $message->attachment) }}" alt="attachment" class="img-fluid rounded mb-2">
-                                                            @else
-                                                                <!-- If the attachment is a file -->
-                                                                <a href="{{ asset('storage/' . $message->attachment) }}" target="_blank" class="text-primary">
-                                                                    Download Attachment
-                                                                </a>
+                                        @if ($message->sender === 'admin')
+                                            <!-- Admin message (me) -->
+                                            <li class="message-item me" data-time="{{ $message->created_at }}">
+                                                <img src="https://via.placeholder.com/36x36" class="img-xs rounded-circle"
+                                                    alt="avatar">
+                                                <div class="content">
+                                                    <div class="message">
+                                                        <div class="bubble">
+                                                            @if ($message->attachment)
+                                                                <!-- If the attachment is an image -->
+                                                                @if (in_array(pathinfo($message->attachment, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                                                    <img src="{{ asset('storage/' . $message->attachment) }}"
+                                                                        alt="attachment" class="img-fluid rounded mb-2">
+                                                                @else
+                                                                    <!-- If the attachment is a file -->
+                                                                    <a href="{{ asset('storage/' . $message->attachment) }}"
+                                                                        target="_blank" class="text-primary">
+                                                                        Download Attachment
+                                                                    </a>
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                        <p>{{ $message->message }}</p>
+                                                            <p>{{ $message->message }}</p>
+                                                        </div>
+                                                        <span>{{ $message->created_at->format('h:i A') }}</span>
                                                     </div>
-                                                    <span>{{ $message->created_at->format('h:i A') }}</span>
                                                 </div>
-                                            </div>
-                                        </li>
-                                    @else
-                                        <!-- User message (friend) -->
-                                        <li class="message-item friend" data-time="{{ $message->created_at }}">
-                                            <img src="https://via.placeholder.com/36x36" class="img-xs rounded-circle" alt="avatar">
-                                            <div class="content">
-                                                <div class="message">
-                                                    <div class="bubble">
-                                                        @if ($message->attachment)
-                                                            <!-- If the attachment is an image -->
-                                                            @if (in_array(pathinfo($message->attachment, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
-                                                                <img src="{{ asset('storage/' . $message->attachment) }}" alt="attachment" class="img-fluid rounded mb-2">
-                                                            @else
-                                                                <!-- If the attachment is a file -->
-                                                                <a href="{{ asset('storage/' . $message->attachment) }}" target="_blank" class="text-primary">
-                                                                    Download Attachment
-                                                                </a>
+                                            </li>
+                                        @else
+                                            <!-- User message (friend) -->
+                                            <li class="message-item friend" data-time="{{ $message->created_at }}">
+                                                <img src="https://via.placeholder.com/36x36" class="img-xs rounded-circle"
+                                                    alt="avatar">
+                                                <div class="content">
+                                                    <div class="message">
+                                                        <div class="bubble">
+                                                            @if ($message->attachment)
+                                                                <!-- If the attachment is an image -->
+                                                                @if (in_array(pathinfo($message->attachment, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                                                    <img src="{{ asset('storage/' . $message->attachment) }}"
+                                                                        alt="attachment" class="img-fluid rounded mb-2">
+                                                                @else
+                                                                    <!-- If the attachment is a file -->
+                                                                    <a href="{{ asset('storage/' . $message->attachment) }}"
+                                                                        target="_blank" class="text-primary">
+                                                                        Download Attachment
+                                                                    </a>
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                        <p>{{ $message->message }}</p>
+                                                            <p>{{ $message->message }}</p>
+                                                        </div>
+                                                        <span>{{ $message->created_at->format('h:i A') }}</span>
                                                     </div>
-                                                    <span>{{ $message->created_at->format('h:i A') }}</span>
                                                 </div>
-                                            </div>
-                                        </li>
-                                    @endif
-                                @endforeach
+                                            </li>
+                                        @endif
+                                    @endforeach
 
                                 </ul>
                             </div>
@@ -203,10 +209,10 @@
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             // Load earlier messages
             $('#loadEarlierButton').on('click', function() {
                 const userId = $('#currentUserId').val();
@@ -233,8 +239,8 @@
                                         ${
                                             message.attachment
                                                 ? `<a href="${message.attachment}" target="_blank">
-                                                                <img src="${message.attachment}" alt="attachment" class="attachment-img">
-                                                               </a>`
+                                                                    <img src="${message.attachment}" alt="attachment" class="attachment-img">
+                                                                   </a>`
                                                 : ''
                                         }
                                     </div>
@@ -294,12 +300,12 @@
                                     ${
                                         attachment
                                             ? `<a href="${attachment}" target="_blank">
-                                                                <img src="${attachment}" alt="attachment" class="attachment-img">
-                                                               </a>`
+                                                                    <img src="${attachment}" alt="attachment" class="attachment-img">
+                                                                   </a>`
                                             : ''
                                     }
                                 </div>
-                                <span>${new Date().toLocaleTimeString()}</span>
+                                <span>${message.created_at}</span>
                             </div>
                         </div>
                     </li>`;
@@ -374,7 +380,7 @@
                         console.error(xhr.responseText);
                     },
                 });
-            }, 5000); // Poll every 5 seconds
+            }, 1500); // Poll every 5 seconds
 
         });
     </script>
