@@ -10,6 +10,7 @@ use App\Models\SocialMediaLinks;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -162,12 +163,25 @@ class UserController extends Controller
         });
         return response()->json(['status' => 'success', 'data'=>$links], 200);
     }
-public function deleteAccount(){
-    $userId = Auth::user()->id;
-    $user=User::where('id', $userId)->first();
-    //delete from every table
-    
-    $user->delete();
-    return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
-}
+    public function deleteAccount()
+    {
+        $userId = Auth::user()->id;
+
+        // Delete related records from transfers and other tables
+        DB::transaction(function () use ($userId) {
+            DB::table('transfers')->where('user_id', $userId)->delete();
+            DB::table('bill_payments')->where('user_id', $userId)->delete();
+            DB::table('messages')->where('user_id', $userId)->delete();
+            DB::table('accounts')->where('user_id', $userId)->delete();
+            DB::table('notifications')->where('user_id', $userId)->delete();
+
+            // Add more delete queries for other related tables if necessary
+
+            // Delete the user
+            User::where('id', $userId)->delete();
+        });
+
+        return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
+    }
+
 }
