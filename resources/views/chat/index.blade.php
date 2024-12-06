@@ -306,7 +306,7 @@
                                             : ''
                                     }
                                 </div>
-                                <span>${message.created_at}</span>
+                                <span>${created_at}</span>
                             </div>
                         </div>
                     </li>`;
