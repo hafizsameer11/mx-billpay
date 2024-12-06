@@ -166,22 +166,15 @@ class UserController extends Controller
     public function deleteAccount()
     {
         $userId = Auth::user()->id;
+        $user = User::find($userId);
 
-        // Delete related records from transfers and other tables
-        DB::transaction(function () use ($userId) {
-            DB::table('transfers')->where('user_id', $userId)->delete();
-            DB::table('bill_payments')->where('user_id', $userId)->delete();
-            DB::table('messages')->where('user_id', $userId)->delete();
-            DB::table('accounts')->where('user_id', $userId)->delete();
-            DB::table('notifications')->where('user_id', $userId)->delete();
+        if ($user) {
+            $user->delete(); // This performs a soft delete
+            return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
+        }
 
-            // Add more delete queries for other related tables if necessary
-
-            // Delete the user
-            User::where('id', $userId)->delete();
-        });
-
-        return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
+        return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
     }
+
 
 }
