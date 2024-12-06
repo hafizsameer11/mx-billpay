@@ -132,9 +132,7 @@ class UserDetailController extends Controller
         'data' => [
             'firstName' => $account->firstName,
             'lastName' => $account->lastName,
-            //make dob to send only date not time
-            'dob' => $account->dob->format('Y-m-d'),
-            // 'dob' => $account->dob,
+            'dob' => $account->dob,
             'occupation' => $account->occupation,
             'gender' => $account->gender,
             'email' => $account->user->email ?? null, // from related User model
