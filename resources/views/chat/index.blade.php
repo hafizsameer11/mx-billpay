@@ -38,8 +38,8 @@
                                                 <div class="status online"></div>
                                             </figure>
                                             <div>
-                                                <h6>Amiah Burton</h6>
-                                                <p class="text-secondary fs-13px">Software Developer</p>
+                                                <h6>MX Bill Pay</h6>
+                                                <p class="text-secondary fs-13px">Support Center</p>
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +65,7 @@
                                                             <a href="{{ route('chat.show', ['id' => $user['id']]) }}"
                                                                 class="d-flex align-items-center">
                                                                 <figure class="mb-0 me-2">
-                                                                    <img src="@if (isset($user['profile_picture'])) {{ $user['profile_picture'] }}
+                                                                    <img src="@if ($user['profile_picture']) {{ $user['profile_picture'] }}
                       @else
                       https://via.placeholder.com/37x37 @endif"
                                                                         class="img-xs rounded-circle" alt="user">
@@ -81,8 +81,8 @@
                                                                     </div>
                                                                     <div class="d-flex flex-column align-items-end">
                                                                         <p class="text-secondary fs-13px mb-1">4:32 PM</p>
-                                                                        <div class="badge rounded-pill bg-primary ms-auto">0
-                                                                        </div>
+                                                                        {{-- <div class="badge rounded-pill bg-primary ms-auto">0
+                                                                        </div> --}}
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -239,8 +239,8 @@
                                         ${
                                             message.attachment
                                                 ? `<a href="${message.attachment}" target="_blank">
-                                                                    <img src="${message.attachment}" alt="attachment" class="attachment-img">
-                                                                   </a>`
+                                                                        <img src="${message.attachment}" alt="attachment" class="attachment-img">
+                                                                       </a>`
                                                 : ''
                                         }
                                     </div>
@@ -301,8 +301,8 @@
                                     ${
                                         attachment
                                             ? `<a href="${attachment}" target="_blank">
-                                                                    <img src="${attachment}" alt="attachment" class="attachment-img">
-                                                                   </a>`
+                                                                        <img src="${attachment}" alt="attachment" class="attachment-img">
+                                                                       </a>`
                                             : ''
                                     }
                                 </div>
