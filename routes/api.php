@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillerProviderController;
 use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
+use App\Http\Controllers\Api\faqsController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\SocialMediaLinks;
 use App\Http\Controllers\Api\StatisticsController;
@@ -89,6 +90,9 @@ Route::post('/inwardCreditNotification',[TransferApiController::class,'inwardCre
 Route::get('/social-media-links',[SocialMediaLinks::class,'index']);
 Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
 Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']);
+//faq controller
+
+Route::get('/faq',[faqsController::class,'index']);
 //Tranfser Routes
 Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);

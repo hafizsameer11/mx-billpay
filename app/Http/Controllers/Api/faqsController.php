@@ -12,8 +12,15 @@ class faqsController extends Controller
     public function index()
     {
 
-        $faqs = Faq::with('category')->get();
-        return response()->json($faqs);
+      $faqs = Faq::get();
+      $faqs=$faqs->map(function($faq){
+          return [
+              'id' => $faq->id,
+              'question' => $faq->question,
+              'answer' => $faq->answer,
+          ];
+      });
+      return response()->json(['status'=>'success','data'=>$faqs],200);
     }
     public function faqscategory()
     {
