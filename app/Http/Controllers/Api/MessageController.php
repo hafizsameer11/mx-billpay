@@ -168,6 +168,7 @@ public function newMessagesforAdmin(Request $request)
 
     $messages = Message::where('user_id', $userId)->where('sender', 'user')
         ->where('created_at', '>', $lastMessageTimestamp)
+        ->where('status', 'unread')
         ->orderBy('created_at', 'asc')
         ->get();
 
