@@ -13,6 +13,7 @@ class Message extends Model
         'message',
         'attachment',
         'sender',
+        'status',
     ];
 
     public function user()

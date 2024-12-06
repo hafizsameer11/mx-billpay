@@ -171,6 +171,10 @@ public function newMessagesforAdmin(Request $request)
         ->orderBy('created_at', 'asc')
         ->get();
 
+        //updates these messages to read
+        $messages->each(function ($message) {
+            $message->update(['status' => 'read']);
+        });
     return response()->json([
         'status' => 'success',
         'data' => $messages->map(function ($message) {
