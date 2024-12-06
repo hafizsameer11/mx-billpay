@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('accounts', function (Blueprint $table) {
-            $table->timestamp('dob')->nullable();
+            $table->date('dob')->nullable();
         });
     }
 
