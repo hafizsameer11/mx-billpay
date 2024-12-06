@@ -202,6 +202,11 @@
 @section('additonal-script')
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
             // Load earlier messages
             $('#loadEarlierButton').on('click', function() {
                 const userId = $('#currentUserId').val();
