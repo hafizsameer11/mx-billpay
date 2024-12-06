@@ -78,9 +78,9 @@
                     </div>
                 </div>
             </div>
-    
+
             <!-- Graph Section -->
-            
+
         </div>
     </div> <!-- row -->
     <div class="row my-5">
@@ -96,7 +96,7 @@
             </div>
         </div>
     </div>
-    
+
 
     {{-- <div class="row">
         <div class="col-12 col-xl-12 grid-margin stretch-card">
@@ -171,7 +171,7 @@
                         @foreach ($UsersCount as $item)
                             <a href="javascript:;" class="d-flex align-items-center py-2 border-bottom pb-3">
                                 <div class="me-3">
-                                   
+
                                     <img src="{{ isset($item->account) && $item->account->profile_picture ? asset($item->account->profile_picture) : url('https://via.placeholder.com/35x35') }}" class="rounded-circle wd-35"
                                         alt="user">
                                 </div>
@@ -181,7 +181,7 @@
                                             <h6 class="fw-normal text-body mb-1">{{$item->account->firstName ?? ''}}</h6>
                                             <div class="text-muted tx-13">{{$item->email}}</div>
                                         </div>
-                                        <p class="text-muted tx-12">{{ $item->created_at->format('Y-m-d') }}</p>
+                                        {{-- <p class="text-muted tx-12">{{ $item->created_at->format('Y-m-d') }}</p> --}}
                                     </div>
                                 </div>
                             </a>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
 use App\Http\Controllers\Api\faqsController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\SocialMediaLinks;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TransactionController;
@@ -93,6 +94,7 @@ Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']
 //faq controller
 
 Route::get('/faq',[faqsController::class,'index']);
+Route::get('/slides',[SliderController::class,'index']);
 //Tranfser Routes
 Route::post('/mark-as-read',[UserController::class,'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);

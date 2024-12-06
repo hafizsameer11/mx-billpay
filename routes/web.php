@@ -8,6 +8,8 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\faqController;
+use App\Http\Controllers\SlideController;
+use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserController;
@@ -77,7 +79,7 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
 
     // answers question
     Route::get('/faqs-add', [faqController::class, 'addFaqs'])->name('faq.addFaqs');
-    Route::get('/faqs', [faqController::class, 'index'])->name('faq.show');
+    Route::get('/faqs', [faqController::class, 'faqs'])->name('faq.show');
     Route::post('/faqs-store', [faqController::class, 'storeFaqs'])->name('faq.store');
     Route::get('/edit-faqs/{id}', [faqController::class, 'editFaqs'])->name('faq.edit');
     Route::put('/update-faqs/{id}', [faqController::class, 'updateFaq'])->name('faq.update');
@@ -95,17 +97,17 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
     // service provider api
     Route::get('/service-providers', [BillerProviderController::class, 'index'])->name('service.provider');
     Route::post('/service-providers-logo', [BillerProviderController::class, 'logoStore'])->name('service.provider.logo');
-    
-    
-    // update 
+
+
+    // update
     Route::post('/category/store-or-update', [BillerCategoryController::class, 'storeOrUpdateCategoryTitle'])->name('category.storeOrUpdate');
     Route::post('/description/store-or-update', [BillerCategoryController::class, 'storeOrUpdateDescription'])->name('description.storeOrUpdate');
     Route::post('/selectTitle/store-or-update', [BillerCategoryController::class, 'storeOrUpdateSelectTitle'])->name('selectTitle.storeOrUpdate');
-    
+
     Route::post('/provider/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProvider'])->name('provider.storeOrUpdate');
     Route::post('/provider-description/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProviderDescription'])->name('provider.description.storeOrUpdate');
     Route::post('/provider-select-title/store-or-update', [BillerCategoryController::class, 'storeOrUpdateProviderSelectTitle'])->name('provider.selectTitle.storeOrUpdate');
-    
+
     Route::get('/social-media', [SocialMediaController::class, 'index'])->name('social.media.index');
     Route::get('/social-media-create', [SocialMediaController::class, 'create'])->name('social.media.create');
     Route::post('/social-media-store', [SocialMediaController::class, 'store'])->name('social.media.store');
@@ -125,8 +127,17 @@ Route::post('/login', [AdminAuthenticateController::class, 'login'])->name('admi
 // Route::get('/test-account-release', function () {
 //     return view('account-release-test');
 // });
-Route::get('/dipatchevent', [TransferController::class, 'dispatchevent']);
 
+
+//routes for smtp
+Route::get('/set-smtp', [SmtpController::class, 'index'])->name('smtp.index');
+Route::get('/add-smtp', [SmtpController::class, 'create'])->name('smtp.create');
+Route::get('/edit-smtp/{id}', [SmtpController::class, 'edit'])->name('smtp.edit');
+
+Route::post('/store-smtp', [SmtpController::class, 'store'])->name('smtp.store');
+Route::post('/update-smtp', [SmtpController::class, 'update'])->name('smtp.update');
+Route::get('/dipatchevent', [TransferController::class, 'dispatchevent']);
+Route::resource('slides', SlideController::class);
 use Pusher\Pusher;
 
 Route::get('/test-pusher/{userId}', function ($userId) {

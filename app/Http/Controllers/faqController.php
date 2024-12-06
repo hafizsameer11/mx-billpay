@@ -15,6 +15,11 @@ class faqController extends Controller
         $faqCategories = Faqcategory::all();
         return view('Faq.category', compact('faqCategories'));
     }
+    public function faqs()
+    {
+        $faqs = Faq::all();
+        return view('Faq.faqs', compact('faqs'));
+    }
     public function category(Request $request)
     {
         $validator = Validator::make($request->all(), [
