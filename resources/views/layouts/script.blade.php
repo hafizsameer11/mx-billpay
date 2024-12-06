@@ -7,10 +7,11 @@
 <script src="{{ asset('assets/vendors/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/vendors/datatables.net/dataTables.js') }}"></script>
 <script src="{{ asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
+<script src="{{asset('assets/js/chat.js')}}"></script>
+<script src="{{asset('assets/js/color-modes.js')}}"></script>
 
 
-
-<script src="{{ asset('assets/js/form-validation.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/form-validation.js') }}"></script> --}}
 <script src="{{ asset('assets/js/bootstrap-maxlength.js') }}"></script>
 <script src="{{ asset('assets/js/inputmask.js') }}"></script>
 <script src="{{ asset('assets/js/select2.js') }}"></script>

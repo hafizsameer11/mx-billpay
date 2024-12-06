@@ -92,7 +92,11 @@ Route::get('/social-media-links',[SocialMediaLinks::class,'index']);
 Route::get('/set-providers',[BillerProviderController::class,'setProviders']);
 Route::get('/get-provider/{id}',[BillerProviderController::class,'getProviders']);
 //faq controller
-
+Route::get('/admin/users', [MessageController::class, 'getUsers']);
+Route::get('/admin/messages/{userId}', [MessageController::class, 'getMessages']);
+Route::post('/admin/messages', [MessageController::class, 'sendAdminMessage']);
+Route::post('/new-messages-admin',[MessageController::class,'newMessagesforAdmin']);
+Route::post('/load-earlier-messages',[MessageController::class,'loadEarlierMessages']);
 Route::get('/faq',[faqsController::class,'index']);
 Route::get('/slides',[SliderController::class,'index']);
 //Tranfser Routes

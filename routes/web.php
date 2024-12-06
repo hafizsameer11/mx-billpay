@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\TransferController;
 use App\Http\Controllers\ApiHandlingController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\faqController;
 use App\Http\Controllers\SlideController;
@@ -139,7 +140,8 @@ Route::post('/update-smtp', [SmtpController::class, 'update'])->name('smtp.updat
 Route::get('/dipatchevent', [TransferController::class, 'dispatchevent']);
 Route::resource('slides', SlideController::class);
 use Pusher\Pusher;
-
+Route::get('/chat',[ChatController::class,'index'])->name('chat.index');
+Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
 Route::get('/test-pusher/{userId}', function ($userId) {
     $pusher = new Pusher(
         env('PUSHER_APP_KEY'),

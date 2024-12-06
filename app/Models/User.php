@@ -60,6 +60,8 @@ class User extends Authenticatable
         return $this->hasMany(BillPayment::class,'user_id','id');
     }
     public function pin(){
-        return $this->hasMany(Pin::class,'user_id','id');
-    }
+        return $this->hasMany(Pin::class,'user_id','id');}
+        public function message(){
+            return $this->hasMany(Message::class,'user_id','id');
+        }
 }
