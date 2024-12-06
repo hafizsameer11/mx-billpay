@@ -104,6 +104,7 @@ class MessageController extends Controller
                 'id' => $message->id,
                 'message' => $message->message,
                 'attachment' => $message->attachment ? asset('storage/' . $message->attachment) : null,
+                'created_at'=>$message->created_at->format('h:i A')
             ];
             return response()->json(['status' => 'success', 'message' => 'Message sent successfully', 'data' => $msg], 200);
         } else {

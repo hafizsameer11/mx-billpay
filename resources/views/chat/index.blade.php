@@ -287,7 +287,8 @@
                         if (response.status === 'success') {
                             const {
                                 message,
-                                attachment
+                                attachment,
+                                created_at
                             } = response.data;
 
                             const messageHtml = `
@@ -305,7 +306,7 @@
                                             : ''
                                     }
                                 </div>
-                                <span>${message.formated_time}</span>
+                                <span>${message.created_at}</span>
                             </div>
                         </div>
                     </li>`;
