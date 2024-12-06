@@ -178,7 +178,8 @@ public function newMessagesforAdmin(Request $request)
                 'message' => $message->message,
                 'sender' => $message->sender,
                 'created_at' => $message->created_at->format('H:i A'),
-                
+                'formated_time'=> $message->created_at->format('h:i A')
+
             ];
         }),
     ]);
