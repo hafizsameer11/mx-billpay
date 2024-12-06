@@ -116,8 +116,15 @@ class BillPaymentController extends Controller
         $divisionId = $billerItem->division;
         $paymentItem = $billerItem->paymentCode;
         $billerId = $billerItem->billerId;
-
-        $response = Http::withHeaders([
+        // if()
+        $category = BillerCategory::where('id', $billerItem->category_id)->first();
+        if($category->category=='Airtime'){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully validated customer',
+                'data' => [],
+            ], 200);
+        }else{ $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/customervalidate', [
             'divisionId' => $divisionId,
@@ -138,6 +145,9 @@ class BillPaymentController extends Controller
                 'data' => $response->json('data'),
             ], 400);
         }
+
+        }
+
     }
 
     public function payBills(Request $request)
