@@ -124,7 +124,7 @@ class BillPaymentController extends Controller
             'billerId' => $billerId,
         ]);
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
-        if ($category->category == 'Airtime') {
+        if ($category->category == 'Airtime' && $category->category=='Data') {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully validated customer',
@@ -179,9 +179,9 @@ class BillPaymentController extends Controller
                 'status' => 'success',
                 'message' => 'Insufficient balance',
                 'data' => [],
-
             ], 400);
         }
+        Log::info('Validating customer for Biller ID: ' , [$request->all()]);
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
