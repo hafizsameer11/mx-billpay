@@ -140,14 +140,14 @@ class BillPaymentController extends Controller
                 'billerId' => $billerId,
             ]);
             if ($response->successful()) {
-                Log::info('Response from Biller Items API for Biller ID: ' . $billerId, ['response' => $response->json()]);
+                Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully validated customer',
                     'data' => $response->json('data'),
                 ], 200);
             } else {
-                Log::info('Response from Biller Items API for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+                Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
 
                 return response()->json([
                     'status' => 'error',
