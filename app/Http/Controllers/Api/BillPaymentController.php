@@ -24,7 +24,7 @@ class BillPaymentController extends Controller
     protected $baseUrl;
     public function __construct()
     {
-        $this->accessToken = config('access_token.test_token');
+        $this->accessToken = config('access_token.live_token');
         $this->baseUrl ='https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore';
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
@@ -126,7 +126,7 @@ class BillPaymentController extends Controller
             ], 200);
         }else{ $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/customervalidate', [
+        ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
             'customerId' => $customerId,
@@ -183,7 +183,7 @@ class BillPaymentController extends Controller
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
-        $phoneNumber = $request->input('phoneNumber', null); // Optional
+        $phoneNumber = $request->input('phoneNumber', null); 
         $reference = 'mxPay-' . mt_rand(1000, 9999);
         $payload = [
             'customerId'   => $customerId,
@@ -193,11 +193,11 @@ class BillPaymentController extends Controller
             'productId'    => $productId,
             'billerId'     => $billerId,
             'reference'    => $reference,
-            'phoneNumber'  => $phoneNumber,  // Optional
+            'phoneNumber'  => $phoneNumber,
         ];
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->post('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/pay', $payload);
+        ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
         Log::info('Bill Payment Payload: ', $response->json());
         if ($response->successful() && $response->json('status') == '00') {
             $transaction = new Transaction();
