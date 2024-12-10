@@ -352,7 +352,7 @@ class TransferApiController extends Controller
                 if ($virtualAccount) {
                     Log::info('Inward Credit Notification Received: for the authenticated user', $request->all());
                     $wallet = Wallet::where('user_id', $userId)->first();
-                    $wallet->accountBalance = $amount;
+                    $wallet->accountBalance = $wallet->accountBalance + $amount;
                     $wallet->totalIncome=$wallet->totalIncome+$amount;
                     $wallet->save();
                     $notification = new Notification();
