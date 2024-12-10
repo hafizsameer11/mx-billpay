@@ -77,7 +77,7 @@ class BillPaymentController extends Controller
             return [
                 'id' => $item->id,
                 'paymentitemname' => $item->paymentitemname,
-
+                'amount'=>$item->amount,
                 'percentageComission' => $item->percentage_commission
             ];
         });
