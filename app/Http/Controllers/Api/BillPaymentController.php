@@ -124,7 +124,7 @@ class BillPaymentController extends Controller
             'billerId' => $billerId,
         ]);
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
-        if ($category->category == 'Airtime' && $category->category=='Data') {
+        if ($category->category == 'Airtime' || $category->category=='Data') {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully validated customer',
@@ -132,7 +132,7 @@ class BillPaymentController extends Controller
             ], 200);
         } else {
             $response = Http::withHeaders([
-                'AccessToken' => $this->accessToken,  // Replace with actual token
+                'AccessToken' => $this->accessToken,
             ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
                 'divisionId' => $divisionId,
                 'paymentItem' => $paymentItem,
