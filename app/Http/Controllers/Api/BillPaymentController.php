@@ -133,12 +133,15 @@ class BillPaymentController extends Controller
             'billerId' => $billerId,
         ]);
         if ($response->successful()) {
+            Log::info('Response from Biller Items API for Biller ID: ' . $billerId, ['response' => $response->json()]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully validated customer',
                 'data' => $response->json('data'),
             ], 200);
         } else {
+            Log::info('Response from Biller Items API for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
@@ -183,7 +186,7 @@ class BillPaymentController extends Controller
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
-        $phoneNumber = $request->input('phoneNumber', null); 
+        $phoneNumber = $request->input('phoneNumber', null);
         $reference = 'mxPay-' . mt_rand(1000, 9999);
         $payload = [
             'customerId'   => $customerId,
