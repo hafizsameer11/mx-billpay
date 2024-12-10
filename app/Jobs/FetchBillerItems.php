@@ -73,7 +73,7 @@ class FetchBillerItems implements ShouldQueue
                         'provider_name'=>$billerName ?? 'N/A',
                         'billerId'=>$billerId??'N/A',
                         'paymentitemid' => $item['paymentitemid']??'N/A',
-                        
+                        'amount' => $item['amount'],
                         'paymentCode' => $item['paymentCode']??'N/A',
                         'productId' => $item['productId']??'N/A',
                         'currencySymbol' => $item['currencySymbol']??'N/A',
