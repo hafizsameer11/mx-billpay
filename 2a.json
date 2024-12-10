@@ -1,0 +1,21 @@
+{
+    "data": {
+        "error": false,
+        "status": "success",
+        "message": "Successfully fetched customer account details",
+        "responseCode": "00",
+        "responseData": {
+            "customer": {
+                "firstName": "PETER",
+                "lastName": "ODOHGNBSRENNYPEARL",
+                "customerName": "PETER ODOHGNBSRENNYPEARL",
+                "accountNumber": "8212606319",
+                "dueDate": "2024-12-10T00:00:00",
+                "canVend": true,
+                "phoneNumber": "",
+                "emailAddress": ""
+            },
+            "statusCode": "00"
+        }
+    }
+}
