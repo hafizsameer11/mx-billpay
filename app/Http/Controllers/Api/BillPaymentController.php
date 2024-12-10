@@ -25,34 +25,34 @@ class BillPaymentController extends Controller
     public function __construct()
     {
         $this->accessToken = config('access_token.live_token');
-        $this->baseUrl ='https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore';
+        $this->baseUrl = 'https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore';
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
     public function fetchBillerCategories()
-{
-    // Fetch categories ordered by `order_id` in ascending order
-    $categories = BillerCategory::orderBy('order_id', 'asc')->get();
+    {
+        // Fetch categories ordered by `order_id` in ascending order
+        $categories = BillerCategory::orderBy('order_id', 'asc')->get();
 
-    // Map the categories with the required fields
-    $categories = $categories->map(function ($category) {
-        return [
-            'id' => $category->id,
-            'category' => $category->category,
-            'categoryTitle' => $category->category_title,
-            'categoryDescription' => $category->category_description,
-            'isCategory' => $category->isCategory,
-            'icon' => asset($category->logo),
-            'selectTitle' => $category->select_title,
-            'iconColor' => $category->backgroundColor
-        ];
-    });
+        // Map the categories with the required fields
+        $categories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'category' => $category->category,
+                'categoryTitle' => $category->category_title,
+                'categoryDescription' => $category->category_description,
+                'isCategory' => $category->isCategory,
+                'icon' => asset($category->logo),
+                'selectTitle' => $category->select_title,
+                'iconColor' => $category->backgroundColor
+            ];
+        });
 
-    // Return the response
-    return response()->json([
-        'message' => 'Categories fetched successfully',
-        'data' => $categories
-    ]);
-}
+        // Return the response
+        return response()->json([
+            'message' => 'Categories fetched successfully',
+            'data' => $categories
+        ]);
+    }
 
     public function fetchBillerItems($categoryId, $providerId)
     {
@@ -117,40 +117,45 @@ class BillPaymentController extends Controller
         $paymentItem = $billerItem->paymentCode;
         $billerId = $billerItem->billerId;
         // if()
-        $category = BillerCategory::where('id', $billerItem->category_id)->first();
-        if($category->category=='Airtime'){
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Successfully validated customer',
-                'data' => [],
-            ], 200);
-        }else{ $response = Http::withHeaders([
-            'AccessToken' => $this->accessToken,  // Replace with actual token
-        ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
+        Log::info('Validating customer for Biller ID: ' . $billerId, [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
             'customerId' => $customerId,
             'billerId' => $billerId,
         ]);
-        if ($response->successful()) {
-            Log::info('Response from Biller Items API for Biller ID: ' . $billerId, ['response' => $response->json()]);
+        $category = BillerCategory::where('id', $billerItem->category_id)->first();
+        if ($category->category == 'Airtime') {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully validated customer',
-                'data' => $response->json('data'),
+                'data' => [],
             ], 200);
         } else {
-            Log::info('Response from Biller Items API for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+            $response = Http::withHeaders([
+                'AccessToken' => $this->accessToken,  // Replace with actual token
+            ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
+                'divisionId' => $divisionId,
+                'paymentItem' => $paymentItem,
+                'customerId' => $customerId,
+                'billerId' => $billerId,
+            ]);
+            if ($response->successful()) {
+                Log::info('Response from Biller Items API for Biller ID: ' . $billerId, ['response' => $response->json()]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Successfully validated customer',
+                    'data' => $response->json('data'),
+                ], 200);
+            } else {
+                Log::info('Response from Biller Items API for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
-                'data' => $response->json('data'),
-            ], 400);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
+                    'data' => $response->json('data'),
+                ], 400);
+            }
         }
-
-        }
-
     }
 
     public function payBills(Request $request)
@@ -182,7 +187,7 @@ class BillPaymentController extends Controller
         $amount = $request->amount;
         $billerItem = BillerItem::where('id', $billerItem)->first();
         $billerId = $billerItem->billerId;
-        $category=BillerCategory::where('id', $billerItem->category_id)->first();
+        $category = BillerCategory::where('id', $billerItem->category_id)->first();
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
@@ -233,14 +238,14 @@ class BillPaymentController extends Controller
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
             $wallet->save();
-            $data=[
-                'status'=>'success',
-                'amount'=>floatval($amount),
-                'item'=>$billerItem->billerId,
-                'provider'=>$billerItem->provider_name,
-                'category'=>$category->category,
-                'transactionId'=>$reference,
-                'transactionDate'=>now()->format('Y-m-d'),
+            $data = [
+                'status' => 'success',
+                'amount' => floatval($amount),
+                'item' => $billerItem->billerId,
+                'provider' => $billerItem->provider_name,
+                'category' => $category->category,
+                'transactionId' => $reference,
+                'transactionDate' => now()->format('Y-m-d'),
             ];
             return response()->json([
                 'status' => 'success',
@@ -270,14 +275,14 @@ class BillPaymentController extends Controller
                 'amount' => $amount,
                 'response' => json_encode($response->json())
             ]);
-            $data=[
-                'status'=>'success',
-                'amount'=>floatval($amount),
-                'item'=>$billerItem->billerId,
-                'provider'=>$billerItem->provider_name,
-                'category'=>$category->category,
-                'transactionId'=>$reference,
-                'transactionDate'=>now()->format('Y-m-d'),
+            $data = [
+                'status' => 'success',
+                'amount' => floatval($amount),
+                'item' => $billerItem->billerId,
+                'provider' => $billerItem->provider_name,
+                'category' => $category->category,
+                'transactionId' => $reference,
+                'transactionDate' => now()->format('Y-m-d'),
             ];
             return response()->json([
                 'status' => 'error',
