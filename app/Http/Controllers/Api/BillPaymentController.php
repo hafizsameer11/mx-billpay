@@ -77,7 +77,7 @@ class BillPaymentController extends Controller
             return [
                 'id' => $item->id,
                 'paymentitemname' => $item->paymentitemname,
-                'amount'=>$item->amount,
+                'amount' => $item->amount,
                 'percentageComission' => $item->percentage_commission
             ];
         });
@@ -124,7 +124,7 @@ class BillPaymentController extends Controller
             'billerId' => $billerId,
         ]);
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
-        if ($category->category == 'Airtime' || $category->category=='Data') {
+        if ($category->category == 'Airtime' || $category->category == 'Data') {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Successfully validated customer',
@@ -142,9 +142,8 @@ class BillPaymentController extends Controller
             if ($response->successful()) {
                 Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
                 $responseData = $response->json()['data']['responseData']['customer'] ?? [];
-                if(isset($responseData['customerName'])){
-
-                }else{
+                if (isset($responseData['customerName'])) {
+                } else {
                     Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
 
                     return response()->json([
@@ -157,7 +156,7 @@ class BillPaymentController extends Controller
                     'status' => 'success',
                     'message' => 'Successfully validated customer',
                     'data' => $response->json('data'),
-                    'customerName'=>$response->json()['data']['responseData']['customer']['customerName'],
+                    'customerName' => $response->json()['data']['responseData']['customer']['customerName'],
                 ], 200);
             } else {
                 Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
@@ -188,16 +187,16 @@ class BillPaymentController extends Controller
         $userId = Auth::user()->id;
         $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
         if ($wallet->accountBalance < $request->amount) {
-            Log::info('Wallet in suffiecinet',['wallet'=>$wallet->accountBalance,'amount'=>$request->amount]);
+            Log::info('Wallet in suffiecinet', ['wallet' => $wallet->accountBalance, 'amount' => $request->amount]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Insufficient balance',
                 'data' => [
-                    'error'=>'insufficient_error'
+                    'error' => 'insufficient_error'
                 ],
             ], 400);
         }
-        Log::info('Validating customer for Biller ID: ' , [$request->all()]);
+        Log::info('Validating customer for Biller ID: ', [$request->all()]);
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -271,11 +270,16 @@ class BillPaymentController extends Controller
             ], 200);
         } else {
             //log into a seperate file seperately for now
-            if($response->json()['status']=='09' && $response->json()['message']=='Transaction pending'){
-                $transactionStatus='pending';
-
-            }else{
-                $transactionStatus='failed';
+            if ($response->json()['status'] == '09' && $response->json()['message'] == 'Transaction pending') {
+                $transactionStatus = 'pending';
+                $wallet->accountBalance = $wallet->accountBalance - $amount;
+                $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+            } else if ($response->json()['status'] == '09' && $response->json()['message'] == 'Transaction pending') {
+                $transactionStatus = 'pending';
+                $wallet->accountBalance = $wallet->accountBalance - $amount;
+                $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+            } else {
+                $transactionStatus = 'failed';
             }
             Log::info('Bill Payment Response: ', $response->json());
             $transaction = new Transaction();
