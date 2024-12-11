@@ -86,7 +86,7 @@ class VirtualAccountController extends Controller
     public function balance(){
         $userId = Auth::user()->id;
         $wallet=Wallet::where('user_id', $userId)->first();
-        $unreadNotifications=ModelsNotification::where('user_id',$userId)->where('status',1)->count();
+        $unreadNotifications=ModelsNotification::where('user_id',$userId)->where('read',0)->count();
         return response()->json([
             'status'=>'success',
             'balance'=>$wallet->accountBalance,
