@@ -356,7 +356,7 @@ class TransferApiController extends Controller
                     $wallet->totalIncome=$wallet->totalIncome+$amount;
                     $wallet->save();
                     $notification = new Notification();
-                    $notification->title = "Icoming Payments";
+                    $notification->title = "Incoming Payments";
                     $notification->type = "transfer";
                     $notification->message = "Payment of " . $amount . " has been successful";
                     $notification->user_id = $userId;
