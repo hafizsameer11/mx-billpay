@@ -162,7 +162,7 @@ class BillPaymentController extends Controller
     public function payBills(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customerId'   => 'required|string',
+            'customerId'   => 'nullable|string',
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
             'phoneNumber' => 'nullable',
