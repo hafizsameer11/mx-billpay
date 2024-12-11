@@ -274,10 +274,12 @@ class BillPaymentController extends Controller
                 $transactionStatus = 'pending';
                 $wallet->accountBalance = $wallet->accountBalance - $amount;
                 $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
-            } else if ($response->json()['status'] == '09' && $response->json()['message'] == 'Transaction pending') {
+                $wallet->save();
+            } else if ($response->json()['status'] == '99' && $response->json()['message'] == 'Not in the recent documentation') {
                 $transactionStatus = 'pending';
                 $wallet->accountBalance = $wallet->accountBalance - $amount;
                 $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+                $wallet->save();
             } else {
                 $transactionStatus = 'failed';
             }
