@@ -180,7 +180,7 @@ class TransactionController extends Controller
             'id' => $transaction->id,
             'amount' => $transaction->amount,
             'transactionDate' => $transaction->transaction_date,
-            'refference' => $transaction->billpayment->refference,
+            'transactionId' => $transaction->billpayment->refference,
             'status' => $transaction->status,
             'category' => $transaction->billpayment->billerItem->category->category,
             'item' => $transaction->billpayment->billerItem->paymentitemname,
