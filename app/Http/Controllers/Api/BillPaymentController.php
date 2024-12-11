@@ -176,6 +176,7 @@ class BillPaymentController extends Controller
         $userId = Auth::user()->id;
         $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
         if ($wallet->accountBalance < $request->amount) {
+            Log::info('Wallet in suffiecinet',['wallet'=>$wallet->accountBalance,'amount'=>$request->amount]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Insufficient balance',
