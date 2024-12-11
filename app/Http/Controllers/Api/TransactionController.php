@@ -118,30 +118,30 @@ class TransactionController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Failed to retrieve bill payments', 'error' => $e->getMessage()], 500);
         }
     }
-    public function transactionDetails($id)
-    {
+    // public function transactionDetails($id)
+    // {
 
-        $transaction = Transaction::where('id', $id)->has('transfer')->with('transfer')->first();
+    //     $transaction = Transaction::where('id', $id)->has('bill_payments')->with('transfer')->first();
 
-        if (!$transaction) {
-            return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
-        } else {
-            $response = [
-                'transaction_id' => $transaction->id,
-                'amount' => $transaction->amount,
-                'transaction_date' => $transaction->created_at,
-                'status' => $transaction->status,
-                'accountNumber' => $transaction->transfer->from_account_number,
-                'toAccountNumber' => $transaction->transfer->to_account_number,
-                'response_message' => $transaction->transfer->response_message,
-                'type' => $transaction->transfer->transfer_type,
-                'refference' => $transaction->transfer->reference
+    //     if (!$transaction) {
+    //         return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+    //     } else {
+    //         $response = [
+    //             'transaction_id' => $transaction->id,
+    //             'amount' => $transaction->amount,
+    //             'transaction_date' => $transaction->created_at,
+    //             'status' => $transaction->status,
+    //             // 'accountNumber' => $transaction->transfer->from_account_number,
+    //             // 'toAccountNumber' => $transaction->transfer->to_account_number,
+    //             // 'response_message' => $transaction->transfer->response_message,
+    //             // 'type' => $transaction->transfer->transfer_type,
+    //             // 'refference' => $transaction->transfer->reference
 
-            ];
+    //         ];
 
-            return response()->json(['status' => 'success', 'data' => $response], 200);
-        }
-    }
+    //         return response()->json(['status' => 'success', 'data' => $response], 200);
+    //     }
+    // }
     public function billPaymentDetails($id)
     {
         $transaction = Transaction::where('id', $id)->has('billpayment') // Only get transactions with non-null billpayments
@@ -168,5 +168,25 @@ class TransactionController extends Controller
                 200
             );
         }
+    }
+    public function transactionDetails($id){
+        $transaction = Transaction::where('id', $id)->with('billpayment.billerItem.category')->first();
+
+        if (!$transaction) {
+            return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+        }
+
+        $response = [
+            'id' => $transaction->id,
+            'amount' => $transaction->amount,
+            'transaction_date' => $transaction->transaction_date,
+            'refference' => $transaction->billpayment->refference,
+            'status' => $transaction->status,
+            'category' => $transaction->billpayment->billerItem->category->category,
+            'paymentitemname' => $transaction->billpayment->billerItem->paymentitemname,
+            'billerType' => $transaction->billpayment->billerItem->billerType,
+        ];
+
+        return response()->json(['status' => 'success', 'data' => $response], 200);
     }
 }
