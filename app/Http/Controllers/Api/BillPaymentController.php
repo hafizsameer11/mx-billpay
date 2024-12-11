@@ -141,6 +141,18 @@ class BillPaymentController extends Controller
             ]);
             if ($response->successful()) {
                 Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
+                $responseData = $response->json()['data']['responseData']['customer'] ?? [];
+                if(isset($responseData['customerName'])){
+
+                }else{
+                    Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $response->json()['data']['message'], // Error message from the API
+                        'data' => $response->json('data'),
+                    ], 400);
+                }
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Successfully validated customer',
@@ -180,7 +192,9 @@ class BillPaymentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Insufficient balance',
-                'data' => [],
+                'data' => [
+                    'error'=>'insufficient_error'
+                ],
             ], 400);
         }
         Log::info('Validating customer for Biller ID: ' , [$request->all()]);
