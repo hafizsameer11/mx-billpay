@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification as ModelsNotification;
 use App\Models\VirtualAccountHistory;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Notification;
 
 class VirtualAccountController extends Controller
 {
@@ -84,11 +86,13 @@ class VirtualAccountController extends Controller
     public function balance(){
         $userId = Auth::user()->id;
         $wallet=Wallet::where('user_id', $userId)->first();
+        $unreadNotifications=ModelsNotification::where('user_id',$userId)->where('status',1)->count();
         return response()->json([
             'status'=>'success',
             'balance'=>$wallet->accountBalance,
             'totalIncome'=>$wallet->totalIncome,
-            'totalBillPayment'=>$wallet->totalBillPayment
+            'totalBillPayment'=>$wallet->totalBillPayment,
+            'unreadNotification'=>$unreadNotifications
         ]);
     }
 
