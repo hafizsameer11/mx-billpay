@@ -185,6 +185,7 @@ class TransactionController extends Controller
             'category' => $transaction->billpayment->billerItem->category->category,
             'item' => $transaction->billpayment->billerItem->paymentitemname,
             'billerType' => $transaction->billpayment->billerItem->billerType,
+            'provider' => $transaction->billpayment->billerItem->provider
         ];
 
         return response()->json(['status' => 'success', 'data' => $response], 200);
