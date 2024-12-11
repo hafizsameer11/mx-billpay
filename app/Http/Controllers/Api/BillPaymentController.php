@@ -271,12 +271,17 @@ class BillPaymentController extends Controller
             ], 200);
         } else {
             //log into a seperate file seperately for now
+            if($response->json()['status']=='09' && $response->json()['message']=='Transaction pending'){
+                $transactionStatus='pending';
 
+            }else{
+                $transactionStatus='failed';
+            }
             Log::info('Bill Payment Response: ', $response->json());
             $transaction = new Transaction();
             $transaction->user_id = $userId;
             $transaction->transaction_type = "Bill Payment";
-            $transaction->status = 'failed';
+            $transaction->status = $transactionStatus;
             $transaction->sign = 'negative';
             $transaction->amount = $amount;
             $transaction->save();
