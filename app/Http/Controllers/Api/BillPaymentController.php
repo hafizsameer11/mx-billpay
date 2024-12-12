@@ -196,7 +196,7 @@ class BillPaymentController extends Controller
                 ],
             ], 400);
         }
-        Log::info('Validating customer for Biller ID: ', [$request->all()]);
+        Log::info('Pay bill payload: ', [$request->all()]);
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -218,6 +218,7 @@ class BillPaymentController extends Controller
             'reference'    => $reference,
             'phoneNumber'  => $phoneNumber,
         ];
+        Log::info('Bill Payment Payload: ', [$payload]);
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
