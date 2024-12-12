@@ -197,6 +197,7 @@ class BillPaymentController extends Controller
             ], 400);
         }
         Log::info('Pay bill payload: ', [$request->all()]);
+
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
@@ -206,6 +207,12 @@ class BillPaymentController extends Controller
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
+        if($category->category == 'Airtime' || $category->category == 'Data'){
+            $customerId=$request->phoneNumber;
+        }else{
+            $customerId = $request->customerId;
+
+        }
         $phoneNumber = $request->input('phoneNumber', null);
         $reference = 'mxPay-' . mt_rand(1000, 9999);
         $payload = [
