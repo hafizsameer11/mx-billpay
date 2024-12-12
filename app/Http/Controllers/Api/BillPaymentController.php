@@ -222,7 +222,7 @@ class BillPaymentController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->post('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/pay', $payload);
-        Log::info('Bill Payment Payload: ', $response->json());
+        Log::info('Bill Payment response: ', $response->json());
         if ($response->successful() && $response->json('status') == '00') {
             $transaction = new Transaction();
             $transaction->user_id = $userId;
