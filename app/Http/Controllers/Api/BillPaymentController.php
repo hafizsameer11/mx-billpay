@@ -207,11 +207,10 @@ class BillPaymentController extends Controller
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
         $division = $billerItem->division;
-        if($category->category == 'Airtime' || $category->category == 'Data'){
-            $customerId=$request->phoneNumber;
-        }else{
+        if ($category->category == 'Airtime' || $category->category == 'Data') {
+            $customerId = $request->phoneNumber;
+        } else {
             $customerId = $request->customerId;
-
         }
         $phoneNumber = $request->input('phoneNumber', null);
         $reference = 'mxPay-' . mt_rand(1000, 9999);
@@ -283,11 +282,77 @@ class BillPaymentController extends Controller
                 $wallet->accountBalance = $wallet->accountBalance - $amount;
                 $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
                 $wallet->save();
+                Log::info('Bill Payment Response: ', $response->json());
+                $transaction = new Transaction();
+                $transaction->user_id = $userId;
+                $transaction->transaction_type = "Bill Payment";
+                $transaction->status = $transactionStatus;
+                $transaction->sign = 'negative';
+                $transaction->amount = $amount;
+                $transaction->save();
+                BillPayment::create([
+                    'biller_item_id' => $request->billerItemId,
+                    'user_id' => $userId,
+                    'refference' => $reference,
+                    'status' => 'pending',
+                    'transaction_id' => $transaction->id,
+                    'customerId' => $customerId,
+                    'phoneNumber' => $phoneNumber,
+                    'amount' => $amount,
+                    'response' => json_encode($response->json())
+                ]);
+                $data = [
+                    'status' => 'pending',
+                    'amount' => floatval($amount),
+                    'item' => $billerItem->billerId,
+                    'provider' => $billerItem->provider_name,
+                    'category' => $category->category,
+                    'transactionId' => $reference,
+                    'transactionDate' => now()->format('Y-m-d'),
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $response->json('message'),
+                    'data' => $data,
+                ], 200);
             } else if ($response->json()['status'] == '99' && $response->json()['message'] == 'Not in the recent documentation') {
                 $transactionStatus = 'pending';
                 $wallet->accountBalance = $wallet->accountBalance - $amount;
                 $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
                 $wallet->save();
+                Log::info('Bill Payment Response: ', $response->json());
+                $transaction = new Transaction();
+                $transaction->user_id = $userId;
+                $transaction->transaction_type = "Bill Payment";
+                $transaction->status = $transactionStatus;
+                $transaction->sign = 'negative';
+                $transaction->amount = $amount;
+                $transaction->save();
+                BillPayment::create([
+                    'biller_item_id' => $request->billerItemId,
+                    'user_id' => $userId,
+                    'refference' => $reference,
+                    'status' => 'pending',
+                    'transaction_id' => $transaction->id,
+                    'customerId' => $customerId,
+                    'phoneNumber' => $phoneNumber,
+                    'amount' => $amount,
+                    'response' => json_encode($response->json())
+                ]);
+                $data = [
+                    'status' => 'pending',
+                    'amount' => floatval($amount),
+                    'item' => $billerItem->billerId,
+                    'provider' => $billerItem->provider_name,
+                    'category' => $category->category,
+                    'transactionId' => $reference,
+                    'transactionDate' => now()->format('Y-m-d'),
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $response->json('message'),
+                    'data' => $data,
+                ], 200);
             } else {
                 $transactionStatus = 'failed';
             }
@@ -311,7 +376,7 @@ class BillPaymentController extends Controller
                 'response' => json_encode($response->json())
             ]);
             $data = [
-                'status' => 'success',
+                'status' => 'failed',
                 'amount' => floatval($amount),
                 'item' => $billerItem->billerId,
                 'provider' => $billerItem->provider_name,
