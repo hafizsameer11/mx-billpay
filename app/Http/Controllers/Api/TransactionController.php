@@ -179,7 +179,7 @@ class TransactionController extends Controller
         $response = [
             'id' => $transaction->id,
             'amount' => $transaction->amount,
-            'transactionDate' => $transaction->transaction_date,
+            'transactionDate' => $transaction->created_at,
             'transactionId' => $transaction->billpayment->refference,
             'status' => $transaction->status,
             'category' => $transaction->billpayment->billerItem->category->category,
