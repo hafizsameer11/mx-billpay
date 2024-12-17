@@ -214,16 +214,39 @@ class BillPaymentController extends Controller
         }
         $phoneNumber = $request->input('phoneNumber', null);
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-        $payload = [
-            'customerId'   => $customerId,
-            'amount'       => $amount,
-            'division'     => $division,
-            'paymentItem'  => $paymentItem,
-            'productId'    => $productId,
-            'billerId'     => $billerId,
-            'reference'    => $reference,
-            'phoneNumber'  => $phoneNumber,
-        ];
+        if($category->category=='Power' || $category->category=='power' ){
+            $payload = [
+                'customerId'   => $customerId,
+                'amount'       => $amount,
+                'division'     => $division,
+                'paymentItem'  => $paymentItem,
+                'productId'    => $productId,
+                'billerId'     => $billerId,
+                'reference'    => $reference
+            ];
+        }else{
+            $payload = [
+                'customerId'   => $customerId,
+                'amount'       => $amount,
+                'division'     => $division,
+                'paymentItem'  => $paymentItem,
+                'productId'    => $productId,
+                'billerId'     => $billerId,
+                'reference'    => $reference,
+                'phoneNumber'  => $phoneNumber,
+            ];
+        }
+
+        // $payload = [
+        //     'customerId'   => $customerId,
+        //     'amount'       => $amount,
+        //     'division'     => $division,
+        //     'paymentItem'  => $paymentItem,
+        //     'productId'    => $productId,
+        //     'billerId'     => $billerId,
+        //     'reference'    => $reference,
+        //     'phoneNumber'  => $phoneNumber,
+        // ];
         Log::info('Bill Payment Payload: ', [$payload]);
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
