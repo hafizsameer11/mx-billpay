@@ -142,11 +142,12 @@ class BillPaymentController extends Controller
             if ($response->successful()) {
                 Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
 
-                // Extract response data safely
-                $responseData = $response->json()['data']['responseData'] ?? [];
-                $customerData = $responseData['customer'] ?? $responseData['data']['user'] ?? [];
+                // Safely extract relevant data
+                $responseData = $response->json()['data']['responseData'] ??
+                                $response->json()['data']['data'] ?? [];
 
-                // Extract customer name from either format
+                // Extract customer name from all possible structures
+                $customerData = $responseData['customer'] ?? $responseData['user'] ?? [];
                 $customerName = $customerData['customerName'] ?? $customerData['name'] ?? null;
 
                 if ($customerName) {
@@ -161,7 +162,7 @@ class BillPaymentController extends Controller
 
                     return response()->json([
                         'status' => 'error',
-                        'message' => $responseData['message'] ?? 'Customer does not exist',
+                        'message' => $response->json()['data']['message'] ?? 'Customer does not exist',
                         'data' => $response->json('data'),
                     ], 400);
                 }
@@ -174,6 +175,7 @@ class BillPaymentController extends Controller
                     'data' => $response->json('data'),
                 ], 400);
             }
+
         }
     }
 
