@@ -141,29 +141,36 @@ class BillPaymentController extends Controller
             ]);
             if ($response->successful()) {
                 Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
-                $responseData = $response->json()['data']['responseData']['customer'] ?? [];
-                if (isset($responseData['customerName'])) {
+
+                // Extract response data safely
+                $responseData = $response->json()['data']['responseData'] ?? [];
+                $customerData = $responseData['customer'] ?? $responseData['data']['user'] ?? [];
+
+                // Extract customer name from either format
+                $customerName = $customerData['customerName'] ?? $customerData['name'] ?? null;
+
+                if ($customerName) {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Successfully validated customer',
+                        'data' => $response->json('data'),
+                        'customerName' => $customerName,
+                    ], 200);
                 } else {
-                    Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+                    Log::warning('Validation failed for Biller ID: ' . $billerId, ['response' => $response->json()]);
 
                     return response()->json([
                         'status' => 'error',
-                        'message' => $response->json()['data']['message'], // Error message from the API
+                        'message' => $responseData['message'] ?? 'Customer does not exist',
                         'data' => $response->json('data'),
                     ], 400);
                 }
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Successfully validated customer',
-                    'data' => $response->json('data'),
-                    'customerName' => $response->json()['data']['responseData']['customer']['customerName'],
-                ], 200);
             } else {
-                Log::info('Response from Validation for Biller ID faailed : ' . $billerId, ['response' => $response->json()]);
+                Log::error('Validation failed for Biller ID: ' . $billerId, ['response' => $response->json()]);
 
                 return response()->json([
                     'status' => 'error',
-                    'message' => $response->json('message') . ' Customer does not Exist', // Error message from the API
+                    'message' => $response->json('message') ?? 'Customer does not exist',
                     'data' => $response->json('data'),
                 ], 400);
             }

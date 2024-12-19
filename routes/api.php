@@ -38,7 +38,7 @@ Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBill
 Route::get('/biller-items-fetch/{categoryId}/{providerId}', [BillPaymentController::class, 'fetchBillerItems']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(middleware: 'auth:sanctum')->group(function () {
 
     Route::post('user-details', [UserDetailController::class, 'detail']);
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
