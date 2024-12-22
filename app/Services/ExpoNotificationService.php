@@ -17,15 +17,15 @@ class ExpoNotificationService
             'to' => $expoToken,
             'title' => $title,
             'body' => $body,
-            'data' => $data, // Optional custom data
         ];
+
 
         $client = new Client();
         $response = $client->post($this->expoPushUrl, [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
-            'json' => $payload,
+            'json' => json_encode($payload),
         ]);
 
         return json_decode($response->getBody(), true);
