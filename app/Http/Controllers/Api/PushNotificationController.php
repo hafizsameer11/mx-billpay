@@ -16,11 +16,11 @@ class PushNotificationController extends Controller
         $user = User::where('email', 'hmstech08@gmail.com')->first();
 
         // Check if the user exists and has an FCM token
-        if (!$user || !$user->fcm_token) {
+        if (!$user || !$user->fcmToken) {
             return response()->json(['message' => 'User or FCM token not found'], 404);
         }
 
-        $fcmToken = $user->fcm_token; // Use the correct property for the FCM token
+        $fcmToken = $user->fcmToken; // Use the correct property for the FCM token
         $title = "Test Notification";
         $body = "This is a test notification";
 
