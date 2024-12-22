@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BillPaymentController;
 use App\Http\Controllers\Api\CooperateAccountRequestController;
 use App\Http\Controllers\Api\faqsController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\SocialMediaLinks;
 use App\Http\Controllers\Api\StatisticsController;
@@ -75,6 +76,7 @@ Route::middleware(middleware: 'auth:sanctum')->group(function () {
     Route::post('/change-pin', [PinController::class, 'changePin']);
     Route::get('/fund-account', [VirtualAccountController::class, 'fundAccount']);
     Route::post('/set-fcm-token', [UserController::class, 'setFcmToken']);
+    Route::post('/send-notification',[PushNotificationController::class, 'sendNotification']);
     //routes for statistics
     Route::get('/monthly-stats', [StatisticsController::class, 'monthlyStats']);
     Route::get('/yearly-stats', [StatisticsController::class, 'yearlyStats']);
