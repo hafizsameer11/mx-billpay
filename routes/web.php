@@ -14,6 +14,7 @@ use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +31,28 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('dashboard.index');
 // });
+Route::get('/clear-cache', function () {
+    try {
+        // Clear application cache
+        Artisan::call('cache:clear');
 
+        // Clear route cache
+        Artisan::call('route:clear');
+
+        // Clear config cache
+        Artisan::call('config:clear');
+
+        // Clear view cache
+        Artisan::call('view:clear');
+
+        // Optional: Rebuild config cache
+        // Artisan::call('config:cache');
+
+        return response()->json(['success' => true, 'message' => 'Caches cleared successfully!']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+    }
+});
 //bill categories
 Route::get('/bill-categories', [BillerCategoryController::class, 'index'])->name('category.index');
 Route::get('/fetch-biller-categories', [BillerCategoryController::class, 'fetchCategories'])->name('category.fetch');
