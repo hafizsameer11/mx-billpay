@@ -6,6 +6,7 @@ use Google\Auth\ApplicationDefaultCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 
 class FirebaseNotificationService
 {
@@ -20,8 +21,10 @@ class FirebaseNotificationService
         putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $credentialsPath);
 
         $middleware = ApplicationDefaultCredentials::getMiddleware([
+            'https://www.googleapis.com/auth/cloud-platform',
             'https://www.googleapis.com/auth/firebase.messaging',
         ]);
+        Log::info($credentialsPath);
 
         $stack = HandlerStack::create();
         $stack->push($middleware);
