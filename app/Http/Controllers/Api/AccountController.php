@@ -48,15 +48,6 @@ class AccountController extends Controller
         $existingAccount = Account::where('user_id', $userId)
             ->first();
 
-        // if ($existingAccount) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'User already has an account with us.',
-        //         'data' => $existingAccount
-        //     ], 409); // 409 Conflict status
-        // }
-
-        // Handle profile picture upload if present
         $profilePicturePath = null;
         if ($request->hasFile('profilePicture')) {
             $profilePicture = $request->file('profilePicture');
