@@ -61,10 +61,10 @@ class AccountController extends Controller
         $account->lastName = $request->lastName;
         $account->firstName = $request->firstName;
         $account->phone = $request->phone;
-        $account->account_number = "mx-bill-pay". uniqid();
+        $account->account_number = "mx-bill-pay" . uniqid();
         $account->bvn = "000000";
         $account->profile_picture = $profilePicturePath;
-        $account->accountBalance= "0.0";
+        $account->accountBalance = "0.0";
         $account->save();
         if ($account) {
             $wallet = new Wallet();
@@ -110,5 +110,4 @@ class AccountController extends Controller
             'response' => $responseData
         ]);
     }
-
 }
