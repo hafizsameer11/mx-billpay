@@ -69,7 +69,6 @@ Route::middleware(middleware: 'auth:sanctum')->group(function () {
     Route::get('/unread-notifications', [UserController::class, 'unreadNotifjications']);
     Route::get('edit-profile-details', [UserDetailController::class, 'editprofileDetail']);
     Route::get('/mark-all-read', [UserController::class, 'markAllAsRead']);
-    Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
     Route::post('/set-pin', [PinController::class, 'setPin']);
     Route::post('/verify-pin', [PinController::class, 'checkPin']);
     Route::post('/change-pin', [PinController::class, 'changePin']);
