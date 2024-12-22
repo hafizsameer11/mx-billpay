@@ -58,8 +58,7 @@ class FirebaseNotificationService
                 "notification" => [
                     "title" => $title,
                     "body" => $body,
-                ],
-                "data" => $data,
+                ]
             ],
         ];
 
