@@ -12,18 +12,33 @@ class PushNotificationController extends Controller
 {
     public function sendNotification(Request $request, FirebaseNotificationService $firebaseNotificationService)
     {
+        // Fetch the user by email
         $user = User::where('email', 'hmstech08@gmail.com')->first();
-        $fcmToken = $user->fcm_token;
+
+        // Check if the user exists and has an FCM token
+        if (!$user || !$user->fcm_token) {
+            return response()->json(['message' => 'User or FCM token not found'], 404);
+        }
+
+        $fcmToken = $user->fcm_token; // Use the correct property for the FCM token
         $title = "Test Notification";
         $body = "This is a test notification";
-        $response = $firebaseNotificationService->sendNotification(
-            $user->fcmToken,
-            $title,
-            $body,
-            $request->get('data', [])
-        );
-        Log::info($response);
 
-        return response()->json(['message' => 'Notification sent', 'response' => $response]);
+        // Send notification
+        try {
+            $response = $firebaseNotificationService->sendNotification(
+                $fcmToken, // Pass the correct FCM token
+                $title,
+                $body,
+                $request->get('data', []) // Optional data payload
+            );
+
+            Log::info('Notification response:', $response);
+
+            return response()->json(['message' => 'Notification sent successfully', 'response' => $response]);
+        } catch (\Exception $e) {
+            Log::error('Error sending notification: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to send notification', 'error' => $e->getMessage()], 500);
+        }
     }
 }
