@@ -135,6 +135,7 @@ class UserController extends Controller
     //set fcm
     public function setFcmToken(Request $request){
         $userId = Auth::user()->id;
+        Log::info($request->fcmToken);
         $fcmToken = $request->fcmToken;
         $user=User::where('id', $userId)->first();
         $user->fcmToken=$fcmToken;
