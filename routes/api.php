@@ -38,7 +38,7 @@ Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBill
 Route::get('/biller-items-fetch/{categoryId}/{providerId}', [BillPaymentController::class, 'fetchBillerItems']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
-// Route::middleware(middleware: 'auth:sanctum')->group(function () {
+Route::middleware( 'auth:sanctum')->group(function () {
 
     Route::post('user-details', [UserDetailController::class, 'detail']);
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
@@ -87,7 +87,7 @@ Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
     Route::post('/send-admin-message', [MessageController::class, 'sendAdminMessage']);
     Route::get('/delete-account', [UserController::class, 'deleteAccount']);
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
-// });
+});
 Route::post('/inwardCreditNotification', [TransferApiController::class, 'inwardCreditNotification']);
 Route::get('/social-media-links', [SocialMediaLinks::class, 'index']);
 Route::get('/set-providers', [BillerProviderController::class, 'setProviders']);
