@@ -76,7 +76,6 @@ Route::middleware(middleware: 'auth:sanctum')->group(function () {
     Route::post('/change-pin', [PinController::class, 'changePin']);
     Route::get('/fund-account', [VirtualAccountController::class, 'fundAccount']);
     Route::post('/set-fcm-token', [UserController::class, 'setFcmToken']);
-    Route::post('/send-notification',[PushNotificationController::class, 'sendNotification']);
     //routes for statistics
     Route::get('/monthly-stats', [StatisticsController::class, 'monthlyStats']);
     Route::get('/yearly-stats', [StatisticsController::class, 'yearlyStats']);
@@ -107,3 +106,4 @@ Route::get('/slides', [SliderController::class, 'index']);
 Route::post('/mark-as-read', [UserController::class, 'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
 Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
+Route::post('/send-notification',[PushNotificationController::class, 'sendNotification']);
