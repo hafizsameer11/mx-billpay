@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PushNotificationController extends Controller
 {
@@ -21,6 +22,7 @@ class PushNotificationController extends Controller
             $body,
             $request->get('data', [])
         );
+        Log::info($response);
 
         return response()->json(['message' => 'Notification sent', 'response' => $response]);
     }
