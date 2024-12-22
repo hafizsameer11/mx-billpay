@@ -103,7 +103,7 @@ Route::post('/load-earlier-messages', [MessageController::class, 'loadEarlierMes
 Route::get('/faq', [faqsController::class, 'index']);
 Route::get('/slides', [SliderController::class, 'index']);
 //Tranfser Routes
+Route::get('/send-notification',[PushNotificationController::class,'sendNotification']);
 Route::post('/mark-as-read', [UserController::class, 'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
 Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
-Route::get('/send-notification',[PushNotificationController::class, 'sendNotification']);
