@@ -17,7 +17,7 @@ class PushNotificationController extends Controller
         $title = "Test Notification";
         $body = "This is a test notification";
         $response = $firebaseNotificationService->sendNotification(
-            $user->fcm_token,
+            $user->fcmToken,
             $title,
             $body,
             $request->get('data', [])
