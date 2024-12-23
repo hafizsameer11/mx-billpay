@@ -67,7 +67,7 @@ class BillerCategoryController extends Controller
         $fixedCommission = $request->bulk_fixed_commission ?? 0;
         $percentageCommission = $request->bulk_percentage_commission ?? 0;
         if ($biller_category_id) {
-            BillerItem::where('biller_category_id', $biller_category_id)->update([
+            BillerItem::where('category_id', $biller_category_id)->update([
                 'fixed_commission' => $fixedCommission,
                 'percentage_commission' => $percentageCommission,
             ]);
