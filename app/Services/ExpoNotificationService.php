@@ -25,7 +25,7 @@ class ExpoNotificationService
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
-            'json' => $payload,
+            'json' => $payload,  
         ]);
 
         return json_decode($response->getBody(), true);

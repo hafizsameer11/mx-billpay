@@ -49,7 +49,7 @@ class PushNotificationController extends Controller
             return response()->json(['message' => 'User or FCM token not found'], 404);
         }
 
-        $expoToken = 'ExponentPushToken[o3UO1jIpYDixP4XycQRUvr]'; // Expo token stored in your database
+        $expoToken = $user->fcmToken; // Expo token stored in your database
         $title = "Test Notification";
         $body = "This is a test notification";
 
