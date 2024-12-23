@@ -76,6 +76,8 @@
                             <label for="percentage_commission" class="form-label">Percentage Commission</label>
                             <input type="number" class="form-control" name="percentage_commission" id="percentage_commission" value="0" step="0.01">
                         </div>
+
+
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                 </div>
@@ -101,6 +103,15 @@
                         <div class="mb-3">
                             <label for="bulk_percentage_commission" class="form-label">Percentage Commission</label>
                             <input type="number" class="form-control" name="bulk_percentage_commission" id="bulk_percentage_commission" value="0" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_commission" class="form-label">Category Base </label>
+                            <select name="biller_category" id="biller_category" class="form-select">
+                                <option value="">Select Category</option>
+                                @foreach ($billerCategories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->category }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Save Bulk</button>
                     </form>
