@@ -58,7 +58,7 @@ class FirebaseNotificationService
                 "data" => [
                     "title" => $title,
                     "body" => $body,
-                    "userId"=>1
+                    "userId"=>"1"
                 ]
             ],
         ];
