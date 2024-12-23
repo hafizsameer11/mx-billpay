@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\Transfer;
 use App\Models\VirtualAccountHistory;
 use App\Models\Wallet;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -19,9 +20,11 @@ use Illuminate\Support\Facades\Validator;
 class TransferApiController extends Controller
 {
     public $accessToken;
+    protected $NotificationService;
 
-    public function __construct()
+    public function __construct(NotificationService $NotificationService)
     {
+        $this->NotificationService = $NotificationService;
         $this->accessToken = config('access_token.live_token');
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
@@ -319,14 +322,14 @@ class TransferApiController extends Controller
             $sessionId = $request->input('session_id');
             $timestamp = $request->input('timestamp');
 
-            $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->orderBy('created_at', 'desc') ->first();
+            $virtualAccount = VirtualAccountHistory::where('accountNumber', $accountNumber)->orderBy('created_at', 'desc')->first();
             $userId = $virtualAccount ? $virtualAccount->user_id : null;
             //if user id is not null
             if ($userId) {
                 $account = Account::where('user_id', $userId)->first();
-                $toclientName=$account->firstName;
-            }else{
-                $toclientName=null;
+                $toclientName = $account->firstName;
+            } else {
+                $toclientName = null;
             }
             if ($userId !== null) {
                 $transaction = new Transaction();
@@ -353,7 +356,7 @@ class TransferApiController extends Controller
                     Log::info('Inward Credit Notification Received: for the authenticated user', $request->all());
                     $wallet = Wallet::where('user_id', $userId)->first();
                     $wallet->accountBalance = $wallet->accountBalance + $amount;
-                    $wallet->totalIncome=$wallet->totalIncome+$amount;
+                    $wallet->totalIncome = $wallet->totalIncome + $amount;
                     $wallet->save();
                     $notification = new Notification();
                     $notification->title = "Incoming Payments";
@@ -363,6 +366,10 @@ class TransferApiController extends Controller
                     $notification->icon = asset('notificationLogos/wallet.png');
                     $notification->iconColor = config('notification_colors.colors.Wallet');
                     $notification->save();
+                    $notificationTitle = "Incoming Payments";
+                    $notificationMessage = "Incoming Funds  of " . $amount . " has been successful";
+                    $notificationResponse = $this->NotificationService->sendToUserById($userId, $notificationTitle, $notificationMessage);
+                    Log::info('Notification Response: ', $notificationResponse);
                     return response()->json(['status' => 'success', 'message' => 'Inward credit processed successfully.'], 200);
                 } else {
                     $freeFund = new FreeFund();

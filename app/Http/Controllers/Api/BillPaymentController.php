@@ -16,14 +16,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Services\NotificationService;
 
 class BillPaymentController extends Controller
 {
     //
     protected $accessToken;
     protected $baseUrl;
-    public function __construct()
+    protected $NotificationService;
+    public function __construct(NotificationService $NotificationService)
     {
+        $this->NotificationService = $NotificationService;
         $this->accessToken = config('access_token.live_token');
         $this->baseUrl = 'https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore';
         // $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
@@ -144,7 +147,7 @@ class BillPaymentController extends Controller
 
                 // Safely extract relevant data
                 $responseData = $response->json()['data']['responseData'] ??
-                                $response->json()['data']['data'] ?? [];
+                    $response->json()['data']['data'] ?? [];
 
                 // Extract customer name from all possible structures
                 $customerData = $responseData['customer'] ?? $responseData['user'] ?? [];
@@ -175,7 +178,6 @@ class BillPaymentController extends Controller
                     'data' => $response->json('data'),
                 ], 400);
             }
-
         }
     }
 
@@ -276,6 +278,10 @@ class BillPaymentController extends Controller
             $notification->icon = asset('notificationLogos/bill.png');
             $notification->iconColor = config('notification_colors.colors.Bill');
             $notification->save();
+            $notificationTitle = "Bill Payment Successful";
+            $notificationMessage = "Bill payment of " . $amount . " has been successful";
+            $notificationResponse = $this->NotificationService->sendToUserById($userId, $notificationTitle, $notificationMessage);
+            Log::info('Notification Response: ', $notificationResponse);
             $transaction->save();
             BillPayment::create([
                 'biller_item_id' => $request->billerItemId,
