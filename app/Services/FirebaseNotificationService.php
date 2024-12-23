@@ -59,7 +59,8 @@ class FirebaseNotificationService
                     "title" => $title,
                     "body" => $body,
                 ]
-            ]
+            ],
+            "data"=> $data
         ];
 
         $ch = curl_init();
