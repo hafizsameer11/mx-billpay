@@ -55,12 +55,12 @@ class FirebaseNotificationService
         $payload = [
             "message" => [
                 "token" => $fcmToken,
-                "notification" => [
+                "data" => [
                     "title" => $title,
                     "body" => $body,
+                    "userId"=>1
                 ]
             ],
-            "data"=> $data
         ];
 
         $ch = curl_init();
