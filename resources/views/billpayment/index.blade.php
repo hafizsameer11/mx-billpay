@@ -148,8 +148,7 @@
                         <input type="hidden" name="item_id" id="item_id">
                         <div class="mb-3">
                             <label for="fixed_commission" class="form-label">Titlte</label>
-                            <input type="text" class="form-control" name="item_title" id="item_title"
-                                >
+                            <input type="text" class="form-control" name="item_title" id="item_title" value="">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save</button>
