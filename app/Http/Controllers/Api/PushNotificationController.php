@@ -31,7 +31,7 @@ class PushNotificationController extends Controller
                 $fcmToken, // Pass the correct FCM token
                 $title,
                 $body,
-                $request->get('data', ['userId'=>'1']) // Optional data payload
+                ['userId'=>'1'] // Optional data payload
             );
 
             Log::info('Notification response:', $response);
