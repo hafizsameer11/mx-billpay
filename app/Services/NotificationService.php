@@ -30,13 +30,14 @@ class NotificationService
             Log::warning("User or FCM token not found for userId: $userId");
             return ['status' => 'error', 'message' => 'User or FCM token not found'];
         }
-
+//conver userId to string
+$stringUserId = (string)$userId;
         try {
             $response = $this->firebaseNotificationService->sendNotification(
                 $user->fcmToken,
                 $title,
                 $body,
-              $userId // Pass userId directly
+              $stringUserId // Pass userId directly
             );
 
             Log::info("Notification sent to userId: $userId", $response);
