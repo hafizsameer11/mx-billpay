@@ -81,6 +81,15 @@ class BillerCategoryController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Bulk commission added successfully.']);
     }
+
+    public function editBillerItemTitle(Request $request){
+        $itemId=$request->item_id;
+        $itemTitle=$request->item_title;
+        $item = BillerItem::find($itemId);
+        $item->paymentitemname = $itemTitle;
+        $item->save();
+        return redirect()->back()->with('success', 'Item title saved successfully!');
+    }
     public function addCommission(Request $request)
     {
         $request->validate([
