@@ -257,7 +257,7 @@
             var itemNameSpan = renameModal.querySelector('#item_title');
             var itemIdInput = renameModal.querySelector('#item_id');
 
-            itemNameSpan.textContent = itemName; // Update the modal's content
+            itemNameSpan.value = itemName; // Update the modal's content
             itemIdInput.value = itemId; // Set the item ID in the hidden input
         });
     </script>
