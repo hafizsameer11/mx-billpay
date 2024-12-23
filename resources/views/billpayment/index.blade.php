@@ -149,7 +149,7 @@
                         <input type="hidden" name="item_id" id="item_id">
                         <div class="mb-3">
                             <label for="fixed_commission" class="form-label">Titlte</label>
-                            <input type="number" class="form-control" name="item_title" id="item_title" value="0"
+                            <input type="number" class="form-control" name="item_title" id="item_title"
                                 step="0.01">
                         </div>
 
@@ -183,7 +183,7 @@
             var itemNameSpan = commissionModal.querySelector('#itemName');
             var itemIdInput = commissionModal.querySelector('#item_id');
 
-            itemNameSpan.textContent = itemName; // Update the modal's content
+            itemNameSpan.value = itemName; // Update the modal's content
             itemIdInput.value = itemId; // Set the item ID in the hidden input
         });
 
