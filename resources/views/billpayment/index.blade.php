@@ -180,11 +180,11 @@
             var button = event.relatedTarget; // Button that triggered the modal
             var itemId = button.getAttribute('data-id'); // Extract info from data-* attributes
             var itemName = button.getAttribute('data-item-name');
-            var itemNameSpan = commissionModal.querySelector('#itemName');
+            var itemNameSpan = commissionModal.querySelector('#item_title');
             var itemIdInput = commissionModal.querySelector('#item_id');
 
             itemNameSpan.value = itemName; // Update the modal's content
-            itemIdInput.value = itemId; // Set the item ID in the hidden input
+            itemIdInput.value = itemId;
         });
 
         // Handle individual commission form submission
