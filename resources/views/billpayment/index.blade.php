@@ -38,8 +38,7 @@
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
                                             data-bs-target="#commissionModal" data-id="{{ $item->id }}"
                                             data-item-name="{{ $item->paymentitemname }}">Add Commission</button>
-                                    </td>
-                                    <td>
+
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
                                             data-bs-target="#renameModal" data-id="{{ $item->id }}"
                                             data-item-name="{{ $item->paymentitemname }}">Rename Item</button>
@@ -149,8 +148,8 @@
                         <input type="hidden" name="item_id" id="item_id">
                         <div class="mb-3">
                             <label for="fixed_commission" class="form-label">Titlte</label>
-                            <input type="number" class="form-control" name="item_title" id="item_title"
-                                step="0.01">
+                            <input type="text" class="form-control" name="item_title" id="item_title"
+                                >
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save</button>
