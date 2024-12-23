@@ -21,7 +21,7 @@ class PushNotificationController extends Controller
             return response()->json(['message' => 'User or FCM token not found'], 404);
         }
 
-        $fcmToken = $user->fcmToken; // Use the correct property for the FCM token
+        $fcmToken ='ekabu-2gQrCMnUTKZfl8Di:APA91bFPZLDRXeug-fgHGnAoefEBslWaK9eSi19yCpSW23pocyEsEw4sNND7VA9g22mZauq1XgXSOgk-vtg9jMAg1DMBnaBrjor4PlVQ5XB9a1xeklz42m8'; // Use the correct property for the FCM token
         $title = "Test Notification";
         $body = "This is a test notification";
 
