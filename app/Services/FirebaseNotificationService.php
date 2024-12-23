@@ -19,7 +19,7 @@ class FirebaseNotificationService
     {
         $this->fcmUrl = 'https://fcm.googleapis.com/v1/projects/mx-bill-pay-5c87d/messages:send';
         $this->credentialsPath = storage_path('app/json/file.json'); // Path to your Service Account key
-        $this->projectId ='mx-bill-pay-5c87d'; // Ensure you set this in your config/services.php
+        $this->projectId = 'mx-bill-pay-5c87d'; // Ensure you set this in your config/services.php
     }
 
     /**
@@ -31,7 +31,7 @@ class FirebaseNotificationService
      * @param array $data Optional additional data payload
      * @return array Response from the FCM server
      */
-    public function sendNotification($fcmToken, $title, $body, $data = [])
+    public function sendNotification($fcmToken, $title, $body, $userId)
     {
         if (!file_exists($this->credentialsPath)) {
             throw new \Exception('Service account JSON file not found at ' . $this->credentialsPath);
@@ -58,7 +58,7 @@ class FirebaseNotificationService
                 "data" => [
                     "title" => $title,
                     "body" => $body,
-                    "userId"=>"1"
+                    "userId" => $userId
                 ]
             ],
         ];

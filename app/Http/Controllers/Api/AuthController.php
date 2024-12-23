@@ -17,12 +17,18 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Notification;
+use App\Services\NotificationService;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     protected $accessToken;
-    public function __construct()
+    protected $NotificationService;
+    public function __construct(NotificationService $NotificationService)
+
+
     {
+        $this->NotificationService = $NotificationService;
         $this->accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4MTUiLCJ0b2tlbklkIjoiZGE1YjM5ZDItMGE2MS00MGE5LTg2ZGYtNTFjNDE5NmU4MmMyIiwiaWF0IjoxNzMxOTIyNjMyLCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.D8lFZCna6PZNIXnmJt-Xwc2JJ9rYxNPv4x5yDwRnldGs6tZu8KAlCoXumVIcXuUrOvcEud0hSIkQ7hZUjsFh7Q';
     }
     public function register(Request $request)
@@ -132,7 +138,11 @@ class AuthController extends Controller
         $notification->icon = asset('notificationLogos/profile2.png');
         $notification->iconColor = config('notification_colors.colors.Account');
         $notification->save();
-        $wallet=Wallet::where('user_id',$user->id)->first();
+        $notificationTitle = "User Logged In";
+        $notificationMessage = "User Logged In Successfully";
+        $notificationResponse = $this->NotificationService->sendToUserById($user->id, $notificationTitle, $notificationMessage);
+        Log::info("Notification sent to userId: $user->id", $notificationResponse);
+        $wallet = Wallet::where('user_id', $user->id)->first();
         return response()->json([
             'message' => 'Login successful.',
             'user' => [
@@ -141,7 +151,7 @@ class AuthController extends Controller
                 'lastName' => $user->account->lastName,
                 'email' => $user->email,
                 'phone' => $user->account->phone,
-                'hasPin'=>$has_pin,
+                'hasPin' => $has_pin,
                 'accountNumber' => $wallet->accountNumber,
                 'accountBalance' => $wallet->accountBalance,
                 'created_at' => $account->created_at,
@@ -155,45 +165,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // public function accountEnquiry(Request $request, $id = null)
-    // {
-    //     if (is_null($id)) {
-    //         $userId = Auth::user()->id;
-    //     } else {
-    //         $userId = $id;
-    //     }
-
-    //     $accountNumber = Account::where('user_id', $userId)->first();
-    //     $accountNumber1 = $accountNumber->account_number;
-    //     $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-    //         ->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/wallet2/account/enquiry', [
-    //             'accountNumber' => $accountNumber1
-    //         ]);
-    //     if ($response->successful()) {
-    //         $accountData = $response->json()['data'];
-    //         $accountStatus = $response->json()['status'];
-    //         if ($accountStatus === '00') {
-    //             $account = Account::where('user_id', $userId)->first();
-    //             if ($account) {
-    //                 $account->accountBalance = $accountData['accountBalance'];
-    //                 $account->save();
-    //                 if (is_null($account->accountId)) {
-    //                     $account->accountId = $accountData['accountId'];
-    //                     $account->client = $accountData['client'];
-    //                     $account->clientId = $accountData['clientId'];
-    //                     $account->savingsProductName = $accountData['savingsProductName'];
-    //                     $account->save();
-    //                 }
-    //                 return response()->json($account, 200);
-    //             }
-    //             return response()->json(['message' => 'Account not found'], 404);
-    //         } else {
-    //             return response()->json(['error' => 'Invalid account status', 'status' => $accountStatus], 400);
-    //         }
-    //     } else {
-    //         return response()->json(['error' => 'Failed to fetch account details', 'details' => $response->json()], $response->status());
-    //     }
-    // }
 
     // Logout method
     public function logout(Request $request)
