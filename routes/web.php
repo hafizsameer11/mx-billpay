@@ -158,7 +158,9 @@ Route::post('/update-smtp', [SmtpController::class, 'update'])->name('smtp.updat
 Route::get('/dipatchevent', [TransferController::class, 'dispatchevent']);
 Route::resource('slides', SlideController::class);
 
-Route::post('/editBillerItemTitle',[BillerCategoryController::class,'editBillerItemTitle'])->name('editBillerItemTitle');
+Route::post('/editBillerItemTitle', [BillerCategoryController::class, 'editBillerItemTitle'])->name('editBillerItemTitle');
+Route::get('/make-item-inactive/{id}', [BillerCategoryController::class, 'changeItemStatus'])->name('makeItemInactive');
+Route::get('/change-provider-status/{id}', [BillerCategoryController::class, 'chnageProviderStatus'])->name('chnageProviderStatus');
 use Pusher\Pusher;
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');

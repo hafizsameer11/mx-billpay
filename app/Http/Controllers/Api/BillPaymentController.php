@@ -294,6 +294,10 @@ class BillPaymentController extends Controller
                 'amount' => $amount,
                 'response' => json_encode($response->json())
             ]);
+            $token='';
+            if($response->json()['data']['token']){
+                $token = $response->json()['data']['token'];
+            }
             Log::info('Bill Payment Respo .;ppnse: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
@@ -306,6 +310,7 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
+                'token'=>$token
             ];
             return response()->json([
                 'status' => 'success',

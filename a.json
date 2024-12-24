@@ -1,38 +1,11 @@
 {
-    "response": {
-        "status": "00",
-        "message": "Service provider's account retrieved successfully",
-        "data": {
-            "status": "success",
-            "message": "Successful",
-            "code": "200",
-            "data": {
-                "user": {
-                    "name": "HORSFALL AROLOYETEIM",
-                    "address": "\"HOUSE 18,  66 ROAD 6TH AVENUE GWARIMPA, , ",
-                    "accountNumber": "0195110017397",
-                    "rawOutput": {
-                        "name": "HORSFALL AROLOYETEIM",
-                        "address": "\"HOUSE 18,  66 ROAD 6TH AVENUE GWARIMPA, , ",
-                        "meterNumber": "0195110017397",
-                        "minimumAmount": "0",
-                        "tariff": null,
-                        "accountBalance": "0",
-                        "account": "0195110017397",
-                        "customerAddress": "\"HOUSE 18,  66 ROAD 6TH AVENUE GWARIMPA, , ",
-                        "vendType": null,
-                        "daysSinceLastVend": null,
-                        "minVendAmount": 900,
-                        "maxVendAmount": null,
-                        "freeUnits": null,
-                        "company": null,
-                        "responseMessage": "GWARIMPA",
-                        "customerName": "HORSFALL AROLOYETEIM",
-                        "responseCode": null
-                    },
-                    "errorMessage": null
-                }
-            }
-        }
+    "status": "00",
+    "message": "Successful",
+    "data": {
+        "reference": "mxPay-7665",
+        "token": "52906876537823658537",
+        "kct1": "",
+        "kct2": "",
+        "creditToken": "0.0"
     }
 }

@@ -51,29 +51,29 @@
                                     <td>{{ $item->title }}</td>
                                     <td>{{ $item->category->category }}</td>
                                     <td>
-                                        <button class="btn btn-outline-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#categoryTitleModal"
-                                                data-id="{{ $item->id }}"
-                                                data-title="{{ $item->provider_title }}">
+                                        <a href="{{ route('chnageProviderStatus', ['id' => $item->id]) }}"
+                                            class="btn btn-outline-primary">
+                                            {{ $item->status ? 'Deactivate' : 'Activate' }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#categoryTitleModal" data-id="{{ $item->id }}"
+                                            data-title="{{ $item->provider_title }}">
                                             {{ $item->provider_title ?? 'Add Title' }}
                                         </button>
                                     </td>
                                     <td>
-                                        <button class="btn btn-outline-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#categoryDescriptionModal"
-                                                data-id="{{ $item->id }}"
-                                                data-title="{{ $item->provider_description }}">
-                                            {{ $item->provider_description ?? 'Add Description' }}
+                                        <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#categoryDescriptionModal" data-id="{{ $item->id }}"
+                                            data-title="{{ $item->provider_description }}">
+                                            Description
                                         </button>
                                     </td>
                                     <td>
-                                        <button class="btn btn-outline-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#selectTitleModel"
-                                                data-id="{{ $item->id }}"
-                                                data-title="{{ $item->select_title }}">
+                                        <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#selectTitleModel" data-id="{{ $item->id }}"
+                                            data-title="{{ $item->select_title }}">
                                             {{ $item->select_title ?? 'Select Title' }}
                                         </button>
                                     </td>
@@ -85,7 +85,7 @@
                                             N/A
                                         @endif
                                     </td>
-                                    
+
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary update-logo-btn"
                                             data-bs-toggle="modal" data-bs-target="#commissionModal"
@@ -114,7 +114,8 @@
     </div>
 
 
-    <div class="modal fade" id="categoryTitleModal" tabindex="-1" aria-labelledby="categoryTitleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="categoryTitleModal" tabindex="-1" aria-labelledby="categoryTitleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -138,7 +139,8 @@
 
 
 
-    <div class="modal fade" id="categoryDescriptionModal" tabindex="-1" aria-labelledby="categoryDescriptionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="categoryDescriptionModal" tabindex="-1" aria-labelledby="categoryDescriptionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -151,7 +153,8 @@
                         <input type="hidden" name="id" id="modal_category_id_desc">
                         <div class="mb-3">
                             <label for="provider_description" class="form-label">Provider Description</label>
-                            <input type="text" class="form-control" name="provider_description" id="modal_category_description">
+                            <input type="text" class="form-control" name="provider_description"
+                                id="modal_category_description">
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
@@ -162,7 +165,8 @@
 
 
 
-    <div class="modal fade" id="selectTitleModel" tabindex="-1" aria-labelledby="selectTitleModelLabel" aria-hidden="true">
+    <div class="modal fade" id="selectTitleModel" tabindex="-1" aria-labelledby="selectTitleModelLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -186,11 +190,13 @@
     </div>
 
     <!-- Modal for Updating Logo -->
-    <div class="modal fade" id="commissionModal" tabindex="-1" aria-labelledby="commissionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="commissionModal" tabindex="-1" aria-labelledby="commissionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="commissionModalLabel">Update Logo for <span id="modalItemTitle"></span></h5>
+                    <h5 class="modal-title" id="commissionModalLabel">Update Logo for <span id="modalItemTitle"></span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -238,7 +244,7 @@
         @endif
 
         const categoryTitleModal = document.getElementById('categoryTitleModal');
-        categoryTitleModal.addEventListener('show.bs.modal', function (event) {
+        categoryTitleModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             document.getElementById('modal_category_id_title').value = button.getAttribute('data-id');
             document.getElementById('modal_category_title').value = button.getAttribute('data-title') || '';
@@ -246,7 +252,7 @@
 
 
         const categoryDescriptionModal = document.getElementById('categoryDescriptionModal');
-        categoryDescriptionModal.addEventListener('show.bs.modal', function (event) {
+        categoryDescriptionModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             document.getElementById('modal_category_id_desc').value = button.getAttribute('data-id');
             document.getElementById('modal_category_description').value = button.getAttribute('data-title') || '';
@@ -254,10 +260,10 @@
 
 
         const selectTitleModel = document.getElementById('selectTitleModel');
-selectTitleModel.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    document.getElementById('modal_category_id_selectTitle').value = button.getAttribute('data-id');
-    document.getElementById('modal_selectTitle').value = button.getAttribute('data-title') || '';
-});
+        selectTitleModel.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            document.getElementById('modal_category_id_selectTitle').value = button.getAttribute('data-id');
+            document.getElementById('modal_selectTitle').value = button.getAttribute('data-title') || '';
+        });
     </script>
 @endsection
