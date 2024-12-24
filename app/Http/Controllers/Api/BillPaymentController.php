@@ -225,28 +225,7 @@ class BillPaymentController extends Controller
         }
         $phoneNumber = $request->input('phoneNumber', null);
         $reference = 'mxPay-' . mt_rand(1000, 9999);
-        // if($category->category=='Power' || $category->category=='power' ){
-        //     $payload = [
-        //         'customerId'   => $customerId,
-        //         'amount'       => $amount,
-        //         'division'     => $division,
-        //         'paymentItem'  => $paymentItem,
-        //         'productId'    => $productId,
-        //         'billerId'     => $billerId,
-        //         'reference'    => $reference
-        //     ];
-        // }else{
-        //     $payload = [
-        //         'customerId'   => $customerId,
-        //         'amount'       => $amount,
-        //         'division'     => $division,
-        //         'paymentItem'  => $paymentItem,
-        //         'productId'    => $productId,
-        //         'billerId'     => $billerId,
-        //         'reference'    => $reference,
-        //         'phoneNumber'  => $phoneNumber,
-        //     ];
-        // }
+
 
         $payload = [
             'customerId'   => $customerId,
@@ -283,6 +262,10 @@ class BillPaymentController extends Controller
             $notificationResponse = $this->NotificationService->sendToUserById($userId, $notificationTitle, $notificationMessage);
             Log::info('Notification Response: ', $notificationResponse);
             $transaction->save();
+            $token = '';
+            if ($response->json()['data']['token']) {
+                $token = $response->json()['data']['token'];
+            }
             BillPayment::create([
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
@@ -292,13 +275,11 @@ class BillPaymentController extends Controller
                 'customerId' => $customerId,
                 'phoneNumber' => $phoneNumber,
                 'amount' => $amount,
-                'response' => json_encode($response->json())
+                'response' => json_encode($response->json()),
+                'token' => $token
             ]);
-            $token='';
-            if($response->json()['data']['token']){
-                $token = $response->json()['data']['token'];
-            }
-            Log::info('Bill Payment Respo .;ppnse: ', $response->json());
+
+            Log::info('Bill Payment Response: ', $response->json());
             $wallet->accountBalance = $wallet->accountBalance - $amount;
             $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
             $wallet->save();
@@ -310,7 +291,7 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
-                'token'=>$token
+                'token' => $token
             ];
             return response()->json([
                 'status' => 'success',

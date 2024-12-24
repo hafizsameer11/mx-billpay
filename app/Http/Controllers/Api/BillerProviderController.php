@@ -60,6 +60,7 @@ class BillerProviderController extends Controller
                 'logo' => asset($provider->logo),
                 'category' => $category,
                 'category_id' => $categoryData->id,
+                'status'=>$provider->status
             ];
         }
 

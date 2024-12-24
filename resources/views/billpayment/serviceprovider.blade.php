@@ -37,6 +37,7 @@
                                 <th>#</th>
                                 <th>Title</th>
                                 <th>Category</th>
+                                <th>Change Status</th>
                                 <th>Provider Title</th>
                                 <th>Provider Description</th>
                                 <th>Select Title</th>
