@@ -263,9 +263,10 @@ class BillPaymentController extends Controller
             Log::info('Notification Response: ', $notificationResponse);
             $transaction->save();
             $token = '';
-            if ($response->json()['data']['token']) {
+            if (isset($response->json()['data']['token'])) {
                 $token = $response->json()['data']['token'];
             }
+
             BillPayment::create([
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
