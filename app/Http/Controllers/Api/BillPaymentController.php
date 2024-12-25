@@ -71,7 +71,13 @@ class BillPaymentController extends Controller
         ];
         $provider = BillProviders::where('id', $providerId)->first();
         // if()
-        $items = BillerItem::where('category_id', $categoryId)->where('provider_name', $provider->title)->get();
+        //if amount exists or not null than order by amount from lowert to higher amount will be of biller item
+
+
+        $items = BillerItem::where('category_id', $categoryId)
+            ->where('provider_name', $provider->title)
+            ->orderByRaw('amount IS NULL, amount ASC') // NULLs at the end, then sort by amount
+            ->get();
         $provider = [
             'id' => $provider->id,
             'title' => $provider->title,

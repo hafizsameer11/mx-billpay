@@ -50,9 +50,9 @@ class TransactionController extends Controller
 
                         ];
                     }
-                    return null; // Skip transactions that are neither bill payments nor transfers
+                    return null;
                 })
-                ->filter(); // Remove null entries
+                ->filter();
 
             if ($transactions->isEmpty()) {
                 return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 404);
