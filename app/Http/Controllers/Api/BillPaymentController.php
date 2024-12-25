@@ -195,12 +195,18 @@ class BillPaymentController extends Controller
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
             'phoneNumber' => 'nullable',
+            'totaltAmount' => 'nullable'
 
         ]);
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 400);
+        }
+        $totalAmount = $request->amount;
+        if ($request->totaltAmount != null) {
+            // $request->amount=$request->totaltAmount;
+            $totalAmount = $request->totaltAmount;
         }
         $userId = Auth::user()->id;
         $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
