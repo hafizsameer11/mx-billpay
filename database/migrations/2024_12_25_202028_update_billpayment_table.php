@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bill_payments', function (Blueprint $table) {
-            $table->strin('totalAmount')->nullable();
+            $table->float('totalAmount')->default(0);
         });
     }
 

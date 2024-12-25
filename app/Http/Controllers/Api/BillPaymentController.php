@@ -194,19 +194,13 @@ class BillPaymentController extends Controller
             'customerId'   => 'nullable|string',
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
-            'phoneNumber' => 'nullable',
-            'totaltAmount' => 'nullable'
+            'phoneNumber' => 'nullable'
 
         ]);
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 400);
-        }
-        $totalAmount = $request->amount;
-        if ($request->totaltAmount != null) {
-            // $request->amount=$request->totaltAmount;
-            $totalAmount = $request->totaltAmount;
         }
         $userId = Auth::user()->id;
         $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
@@ -227,6 +221,10 @@ class BillPaymentController extends Controller
         $amount = $request->amount;
         $billerItem = BillerItem::where('id', $billerItem)->first();
         $billerId = $billerItem->billerId;
+        $fixedCommission = (float) $billerItem->fixed_commission; // Convert to float
+        $percentageCommission = (float) $billerItem->percentage_commission; // Convert to float
+        $totalAmount = $amount + $fixedCommission + ($amount * $percentageCommission / 100);
+
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
         $paymentItem = $billerItem->paymentCode;
         $productId = $billerItem->productId;
@@ -290,7 +288,8 @@ class BillPaymentController extends Controller
                 'phoneNumber' => $phoneNumber,
                 'amount' => $amount,
                 'response' => json_encode($response->json()),
-                'token' => $token
+                'token' => $token,
+                'totalAmount' => $totalAmount
             ]);
 
             Log::info('Bill Payment Response: ', $response->json());
@@ -305,7 +304,8 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
-                'token' => $token
+                'token' => $token,
+                'totalAmount' => $totalAmount
             ];
             return response()->json([
                 'status' => 'success',
