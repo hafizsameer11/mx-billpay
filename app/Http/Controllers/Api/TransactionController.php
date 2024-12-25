@@ -29,12 +29,13 @@ class TransactionController extends Controller
                     if ($transaction->billpayment) {
                         return [
                             'transaction_id' => $transaction->id,
-                            'amount' => $transaction->amount,
+                            'amount' => $transaction->billpayment->totalAmount,
                             'type' => 'Bill Payment',
                             'category' => $transaction->billpayment->billerItem->category->category,
                             'item' => $transaction->billpayment->billerItem->paymentitemname,
                             'logo' => asset($transaction->billpayment->billerItem->category->logo),
-                            'date' => $transaction->created_at
+                            'date' => $transaction->created_at,
+
                         ];
                     }
 
