@@ -188,6 +188,7 @@ class TransactionController extends Controller
             'billerType' => $transaction->billpayment->billerItem->billerType,
             'provider' => $transaction->billpayment->billerItem->provider_name,
             'token' => $transaction->billpayment->token,
+            'totalAmount' => $transaction->billpayment->totalAmount,
 
         ];
 
