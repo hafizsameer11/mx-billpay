@@ -33,8 +33,8 @@ class TransactionController extends Controller
                             'type' => 'Bill Payment',
                             'category' => $transaction->billpayment->billerItem->category->category,
                             'item' => $transaction->billpayment->billerItem->paymentitemname,
-                            'logo'=>asset( $transaction->billpayment->billerItem->category->logo),
-                            'date'=>$transaction->created_at
+                            'logo' => asset($transaction->billpayment->billerItem->category->logo),
+                            'date' => $transaction->created_at
                         ];
                     }
 
@@ -45,8 +45,8 @@ class TransactionController extends Controller
                             'type' => 'Fund Transfer',
                             'category' => 'Fund',
                             'item' => 'Incoming Fund',
-                            'logo'=>asset('notificationLogos/wallet.png'),
-                            'date'=>$transaction->created_at
+                            'logo' => asset('notificationLogos/wallet.png'),
+                            'date' => $transaction->created_at
 
                         ];
                     }
@@ -55,7 +55,7 @@ class TransactionController extends Controller
                 ->filter(); // Remove null entries
 
             if ($transactions->isEmpty()) {
-                return response()->json(['status' => 'error', 'message' => 'No transactions found'], 404);
+                return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 404);
             }
 
             return response()->json(['status' => 'success', 'data' => $transactions], 200);
@@ -169,7 +169,8 @@ class TransactionController extends Controller
             );
         }
     }
-    public function transactionDetails($id){
+    public function transactionDetails($id)
+    {
         $transaction = Transaction::where('id', $id)->with('billpayment.billerItem.category')->first();
 
         if (!$transaction) {
@@ -186,7 +187,7 @@ class TransactionController extends Controller
             'item' => $transaction->billpayment->billerItem->paymentitemname,
             'billerType' => $transaction->billpayment->billerItem->billerType,
             'provider' => $transaction->billpayment->billerItem->provider_name,
-            'token'=>$transaction->billpayment->token,
+            'token' => $transaction->billpayment->token,
 
         ];
 
