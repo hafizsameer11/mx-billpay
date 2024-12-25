@@ -129,7 +129,12 @@ class AuthController extends Controller
         }
         $pin = Pin::where('user_id', $user->id)->first();
         $has_pin = $pin ? true : false;
-        $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
+        if ($user->account->profile_picture == null) {
+            $profilePictureUrl = '';
+        } else {
+
+            $profilePictureUrl = asset('storage/' . $user->account->profile_picture);
+        }
         $notification = new ModelsNotification();
         $notification->user_id = $user->id;
         $notification->type = "login";
