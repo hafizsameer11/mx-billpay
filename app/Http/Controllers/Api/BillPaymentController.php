@@ -337,7 +337,8 @@ class BillPaymentController extends Controller
                     'customerId' => $customerId,
                     'phoneNumber' => $phoneNumber,
                     'amount' => $amount,
-                    'response' => json_encode($response->json())
+                    'response' => json_encode($response->json()),
+                    'totalAmount' => $totalAmount
                 ]);
                 $data = [
                     'status' => 'pending',
@@ -347,6 +348,7 @@ class BillPaymentController extends Controller
                     'category' => $category->category,
                     'transactionId' => $reference,
                     'transactionDate' => now()->format('Y-m-d'),
+                    'totalAmount' => $totalAmount
                 ];
                 return response()->json([
                     'status' => 'success',
@@ -375,7 +377,8 @@ class BillPaymentController extends Controller
                     'customerId' => $customerId,
                     'phoneNumber' => $phoneNumber,
                     'amount' => $amount,
-                    'response' => json_encode($response->json())
+                    'response' => json_encode($response->json()),
+                    'totalAmount' => $totalAmount
                 ]);
                 $data = [
                     'status' => 'pending',
@@ -385,6 +388,7 @@ class BillPaymentController extends Controller
                     'category' => $category->category,
                     'transactionId' => $reference,
                     'transactionDate' => now()->format('Y-m-d'),
+                    'totalAmount' => $totalAmount
                 ];
                 return response()->json([
                     'status' => 'success',
@@ -411,7 +415,8 @@ class BillPaymentController extends Controller
                 'customerId' => $customerId,
                 'phoneNumber' => $phoneNumber,
                 'amount' => $amount,
-                'response' => json_encode($response->json())
+                'response' => json_encode($response->json()),
+                'totalAmount' => $totalAmount
             ]);
             $data = [
                 'status' => 'failed',
@@ -421,6 +426,7 @@ class BillPaymentController extends Controller
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
+                'totalAmount' => $totalAmount
             ];
             return response()->json([
                 'status' => 'error',
