@@ -293,8 +293,8 @@ class BillPaymentController extends Controller
             ]);
 
             Log::info('Bill Payment Response: ', $response->json());
-            $wallet->accountBalance = $wallet->accountBalance - $amount;
-            $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+            $wallet->accountBalance = $wallet->accountBalance - $totalAmount;
+            $wallet->totalBillPayment = $wallet->totalBillPayment + $totalAmount;
             $wallet->save();
             $data = [
                 'status' => 'success',
@@ -317,8 +317,8 @@ class BillPaymentController extends Controller
             //log into a seperate file seperately for now
             if ($response->json()['status'] == '09' && $response->json()['message'] == 'Transaction pending') {
                 $transactionStatus = 'pending';
-                $wallet->accountBalance = $wallet->accountBalance - $amount;
-                $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+                $wallet->accountBalance = $wallet->accountBalance - $totalAmount;
+                $wallet->totalBillPayment = $wallet->totalBillPayment + $totalAmount;
                 $wallet->save();
                 Log::info('Bill Payment Response: ', $response->json());
                 $transaction = new Transaction();
@@ -357,8 +357,8 @@ class BillPaymentController extends Controller
                 ], 200);
             } else if ($response->json()['status'] == '99' && $response->json()['message'] == 'Not in the recent documentation') {
                 $transactionStatus = 'pending';
-                $wallet->accountBalance = $wallet->accountBalance - $amount;
-                $wallet->totalBillPayment = $wallet->totalBillPayment + $amount;
+                $wallet->accountBalance = $wallet->accountBalance - $totalAmount;
+                $wallet->totalBillPayment = $wallet->totalBillPayment + $totalAmount;
                 $wallet->save();
                 Log::info('Bill Payment Response: ', $response->json());
                 $transaction = new Transaction();
