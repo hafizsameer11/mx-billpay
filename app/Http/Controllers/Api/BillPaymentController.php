@@ -204,7 +204,15 @@ class BillPaymentController extends Controller
         }
         $userId = Auth::user()->id;
         $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
-        if ($wallet->accountBalance < $request->amount) {
+        $customerId = $request->customerId;
+        $billerItem = $request->billerItemId;
+        $amount = $request->amount;
+        $billerItem = BillerItem::where('id', $billerItem)->first();
+        $billerId = $billerItem->billerId;
+        $fixedCommission = (float) $billerItem->fixed_commission; // Convert to float
+        $percentageCommission = (float) $billerItem->percentage_commission; // Convert to float
+        $totalAmount = $amount + $fixedCommission + ($amount * $percentageCommission / 100);
+        if ($wallet->accountBalance < $totalAmount) {
             Log::info('Wallet in suffiecinet', ['wallet' => $wallet->accountBalance, 'amount' => $request->amount]);
             return response()->json([
                 'status' => 'success',
@@ -216,14 +224,7 @@ class BillPaymentController extends Controller
         }
         Log::info('Pay bill payload: ', [$request->all()]);
 
-        $customerId = $request->customerId;
-        $billerItem = $request->billerItemId;
-        $amount = $request->amount;
-        $billerItem = BillerItem::where('id', $billerItem)->first();
-        $billerId = $billerItem->billerId;
-        $fixedCommission = (float) $billerItem->fixed_commission; // Convert to float
-        $percentageCommission = (float) $billerItem->percentage_commission; // Convert to float
-        $totalAmount = $amount + $fixedCommission + ($amount * $percentageCommission / 100);
+
 
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
         $paymentItem = $billerItem->paymentCode;
