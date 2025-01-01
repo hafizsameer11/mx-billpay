@@ -182,6 +182,8 @@ class UserController extends Controller
 
     public function markSingleRead($id)
     {
+
+        Log::info("Notification id: $id");
         $notification = Notification::where('id', $id)->first();
         $notification->read = 1;
         $notification->save();
