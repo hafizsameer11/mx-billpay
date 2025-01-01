@@ -78,33 +78,33 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
     }
-    public function checkUserStatus(){
+    public function checkUserStatus()
+    {
         $userId = Auth::user()->id;
-        $account=Account::where('user_id', $userId)->first();
-        if($account){
-            if($account->status=='PND'){
+        $account = Account::where('user_id', $userId)->first();
+        if ($account) {
+            if ($account->status == 'PND') {
 
                 return response()->json(['status' => 'pending'], 200);
-            }else{
-                $bvnStatus=BvnStatucRecorder::where('userId', $userId)->first();
+            } else {
+                $bvnStatus = BvnStatucRecorder::where('userId', $userId)->first();
                 log::info($bvnStatus);
-                if($bvnStatus){
-                    $bvnStatus->status="checked";
+                if ($bvnStatus) {
+                    $bvnStatus->status = "checked";
                     $bvnStatus->save();
                 }
                 return response()->json(['status' => 'active'], 200);
             }
-
-        }else{
+        } else {
             //account not found
             return response()->json(['status' => 'inactive'], status: 404);
-
         }
     }
-    public function bvnStatusChecker(){
+    public function bvnStatusChecker()
+    {
 
         $userId = Auth::user()->id;
-        $bvnStatus=BvnStatucRecorder::where('userId', $userId)->first();
+        $bvnStatus = BvnStatucRecorder::where('userId', $userId)->first();
 
         return response()->json(['status' => $bvnStatus->status], 200);
     }
@@ -125,6 +125,7 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
         // return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
     }
+
     public function markAllAsRead()
     {
         $userId = Auth::user()->id;
@@ -133,36 +134,38 @@ class UserController extends Controller
     }
 
     //set fcm
-    public function setFcmToken(Request $request){
+    public function setFcmToken(Request $request)
+    {
         $userId = Auth::user()->id;
         Log::info($request->fcmToken);
         $fcmToken = $request->fcmToken;
-        $user=User::where('id', $userId)->first();
-        $user->fcmToken=$fcmToken;
+        $user = User::where('id', $userId)->first();
+        $user->fcmToken = $fcmToken;
         $user->save();
         return response()->json(['status' => 'success', 'message' => 'FCM token set successfully'], 200);
-
     }
-    public function verifyUser(Request $request){
+    public function verifyUser(Request $request)
+    {
         $userId = Auth::user()->id;
-        $passWord=$request->password;
-        $user=User::where('id', $userId)->first();
-        if(Hash::check($passWord, $user->password)){
+        $passWord = $request->password;
+        $user = User::where('id', $userId)->first();
+        if (Hash::check($passWord, $user->password)) {
             return response()->json(['status' => 'success', 'message' => 'User verified successfully'], 200);
         }
         return response()->json(['status' => 'error', 'message' => 'User verification failed'], 200);
     }
-    public function socialMedialinks(){
-        $links=SocialMediaLinks::all();
-        $links=$links->map(function($link){
+    public function socialMedialinks()
+    {
+        $links = SocialMediaLinks::all();
+        $links = $links->map(function ($link) {
             return [
-                'id'=>$link->id,
-                'title'=>$link->title,
-                'link'=>$link->link,
-                'icon'=>asset($link->icon)
+                'id' => $link->id,
+                'title' => $link->title,
+                'link' => $link->link,
+                'icon' => asset($link->icon)
             ];
         });
-        return response()->json(['status' => 'success', 'data'=>$links], 200);
+        return response()->json(['status' => 'success', 'data' => $links], 200);
     }
     public function deleteAccount()
     {
@@ -177,5 +180,11 @@ class UserController extends Controller
         return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
     }
 
-
+    public function markSingleRead($id)
+    {
+        $notification = Notification::where('id', $id)->first();
+        $notification->read = 1;
+        $notification->save();
+        return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
+    }
 }

@@ -88,6 +88,7 @@ Route::middleware( 'auth:sanctum')->group(function () {
     Route::post('/send-admin-message', [MessageController::class, 'sendAdminMessage']);
     Route::get('/delete-account', [UserController::class, 'deleteAccount']);
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
+    ROute::get('/mark-single-notificatin-sRead/{id}',[UserController::class,'markSingleRead']);
 });
 Route::post('/inwardCreditNotification', [TransferApiController::class, 'inwardCreditNotification']);
 Route::get('/social-media-links', [SocialMediaLinks::class, 'index']);
