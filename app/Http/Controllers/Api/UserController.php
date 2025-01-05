@@ -73,7 +73,7 @@ class UserController extends Controller
         $userId = Auth::user()->id;
         //order by new first
         // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get(); fetch only 10
-        $unreadNotifications = Notification::where('user_id', $userId)->where('read', 0)->orderBy('created_at', 'desc')->get();
+        $unreadNotifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
 
         return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
         // return $unreadNotifications;
