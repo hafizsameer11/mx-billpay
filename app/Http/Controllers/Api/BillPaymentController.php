@@ -264,7 +264,7 @@ class BillPaymentController extends Controller
             $notification = new Notification();
             $notification->title = "Bill Payment Successful";
             $notification->type = "billPayment";
-            $notification->message = "Bill payment of " . $amount . " has been successful";
+            $notification->message = "Bill payment of " . $amount . "NGN has been successful";
             $notification->user_id = $userId;
             $notification->icon = asset('notificationLogos/bill.png');
             $notification->iconColor = config('notification_colors.colors.Bill');
