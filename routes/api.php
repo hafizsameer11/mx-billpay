@@ -91,6 +91,8 @@ Route::middleware( 'auth:sanctum')->group(function () {
 });
 Route::get('/mark-single-notificatin-sRead/{id}',[UserController::class,'markSingleRead']);
 Route::get('/delete-single-notification/{id}',[UserController::class,'deleteSingleNotification']);
+
+// ha
 Route::post('/inwardCreditNotification', [TransferApiController::class, 'inwardCreditNotification']);
 Route::get('/social-media-links', [SocialMediaLinks::class, 'index']);
 Route::get('/set-providers', [BillerProviderController::class, 'setProviders']);
