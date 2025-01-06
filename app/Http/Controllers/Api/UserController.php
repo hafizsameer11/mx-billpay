@@ -179,7 +179,12 @@ class UserController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
     }
-
+    public function deleteSingleNotification($id)
+    {
+        $notification = Notification::where('id', $id)->first();
+        $notification->delete();
+        return response()->json(['status' => 'success', 'message' => 'Notification deleted successfully'], 200);
+    }
     public function markSingleRead($id)
     {
 
@@ -189,4 +194,5 @@ class UserController extends Controller
         $notification->save();
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
     }
+
 }
