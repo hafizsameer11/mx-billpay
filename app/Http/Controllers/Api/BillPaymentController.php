@@ -59,54 +59,129 @@ class BillPaymentController extends Controller
 
     public function fetchBillerItems($categoryId, $providerId)
     {
+        // Fetch the category and provider
+        $categories = BillerCategory::find($categoryId);
+        $provider = BillProviders::find($providerId);
 
-        // $categoryId = $categoryId;
+        // Check if the category or provider is null
+        if (!$categories || !$provider) {
+            return response()->json([
+                'message' => 'Category or Provider not found',
+                'data' => [],
+            ], 404); // 404 Not Found
+        }
 
-        $categories = BillerCategory::where('id', $categoryId)->first();
-        $categories = [
+        // Make the API request
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+            ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
+                'billerId' => $provider->billerId,
+                'divisionId' => $provider->division,
+                'productId' => $provider->product,
+            ]);
+
+        // Initialize items array
+        $items = [];
+
+        if ($response->successful()) {
+            // Process the items from the API response
+            $items = collect($response->json()['data']['paymentitems'])->map(function ($item) use ($categories) {
+                return [
+                    'id' => $item['id'],
+                    'paymentitemname' => $item['paymentitemname'] ?? '',
+                    'amount' => $item['amount'] ?? 0,
+                    'percentageComission' => $categories->percentage_commission,
+                    'fixedComission' => $categories->fixed_commission,
+                    'paymentCode' => $item['paymentCode'] ?? '',
+                    'divisionId' => $item['division'] ?? '',
+                    'productId' => $item['product'] ?? '',
+                ];
+            });
+        }
+
+        // Prepare the category and provider data for the response
+        $categoriesData = [
             'id' => $categories->id,
             'category' => $categories->category,
             'icon' => asset($categories->logo),
-            'iconColor' => $categories->backgroundColor
+            'iconColor' => $categories->backgroundColor,
         ];
-        $provider = BillProviders::where('id', $providerId)->first();
-        // if()
-        //if amount exists or not null than order by amount from lowert to higher amount will be of biller item
 
-
-        $items = BillerItem::where('category_id', $categoryId)
-            ->where('provider_name', $provider->title)
-            ->orderByRaw('amount IS NULL, amount ASC') // NULLs at the end, then sort by amount
-            ->get();
-        $provider = [
+        $providerData = [
             'id' => $provider->id,
             'title' => $provider->title,
         ];
-        $items = $items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'paymentitemname' => $item->paymentitemname,
-                'amount' => $item->amount,
-                'percentageComission' => $item->percentage_commission,
-                'fixedComission' => $item->fixed_commission
-            ];
-        });
+
+        // If no items found
         if ($items->isEmpty()) {
             return response()->json([
                 'message' => 'No items found for the provided criteria',
                 'data' => [],
             ], 404); // 404 Not Found
         }
+
+        // Successful response
         return response()->json([
             'message' => 'Items fetched successfully',
-
             'data' => [
-                'category' => $categories,
+                'category' => $categoriesData,
                 'itemList' => $items,
-                'provider' => $provider
+                'provider' => $providerData,
             ],
-        ], 200);
+        ], 200); // 200 OK
     }
+
+    // public function fetchBillerItems($categoryId, $providerId)
+    // {
+
+    //     // $categoryId = $categoryId;
+
+    //     $categories = BillerCategory::where('id', $categoryId)->first();
+    //     $categories = [
+    //         'id' => $categories->id,
+    //         'category' => $categories->category,
+    //         'icon' => asset($categories->logo),
+    //         'iconColor' => $categories->backgroundColor
+    //     ];
+    //     $provider = BillProviders::where('id', $providerId)->first();
+    //     // if()
+    //     //if amount exists or not null than order by amount from lowert to higher amount will be of biller item
+
+
+    //     $items = BillerItem::where('category_id', $categoryId)
+    //         ->where('provider_name', $provider->title)
+    //         ->orderByRaw('amount IS NULL, amount ASC') // NULLs at the end, then sort by amount
+    //         ->get();
+    //     $provider = [
+    //         'id' => $provider->id,
+    //         'title' => $provider->title,
+    //     ];
+    //     $items = $items->map(function ($item) {
+    //         return [
+    //             'id' => $item->id,
+    //             'paymentitemname' => $item->paymentitemname,
+    //             'amount' => $item->amount,
+    //             'percentageComission' => $item->percentage_commission,
+    //             'fixedComission' => $item->fixed_commission
+    //         ];
+    //     });
+    //     if ($items->isEmpty()) {
+    //         return response()->json([
+    //             'message' => 'No items found for the provided criteria',
+    //             'data' => [],
+    //         ], 404); // 404 Not Found
+    //     }
+    //     return response()->json([
+    //         'message' => 'Items fetched successfully',
+
+    //         'data' => [
+    //             'category' => $categories,
+    //             'itemList' => $items,
+    //             'provider' => $provider
+    //         ],
+    //     ], 200);
+    // }
+
+
     public function validateCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -488,5 +563,10 @@ class BillPaymentController extends Controller
             'data' => $billerItem,
         ], 200); // 200 OK
 
+    }
+    public function getBillerList($id)
+    {
+        $category = BillerCategory::where('id', $id)->first();
+        $categoryname = $category->originalName;
     }
 }

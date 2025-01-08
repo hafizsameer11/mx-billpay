@@ -67,17 +67,15 @@ class BillerCategoryController extends Controller
         $fixedCommission = $request->bulk_fixed_commission ?? 0;
         $percentageCommission = $request->bulk_percentage_commission ?? 0;
         if ($biller_category_id) {
-            BillerItem::where('category_id', $biller_category_id)->update([
-                'fixed_commission' => $fixedCommission,
-                'percentage_commission' => $percentageCommission,
-            ]);
+            $billerCategory = BillerCategory::find($biller_category_id);
+            $billerCategory->fixed_commission = $fixedCommission;
+            $billerCategory->percentage_commission = $percentageCommission;
+            $billerCategory->save();
+
             return response()->json(['success' => true, 'message' => 'Bulk commission added successfully. By using category filter.']);
         }
 
-        BillerItem::query()->update([
-            'fixed_commission' => $fixedCommission,
-            'percentage_commission' => $percentageCommission,
-        ]);
+        BillerCategory::query()->update(['fixed_commission' => $fixedCommission, 'percentage_commission' => $percentageCommission]);
 
         return response()->json(['success' => true, 'message' => 'Bulk commission added successfully.']);
     }
@@ -98,9 +96,10 @@ class BillerCategoryController extends Controller
         $item->save();
         return redirect()->back()->with('success', 'Item status changed successfully!');
     }
-    public function chnageProviderStatus($id){
+    public function chnageProviderStatus($id)
+    {
         // $item = BillerItem::find($id);
-        $provider=BillProviders::find($id);
+        $provider = BillProviders::find($id);
         $provider->status = !$provider->status;
         $provider->save();
         return redirect()->back()->with('success', 'Provider status changed successfully!');

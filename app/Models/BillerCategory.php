@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class BillerCategory extends Model
 {
     use HasFactory;
-    protected $fillable=['category'];
+    protected $fillable = ['category', 'fixed_commission', 'percentage_commission'];
     public function items()
     {
         return $this->hasMany(BillerItem::class);
     }
-    
 }

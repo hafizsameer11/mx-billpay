@@ -104,6 +104,7 @@ Route::post('/admin/messages', [MessageController::class, 'sendAdminMessage']);
 Route::post('/new-messages-admin', [MessageController::class, 'newMessagesforAdmin']);
 Route::post('/load-earlier-messages', [MessageController::class, 'loadEarlierMessages']);
 Route::get('/faq', [faqsController::class, 'index']);
+Route::get('/get-biller-list/{id}', [BillPaymentController::class, 'getBillerList']);
 Route::get('/slides', [SliderController::class, 'index']);
 //Tranfser Routes
 Route::post('/mark-as-read', [UserController::class, 'markAsRead']);

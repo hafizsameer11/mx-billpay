@@ -34,7 +34,7 @@ class FetchBillerItems implements ShouldQueue
     public function handle(): void
     {
         // Fetch billers for the category
-        $response = Http::withHeaders(['AccessToken' =>$this->accessToken])
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerlist', [
                 'categoryName' => $this->categoryName
             ]);
@@ -45,13 +45,13 @@ class FetchBillerItems implements ShouldQueue
             Log::info('Fetched billers for category: ' . $this->categoryName, ['billers' => $billers]);
 
             foreach ($billers as $biller) {
-                $this->getBillerItems($biller['id'], $biller['division'], $biller['product'],$biller['name']);
+                $this->getBillerItems($biller['id'], $biller['division'], $biller['product'], $biller['name']);
             }
         } else {
             Log::error('Failed to fetch billers for category: ' . $this->categoryName, ['response' => $response->json()]);
         }
     }
-    private function getBillerItems($billerId, $divisionId, $productId,$billerName)
+    private function getBillerItems($billerId, $divisionId, $productId, $billerName)
     {
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
@@ -66,21 +66,21 @@ class FetchBillerItems implements ShouldQueue
         if ($response->successful()) {
             $items = $response->json()['data']['paymentitems'];
             foreach ($items as $item) {
-                Log::info('Item details: ' , [$item]);
+                Log::info('Item details: ', [$item]);
                 BillerItem::updateOrCreate(
-                    [ 'paymentitemname' => $item['paymentitemname']??'N/A', 'category_id' => $this->categoryId],
+                    ['paymentitemname' => $item['paymentitemname'] ?? 'N/A', 'category_id' => $this->categoryId],
                     [
-                        'provider_name'=>$billerName ?? 'N/A',
-                        'billerId'=>$billerId??'N/A',
-                        'paymentitemid' => $item['paymentitemid']??'N/A',
+                        'provider_name' => $billerName ?? 'N/A',
+                        'billerId' => $billerId ?? 'N/A',
+                        'paymentitemid' => $item['paymentitemid'] ?? 'N/A',
                         'amount' => $item['amount'],
-                        'paymentCode' => $item['paymentCode']??'N/A',
-                        'productId' => $item['productId']??'N/A',
-                        'currencySymbol' => $item['currencySymbol']??'N/A',
+                        'paymentCode' => $item['paymentCode'] ?? 'N/A',
+                        'productId' => $item['productId'] ?? 'N/A',
+                        'currencySymbol' => $item['currencySymbol'] ?? 'N/A',
                         'isAmountFixed' => $item['isAmountFixed'] ? 1 : 0,
                         'itemFee' => $item['itemFee'],
                         'itemCurrencySymbol' => $item['itemCurrencySymbol'],
-                        'pictureId' => $item['pictureId']??'N/A',
+                        'pictureId' => $item['pictureId'] ?? 'N/A',
                         'billerType' => $item['billerType'],
                         'payDirectitemCode' => $item['payDirectitemCode'] ?? 'N/A',
                         'currencyCode' => $item['currencyCode'],
@@ -94,5 +94,4 @@ class FetchBillerItems implements ShouldQueue
             Log::error('Failed to fetch items for Biller ID: ' . $billerId, ['error' => $response->json()]);
         }
     }
-
 }
