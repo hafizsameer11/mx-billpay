@@ -275,6 +275,7 @@ class BillPaymentController extends Controller
             'customerId'   => 'nullable|string',
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
+            'paymentitemname' => 'required',
             'phoneNumber' => 'nullable',
             'division' => 'required',
             'paymentCode' => 'required',
@@ -314,7 +315,7 @@ class BillPaymentController extends Controller
 
 
 
-        $category = BillerCategory::where('id', $billerItem->category_id)->first();
+        $category = BillerCategory::where('id', $request->category_id)->first();
         $paymentItem = $request->paymentCode;
         $productId = $request->productId;
         $division = $request->division;
@@ -368,7 +369,8 @@ class BillPaymentController extends Controller
             }
 
             BillPayment::create([
-                'biller_item_id' => $request->billerItemId,
+                'billItemName' => $request->paymentitemname,
+                'biller_item_id' => 3,
                 'user_id' => $userId,
                 'refference' => $reference,
                 'status' => 'success',
