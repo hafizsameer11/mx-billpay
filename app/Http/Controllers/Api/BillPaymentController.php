@@ -94,6 +94,7 @@ class BillPaymentController extends Controller
                     'paymentCode' => $item['paymentCode'] ?? '',
                     'divisionId' => $item['division'] ?? '',
                     'productId' => $item['productId'] ?? '',
+                    'billerId'=> $item['billerid'] ?? '',
                 ];
             });
 
