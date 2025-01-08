@@ -91,6 +91,8 @@ class BillPaymentController extends Controller
                     'amount' => $item['amount'] ?? 0,
                     'percentageComission' => $categories->percentage_commission,
                     'fixedComission' => $categories->fixed_commission,
+                    'category_id' => $categories->id,
+                    // 'productId'=>$oo
                     'paymentCode' => $item['paymentCode'] ?? '',
                     'divisionId' => $item['division'] ?? '',
                     'productId' => $item['productId'] ?? '',
@@ -273,7 +275,12 @@ class BillPaymentController extends Controller
             'customerId'   => 'nullable|string',
             'amount'       => 'required|numeric',
             'billerItemId' => 'required',
-            'phoneNumber' => 'nullable'
+            'phoneNumber' => 'nullable',
+            'division' => 'required',
+            'paymentCode' => 'required',
+            'productId' => 'required',
+            'billerId' => 'required',
+            'category_id' => 'nullable'
 
         ]);
         if ($validator->fails()) {
@@ -286,8 +293,10 @@ class BillPaymentController extends Controller
         $customerId = $request->customerId;
         $billerItem = $request->billerItemId;
         $amount = $request->amount;
-        $billerItem = BillerItem::where('id', $billerItem)->first();
-        $billerId = $billerItem->billerId;
+        $billerId = $request->billerId;
+
+
+        $billerItem = BillerCategory::where('id', $request->category_id)->first();
         $fixedCommission = (float) $billerItem->fixed_commission; // Convert to float
         $percentageCommission = (float) $billerItem->percentage_commission; // Convert to float
         $totalAmount = $amount + $fixedCommission + ($amount * $percentageCommission / 100);
@@ -306,9 +315,9 @@ class BillPaymentController extends Controller
 
 
         $category = BillerCategory::where('id', $billerItem->category_id)->first();
-        $paymentItem = $billerItem->paymentCode;
-        $productId = $billerItem->productId;
-        $division = $billerItem->division;
+        $paymentItem = $request->paymentCode;
+        $productId = $request->productId;
+        $division = $request->division;
         if ($category->category == 'Airtime' || $category->category == 'Data') {
             $customerId = $request->phoneNumber;
         } else {
