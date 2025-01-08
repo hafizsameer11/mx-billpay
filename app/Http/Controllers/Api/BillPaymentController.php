@@ -93,7 +93,7 @@ class BillPaymentController extends Controller
                     'fixedComission' => $categories->fixed_commission,
                     'paymentCode' => $item['paymentCode'] ?? '',
                     'divisionId' => $item['division'] ?? '',
-                    'productId' => $item['product'] ?? '',
+                    'productId' => $item['productId'] ?? '',
                 ];
             });
         }
