@@ -202,8 +202,8 @@ class BillPaymentController extends Controller
         $customerId = $request->input('customerId');
         $id = $request->id;
         $billerItem = BillerItem::where('id', $id)->first();
-        $divisionId = $request->division;
-        $paymentItem = $request->paymentCode;
+        $divisionId = $request->divisionId;
+        $paymentItem = $request->paymentItem;
         $billerId = $request->billerId;
         // if()
         Log::info('Validating customer for Biller ID: ' . $billerId, [
