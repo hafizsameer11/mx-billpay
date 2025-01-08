@@ -94,10 +94,9 @@ class BillPaymentController extends Controller
                     'paymentCode' => $item['paymentCode'] ?? '',
                     'divisionId' => $item['division'] ?? '',
                     'productId' => $item['productId'] ?? '',
-                    'billerId'=> $item['billerid'] ?? '',
+                    'billerId' => $item['billerid'] ?? '',
                 ];
             });
-
         }
 
         // Prepare the category and provider data for the response
@@ -203,9 +202,9 @@ class BillPaymentController extends Controller
         $customerId = $request->input('customerId');
         $id = $request->id;
         $billerItem = BillerItem::where('id', $id)->first();
-        $divisionId = $billerItem->division;
-        $paymentItem = $billerItem->paymentCode;
-        $billerId = $billerItem->billerId;
+        $divisionId = $request->division;
+        $paymentItem = $request->paymentCode;
+        $billerId = $request->billerId;
         // if()
         Log::info('Validating customer for Biller ID: ' . $billerId, [
             'divisionId' => $divisionId,
