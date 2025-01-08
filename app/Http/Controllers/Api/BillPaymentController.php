@@ -390,8 +390,8 @@ class BillPaymentController extends Controller
             $data = [
                 'status' => 'success',
                 'amount' => floatval($amount),
-                'item' => $billerItem->billerId,
-                'provider' => $billerItem->provider_name,
+                'item' => $request->paymentitemname,
+                'provider' => $request->billerId,
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
@@ -420,6 +420,7 @@ class BillPaymentController extends Controller
                 $transaction->amount = $amount;
                 $transaction->save();
                 BillPayment::create([
+                    'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
                     'refference' => $reference,
@@ -433,9 +434,9 @@ class BillPaymentController extends Controller
                 ]);
                 $data = [
                     'status' => 'pending',
-                    'amount' => floatval($amount),
-                    'item' => $billerItem->billerId,
-                    'provider' => $billerItem->provider_name,
+                    'amount' => floatval(value: $amount),
+                    'item' => $request->paymentitemname,
+                'provider' => $request->billerId,
                     'category' => $category->category,
                     'transactionId' => $reference,
                     'transactionDate' => now()->format('Y-m-d'),
@@ -460,6 +461,7 @@ class BillPaymentController extends Controller
                 $transaction->amount = $amount;
                 $transaction->save();
                 BillPayment::create([
+                    'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
                     'refference' => $reference,
@@ -474,8 +476,8 @@ class BillPaymentController extends Controller
                 $data = [
                     'status' => 'pending',
                     'amount' => floatval($amount),
-                    'item' => $billerItem->billerId,
-                    'provider' => $billerItem->provider_name,
+                    'item' => $request->paymentitemname,
+                    'provider' => $request->billerId,
                     'category' => $category->category,
                     'transactionId' => $reference,
                     'transactionDate' => now()->format('Y-m-d'),
@@ -498,6 +500,7 @@ class BillPaymentController extends Controller
             $transaction->amount = $amount;
             $transaction->save();
             BillPayment::create([
+                'billItemName' => $request->paymentitemname,
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
                 'refference' => $reference,
@@ -512,8 +515,8 @@ class BillPaymentController extends Controller
             $data = [
                 'status' => 'failed',
                 'amount' => floatval($amount),
-                'item' => $billerItem->billerId,
-                'provider' => $billerItem->provider_name,
+                'item' => $request->paymentitemname,
+                'provider' => $request->billerId,
                 'category' => $category->category,
                 'transactionId' => $reference,
                 'transactionDate' => now()->format('Y-m-d'),
