@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bill_providers', function (Blueprint $table) {
-            $table->string('name')->nullable();
-            $table->string('division')->nullable();
-            $table->string('product')->nullable();
-            $table->string('billerId')->nullable();
+            // $table->string('name')->nullable();
+            // $table->string('division')->nullable();
+            // $table->string('product')->nullable();
+            // $table->string('billerId')->nullable();
         });
     }
 
