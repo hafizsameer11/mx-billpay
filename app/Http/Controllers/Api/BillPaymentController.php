@@ -86,7 +86,7 @@ class BillPaymentController extends Controller
             // Process the items from the API response
             $items = collect($response->json()['data']['paymentitems'])->map(function ($item) use ($categories) {
                 return [
-                    'id' => $item['id'],
+                    'id' => $item['id'] ?? '',
                     'paymentitemname' => $item['paymentitemname'] ?? '',
                     'amount' => $item['amount'] ?? 0,
                     'percentageComission' => $categories->percentage_commission,
