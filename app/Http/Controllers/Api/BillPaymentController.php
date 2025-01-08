@@ -189,6 +189,9 @@ class BillPaymentController extends Controller
         $validator = Validator::make($request->all(), [
             'customerId' => 'required|string',
             'id' => 'required|string',
+            'divisionId' => 'required|string',
+            'paymentItem' => 'required|string',
+            'billerId' => 'required|string',
         ]);
 
         if ($validator->fails()) {
