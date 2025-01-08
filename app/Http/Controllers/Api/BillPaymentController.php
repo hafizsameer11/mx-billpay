@@ -84,9 +84,9 @@ class BillPaymentController extends Controller
 
         if ($response->successful()) {
             // Process the items from the API response
-            $items = collect($response->json()['data']['paymentitems'])->map(function ($item) use ($categories) {
+            $items = collect($response->json()['data']['paymentitems'])->map(function ($item, $index) use ($categories) {
                 return [
-                    'id' => $item['id'] ?? '',
+                    'id' => $index + 1, // Use the loop index as the ID, starting from 1
                     'paymentitemname' => $item['paymentitemname'] ?? '',
                     'amount' => $item['amount'] ?? 0,
                     'percentageComission' => $categories->percentage_commission,
@@ -96,6 +96,7 @@ class BillPaymentController extends Controller
                     'productId' => $item['productId'] ?? '',
                 ];
             });
+
         }
 
         // Prepare the category and provider data for the response
