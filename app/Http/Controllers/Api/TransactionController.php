@@ -38,7 +38,6 @@ class TransactionController extends Controller
 
                         ];
                     }
-
                     if ($transaction->transfer) {
                         return [
                             'transaction_id' => $transaction->id,
