@@ -51,8 +51,8 @@ class TransactionController extends Controller
 
                     ];
                 }
-               
-            });
+            })
+            ->filter()->values();
 
             if ($transactions->isEmpty()) {
                 return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 200);
