@@ -36,7 +36,7 @@ class TransactionController extends Controller
                             'date' => $transaction->created_at,
                             'status' => $transaction->status,
                             'provider' => $transaction->billpayment->providerName,
-                            'reference' => $transaction->billpayment->reference,
+                            'reference' => $transaction->billpayment->refference,
                             'token' => $transaction->billpayment->token,
                         ];
                     }
