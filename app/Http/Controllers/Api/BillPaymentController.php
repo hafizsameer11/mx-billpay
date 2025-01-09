@@ -436,7 +436,7 @@ class BillPaymentController extends Controller
                     'status' => 'pending',
                     'amount' => floatval(value: $amount),
                     'item' => $request->paymentitemname,
-                'provider' => $request->billerId,
+                    'provider' => $request->billerId,
                     'category' => $category->category,
                     'transactionId' => $reference,
                     'transactionDate' => now()->format('Y-m-d'),
