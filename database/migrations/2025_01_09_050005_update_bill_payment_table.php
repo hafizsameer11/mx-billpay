@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bill_payments', function (Blueprint $table) {
+            $table->unsignedBigInteger('category_id');
             $table->foreignId('category_id')->references('id')->on('biller_categories')->onDelete('cascade');
         });
     }
