@@ -20,27 +20,29 @@ class TransactionController extends Controller
 
             $transactions = Transaction::where('user_id', $user->id)
                 ->with([
-                    'billpayment.category', // For bill payment
-                    'transfer'
+                    'billpayment.category',
                 ])
                 ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($transaction) {
-                    if ($transaction->billpayment) {
-                        return [
-                            'transaction_id' => $transaction->id,
-                            'amount' => $transaction->billpayment->totalAmount,
-                            'type' => 'Bill Payment',
-                            'category' => $transaction->billpayment->category->category,
-                            'item' => $transaction->billpayment->billItemName,
-                            'logo' => asset($transaction->billpayment->category->logo),
-                            'date' => $transaction->created_at,
-
-                        ];
-                    }
-                    return null;
-                })
-                ->filter();
+                ->get();
+            $transactions = $transactions->map(function ($transaction) {
+                if ($transaction->billpayment) {
+                    return [
+                        'transaction_id' => $transaction->id,
+                        'amount' => $transaction->billpayment->totalAmount,
+                        'type' => 'Bill Payment',
+                        'category' => $transaction->billpayment->category->category,
+                        'item' => $transaction->billpayment->billItemName,
+                        'logo' => asset($transaction->billpayment->category->logo),
+                        'date' => $transaction->created_at,
+                        'status' => $transaction->status,
+                        'provider' => $transaction->billpayment->providerName,
+                        'reference' => $transaction->billpayment->reference,
+                        'token' => $transaction->billpayment->token,
+                    ];
+                }
+                return null;
+            });
+            // ->filter();
 
             if ($transactions->isEmpty()) {
                 return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 200);
