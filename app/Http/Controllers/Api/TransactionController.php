@@ -21,7 +21,6 @@ class TransactionController extends Controller
             $transactions = Transaction::where('user_id', $user->id)
                 ->with([
                     'billpayment.category', // For bill payment
-                    'transfer'
                 ])
                 ->orderBy('created_at', 'desc')
                 ->get()
@@ -41,8 +40,7 @@ class TransactionController extends Controller
                             'token' => $transaction->billpayment->token,
                         ];
                     }
-                })
-                ->filter();
+                });
 
             if ($transactions->isEmpty()) {
                 return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 200);
