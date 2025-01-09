@@ -27,7 +27,7 @@ class TransactionController extends Controller
             $transactions = $transactions->map(function ($transaction) {
                 if ($transaction->billpayment) {
                     return [
-                        'transaction_id' => $transaction->id || '',
+                        'transaction_id' => $transaction->id,
                         'amount' => $transaction->billpayment->totalAmount,
                         'type' => 'Bill Payment',
                         'category' => $transaction->billpayment->category->category,
