@@ -84,7 +84,7 @@ class BillPaymentController extends Controller
 
         if ($response->successful()) {
             // Process the items from the API response
-            $items = collect($response->json()['data']['paymentitems'])->map(function ($item, $index) use ($categories) {
+            $items = collect($response->json()['data']['paymentitems'])->map(function ($item, $index) use ($categories, $provider) {
                 return [
                     'id' => $index + 1, // Use the loop index as the ID, starting from 1
                     'paymentitemname' => $item['paymentitemname'] ?? '',
