@@ -371,6 +371,7 @@ class BillPaymentController extends Controller
             BillPayment::create([
                 'category_id' => $request->category_id,
                 'billItemName' => $request->paymentitemname,
+                'providerName'=>$request->billerId,
                 'biller_item_id' => 3,
                 'user_id' => $userId,
                 'refference' => $reference,
@@ -422,7 +423,7 @@ class BillPaymentController extends Controller
                 $transaction->save();
                 BillPayment::create([
                     'category_id' => $request->category_id,
-
+                    'providerName'=>$request->billerId,
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -465,7 +466,7 @@ class BillPaymentController extends Controller
                 $transaction->save();
                 BillPayment::create([
                     'category_id' => $request->category_id,
-
+                    'providerName'=>$request->billerId,
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -506,7 +507,7 @@ class BillPaymentController extends Controller
             $transaction->save();
             BillPayment::create([
                 'category_id' => $request->category_id,
-
+                'providerName'=>$request->billerId,
                 'billItemName' => $request->paymentitemname,
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
@@ -521,6 +522,7 @@ class BillPaymentController extends Controller
             ]);
             $data = [
                 'status' => 'failed',
+
                 'amount' => floatval($amount),
                 'item' => $request->paymentitemname,
                 'provider' => $request->billerId,

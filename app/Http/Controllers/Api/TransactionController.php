@@ -183,10 +183,10 @@ class TransactionController extends Controller
             'transactionDate' => $transaction->created_at,
             'transactionId' => $transaction->billpayment->refference,
             'status' => $transaction->status,
-            'category' => $transaction->billpayment->billerItem->category->category,
-            'item' => $transaction->billpayment->billerItem->paymentitemname,
+            'category' => $transaction->billpayment->category->category,
+            'item' => $transaction->billpayment->billItemName,
             'billerType' => $transaction->billpayment->billerItem->billerType,
-            'provider' => $transaction->billpayment->billerItem->provider_name,
+            'provider' => $transaction->billpayment->provider_name,
             'token' => $transaction->billpayment->token,
             'totalAmount' => $transaction->billpayment->totalAmount,
 

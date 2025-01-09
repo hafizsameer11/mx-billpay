@@ -14,7 +14,7 @@ class BillPayment extends Model
         'status',
         'refference',
         'customerId',
-        'phoneNumber','transaction_id','response','amount','token','totalAmount','billItemName','category_id'
+        'phoneNumber','transaction_id','response','amount','token','totalAmount','billItemName','category_id','providerName'
     ];
     public function billerItem(){
         return $this->belongsTo(BillerItem::class,'biller_item_id','id');
