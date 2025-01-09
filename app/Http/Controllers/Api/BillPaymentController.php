@@ -369,6 +369,7 @@ class BillPaymentController extends Controller
             }
 
             BillPayment::create([
+                'category_id' => $request->category_id,
                 'billItemName' => $request->paymentitemname,
                 'biller_item_id' => 3,
                 'user_id' => $userId,
@@ -420,6 +421,8 @@ class BillPaymentController extends Controller
                 $transaction->amount = $amount;
                 $transaction->save();
                 BillPayment::create([
+                    'category_id' => $request->category_id,
+
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -461,6 +464,8 @@ class BillPaymentController extends Controller
                 $transaction->amount = $amount;
                 $transaction->save();
                 BillPayment::create([
+                    'category_id' => $request->category_id,
+
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -500,6 +505,8 @@ class BillPaymentController extends Controller
             $transaction->amount = $amount;
             $transaction->save();
             BillPayment::create([
+                'category_id' => $request->category_id,
+
                 'billItemName' => $request->paymentitemname,
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,
