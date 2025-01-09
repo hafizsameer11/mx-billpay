@@ -20,7 +20,7 @@ class TransactionController extends Controller
 
             $transactions = Transaction::where('user_id', $user->id)
                 ->with([
-                    'billpayment.billerItem.category', // For bill payment
+                    'billpayment.category', // For bill payment
                     'transfer'
                 ])
                 ->orderBy('created_at', 'desc')
@@ -35,18 +35,6 @@ class TransactionController extends Controller
                             'item' => $transaction->billpayment->billItemName,
                             'logo' => asset($transaction->billpayment->category->logo),
                             'date' => $transaction->created_at,
-
-                        ];
-                    }
-                    if ($transaction->transfer) {
-                        return [
-                            'transaction_id' => $transaction->id,
-                            'amount' => $transaction->amount,
-                            'type' => 'Fund Transfer',
-                            'category' => 'Fund',
-                            'item' => 'Incoming Fund',
-                            'logo' => asset('notificationLogos/wallet.png'),
-                            'date' => $transaction->created_at
 
                         ];
                     }
