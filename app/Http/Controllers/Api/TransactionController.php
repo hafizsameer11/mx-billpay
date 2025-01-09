@@ -31,7 +31,7 @@ class TransactionController extends Controller
                         'transaction_id' => $transaction->id,
                         'amount' => $transaction->billpayment->totalAmount,
                         'type' => 'Bill Payment',
-                        'category' => $transaction->billpayment->billerItem->category->category,
+                        'category' => $transaction->billpayment->category->category,
                         'item' => $transaction->billpayment->billItemName,
                         'logo' => asset($transaction->billpayment->billerItem->category->logo),
                         'date' => $transaction->created_at,
