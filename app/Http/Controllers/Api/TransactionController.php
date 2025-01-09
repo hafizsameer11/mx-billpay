@@ -19,28 +19,41 @@ class TransactionController extends Controller
             }
 
             $transactions = Transaction::where('user_id', $user->id)
-                ->with([
-                    'billpayment.category', // For bill payment
-                ])
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($transaction) {
-                    if ($transaction->billpayment) {
-                        return [
-                            'transaction_id' => $transaction->id,
-                            'amount' => $transaction->billpayment->totalAmount,
-                            'type' => 'Bill Payment',
-                            'category' => $transaction->billpayment->category->category,
-                            'item' => $transaction->billpayment->billItemName,
-                            'logo' => asset($transaction->billpayment->category->logo),
-                            'date' => $transaction->created_at,
-                            'status' => $transaction->status,
-                            'provider' => $transaction->billpayment->providerName,
-                            'reference' => $transaction->billpayment->refference,
-                            'token' => $transaction->billpayment->token,
-                        ];
-                    }
-                });
+            ->with([
+                'billpayment.billerItem.category', // For bill payment
+                'transfer'
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($transaction) {
+                if ($transaction->billpayment) {
+                    return [
+                        'transaction_id' => $transaction->id,
+                        'amount' => $transaction->billpayment->totalAmount,
+                        'type' => 'Bill Payment',
+                        'category' => $transaction->billpayment->billerItem->category->category,
+                        'item' => $transaction->billpayment->billItemName,
+                        'logo' => asset($transaction->billpayment->billerItem->category->logo),
+                        'date' => $transaction->created_at,
+
+                    ];
+                }
+
+                if ($transaction->transfer) {
+                    return [
+                        'transaction_id' => $transaction->id,
+                        'amount' => $transaction->amount,
+                        'type' => 'Fund Transfer',
+                        'category' => 'Fund',
+                        'item' => 'Incoming Fund',
+                        'logo' => asset('notificationLogos/wallet.png'),
+                        'date' => $transaction->created_at
+
+                    ];
+                }
+                return null;
+            })
+            ->filter();
 
             if ($transactions->isEmpty()) {
                 return response()->json(['status' => 'success', 'message' => 'No transactions found', 'data' => []], 200);
