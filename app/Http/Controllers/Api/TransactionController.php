@@ -51,7 +51,7 @@ class TransactionController extends Controller
 
                     ];
                 }
-                return null;
+               
             });
 
             if ($transactions->isEmpty()) {
