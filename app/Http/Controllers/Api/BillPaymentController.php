@@ -96,7 +96,7 @@ class BillPaymentController extends Controller
                     'paymentCode' => $item['paymentCode'] ?? '',
                     'divisionId' => $item['division'] ?? '',
                     'productId' => $item['productId'] ?? '',
-                    'billerId' => $item['billerid'] ?? '',
+                    'billerId' => $provider->billerId ?? '',
                 ];
             });
         }
@@ -208,7 +208,7 @@ class BillPaymentController extends Controller
         $divisionId = $request->divisionId;
         $paymentItem = $request->paymentItem;
         $billerId = $request->billerId;
-        // if()
+
         Log::info('Validating customer for Biller ID: ' . $billerId, [
             'divisionId' => $divisionId,
             'paymentItem' => $paymentItem,
