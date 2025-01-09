@@ -13,4 +13,8 @@ class BillerCategory extends Model
     {
         return $this->hasMany(BillerItem::class);
     }
+    public function bill_payment()
+    {
+        return $this->hasMany(BillPayment::class);
+    }
 }
