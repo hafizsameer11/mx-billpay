@@ -193,6 +193,7 @@ class BillPaymentController extends Controller
             'divisionId' => 'required|string',
             'paymentItem' => 'required|string',
             'billerId' => 'required|string',
+            'category_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -214,7 +215,7 @@ class BillPaymentController extends Controller
             'customerId' => $customerId,
             'billerId' => $billerId,
         ]);
-        $category = BillerCategory::where('id', $billerItem->category_id)->first();
+        $category = BillerCategory::where('id', $request->category_id)->first();
         if ($category->category == 'Airtime' || $category->category == 'Data') {
             return response()->json([
                 'status' => 'success',
@@ -371,7 +372,7 @@ class BillPaymentController extends Controller
             BillPayment::create([
                 'category_id' => $request->category_id,
                 'billItemName' => $request->paymentitemname,
-                'providerName'=>$request->billerId,
+                'providerName' => $request->billerId,
                 'biller_item_id' => 3,
                 'user_id' => $userId,
                 'refference' => $reference,
@@ -423,7 +424,7 @@ class BillPaymentController extends Controller
                 $transaction->save();
                 BillPayment::create([
                     'category_id' => $request->category_id,
-                    'providerName'=>$request->billerId,
+                    'providerName' => $request->billerId,
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -466,7 +467,7 @@ class BillPaymentController extends Controller
                 $transaction->save();
                 BillPayment::create([
                     'category_id' => $request->category_id,
-                    'providerName'=>$request->billerId,
+                    'providerName' => $request->billerId,
                     'billItemName' => $request->paymentitemname,
                     'biller_item_id' => $request->billerItemId,
                     'user_id' => $userId,
@@ -507,7 +508,7 @@ class BillPaymentController extends Controller
             $transaction->save();
             BillPayment::create([
                 'category_id' => $request->category_id,
-                'providerName'=>$request->billerId,
+                'providerName' => $request->billerId,
                 'billItemName' => $request->paymentitemname,
                 'biller_item_id' => $request->billerItemId,
                 'user_id' => $userId,

@@ -52,7 +52,6 @@ class TransactionController extends Controller
         }
     }
 
-
     /**
      * Fetch all bill payments made by the authenticated user
      *
