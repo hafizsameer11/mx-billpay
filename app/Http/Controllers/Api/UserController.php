@@ -71,13 +71,26 @@ class UserController extends Controller
     public function unreadNotifjications()
     {
         $userId = Auth::user()->id;
-        //order by new first
-        // $notifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get(); fetch only 10
-        $unreadNotifications = Notification::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
 
-        return response()->json(['status' => 'success', 'message' => 'Unread notifications', 'data' => $unreadNotifications], 200);
-        // return $unreadNotifications;
+        // Fetch notifications and add two hours to the created_at field
+        $unreadNotifications = Notification::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($notification) {
+                $notification->created_at = $notification->created_at
+                    ->addHours(2) // Add 2 hours
+                    ->setTimezone('UTC') // Ensure UTC
+                    ->toISOString(); // Standard ISO 8601 format
+                return $notification;
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Unread notifications',
+            'data' => $unreadNotifications
+        ], 200);
     }
+
     public function checkUserStatus()
     {
         $userId = Auth::user()->id;
@@ -88,7 +101,19 @@ class UserController extends Controller
                 return response()->json(['status' => 'pending'], 200);
             } else {
                 $bvnStatus = BvnStatucRecorder::where('userId', $userId)->first();
+                /*************  ✨ Codeium Command ⭐  *************/
+                /**
+                 * Check the status of the user's account and BVN.
+                 *
+                 * This function retrieves the current authenticated user's account and checks its status.
+                 * If the account status is 'PND', it returns a 'pending' status.
+                 * If the account is active, it checks the user's BVN status, updates it to 'checked', and returns an 'active' status.
+                 * If no account is found, it returns an 'inactive' status.
+                 *
+                 * @return \Illuminate\Http\JsonResponse JSON response containing the user's account status.
+                 */
 
+                /******  1fd509d4-78b8-4800-afdc-545708a4ba39  *******/
                 log::info($bvnStatus);
                 if ($bvnStatus) {
                     $bvnStatus->status = "checked";
@@ -195,5 +220,4 @@ class UserController extends Controller
         $notification->save();
         return response()->json(['status' => 'success', 'message' => 'Notification marked as read'], 200);
     }
-
 }
