@@ -25,6 +25,7 @@ class BillPaymentController extends Controller
     protected $accessToken;
     protected $baseUrl;
     protected $NotificationService;
+
     public function __construct(NotificationService $NotificationService)
     {
         $this->NotificationService = $NotificationService;

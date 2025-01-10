@@ -3,11 +3,14 @@
 namespace App\Jobs;
 
 use App\Models\BillPayment;
+use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Services\NotificationService;
+
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +25,7 @@ class CheckTransactionStatus implements ShouldQueue
     public $maxRetries = 3; // Maximum retries
     public $currentRetry; // Tracks current retry count
     public $accessToken;
+    protected $NotificationService;
 
     /**
      * Create a new job instance.
@@ -39,6 +43,7 @@ class CheckTransactionStatus implements ShouldQueue
      */
     public function handle()
     {
+        $this->NotificationService = app(NotificationService::class);
         $mainTransaction = Transaction::where('id', $this->tid)->first();
         $transaction = BillPayment::where('refference', $this->transactionId)->first();
         $userId = $transaction->user_id;
@@ -63,22 +68,48 @@ class CheckTransactionStatus implements ShouldQueue
                 }
                 $transaction->update(['status' => 'success', 'token' => $token]);
                 Log::info("Transaction successful: {$this->transactionId}");
+                $notification = new Notification();
+                $notification->title = "Bill Payment Successful";
+                $notification->type = "billPayment";
+                $notification->message = "Bill payment of " . $transaction->amount . "NGN has been successful";
+                $notification->user_id = $userId;
+                $notification->icon = asset('notificationLogos/bill.png');
+                $notification->iconColor = config('notification_colors.colors.Bill');
+                $notification->save();
+                $notificationTitle = "Bill Payment Successful";
+                $notificationMessage = "Bill payment of " . $transaction->amount . " has been successful";
+                $notificationResponse = $this->NotificationService->sendToUserById($userId, $notificationTitle, $notificationMessage);
+                Log::info('Notification Response: ', $notificationResponse);
             } else if ($status === '99') {
                 $transaction->update(['status' => 'failed']);
                 Log::info("Transaction failed: {$this->transactionId}");
                 $mainTransaction->update(['status' => 'failed']);
                 $wallet->accountBalance += $transaction->totalAmount;
                 $wallet->save();
+                $notification = new Notification();
+                $notification->title = "Bill Payment Failed";
+                $notification->type = "billPayment";
+                $notification->message = "Bill payment of " . $transaction->amount . "NGN has been failed. We have refunded your account";
+                $notification->user_id = $userId;
+                $notification->icon = asset('notificationLogos/bill.png');
+                $notification->iconColor = config('notification_colors.colors.Bill');
+                $notification->save();
+                $notificationTitle = "Bill Payment Failed";
+                $notificationMessage = "Bill payment of " . $transaction->amount . " has been Failed.";
+                $notificationResponse = $this->NotificationService->sendToUserById($userId, $notificationTitle, $notificationMessage);
             } else {
                 if ($this->currentRetry < $this->maxRetries) {
                     $this->retryJob();
                 } else {
-                    $transaction->update(['status' => 'pending', 'last_checked_at' => now()]);
+                    // $transaction->update(['status' => 'pending', 'last_checked_at' => now()]);
                     Log::info("Transaction still pending after max retries: {$this->transactionId}");
                 }
             }
         } else {
             Log::error("Failed to fetch transaction status: {$this->transactionId}", $response->json());
+            if ($this->currentRetry < $this->maxRetries) {
+                $this->retryJob();
+            }
         }
     }
 
@@ -88,7 +119,7 @@ class CheckTransactionStatus implements ShouldQueue
     protected function retryJob()
     {
         $nextRetry = $this->currentRetry + 1;
-        CheckTransactionStatus::dispatch($this->transactionId, $nextRetry)->delay(now()->addMinute());
+        CheckTransactionStatus::dispatch($this->transactionId, $this->tid, $nextRetry)->delay(now()->addMinute());
         Log::info("Retrying transaction check for: {$this->transactionId}, attempt: {$nextRetry}");
     }
 }
