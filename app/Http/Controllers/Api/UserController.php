@@ -78,7 +78,7 @@ class UserController extends Controller
             ->get()
             ->map(function ($notification) {
                 $notification->created_at = $notification->created_at
-                    ->addHours(2) // Add 2 hours
+                    ->addHours(1) // Add 2 hours
                     ->setTimezone('UTC') // Ensure UTC
                     ->toISOString(); // Standard ISO 8601 format
                 return $notification;
