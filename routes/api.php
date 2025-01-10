@@ -39,7 +39,7 @@ Route::get('/biller-categories-fetch', [BillPaymentController::class, 'fetchBill
 Route::get('/biller-items-fetch/{categoryId}/{providerId}', [BillPaymentController::class, 'fetchBillerItems']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 Route::post('accounts/release', [AccountController::class, 'releaseAccount']);
-Route::middleware( 'auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('user-details', [UserDetailController::class, 'detail']);
     Route::post('accounts/individual', [AccountController::class, 'createIndividualAccount']);
@@ -89,8 +89,8 @@ Route::middleware( 'auth:sanctum')->group(function () {
     Route::get('/delete-account', [UserController::class, 'deleteAccount']);
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
 });
-Route::get('/mark-single-notificatin-sRead/{id}',[UserController::class,'markSingleRead']);
-Route::get('/delete-single-notification/{id}',[UserController::class,'deleteSingleNotification']);
+Route::get('/mark-single-notificatin-sRead/{id}', [UserController::class, 'markSingleRead']);
+Route::get('/delete-single-notification/{id}', [UserController::class, 'deleteSingleNotification']);
 
 // ha
 Route::post('/inwardCreditNotification', [TransferApiController::class, 'inwardCreditNotification']);
@@ -110,6 +110,7 @@ Route::get('/slides', [SliderController::class, 'index']);
 Route::post('/mark-as-read', [UserController::class, 'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
 Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
-Route::post('/send-notification',[PushNotificationController::class, 'sendNotification']);
+Route::post('/send-notification', [PushNotificationController::class, 'sendNotification']);
 
-Route::get('/transactionStatus/{id}',[BillPaymentController::class, 'verifyTransactionStatus']);
+Route::get('/transactionStatus/{id}', [BillPaymentController::class, 'verifyTransactionStatus']);
+Route::get('/testing-transaction-job/{id}/{tid}', [BillPaymentController::class, 'testingTransactionStatus']);

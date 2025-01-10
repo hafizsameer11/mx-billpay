@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckTransactionStatus;
 use App\Models\BillerCategory;
 use App\Models\BillerItem;
 use App\Models\BillPayment;
@@ -622,5 +623,10 @@ class BillPaymentController extends Controller
                 ], 200);
             }
         }
+    }
+
+    public function testingTransactionStatus($id, $tid)
+    {
+        CheckTransactionStatus::dispatch($id, $tid, 0);
     }
 }

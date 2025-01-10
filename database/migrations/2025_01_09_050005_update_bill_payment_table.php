@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('bill_payments', function (Blueprint $table) {
             $table->foreignId('category_id') // Creates an unsignedBigInteger and foreign key constraint
-            ->constrained('biller_categories') // References the 'id' column on 'biller_categories'
-            ->onDelete('cascade'); // Defines 'on delete cascade'
+                ->constrained('biller_categories') // References the 'id' column on 'biller_categories'
+                ->onDelete('cascade'); // Defines 'on delete cascade'
         });
     }
 
