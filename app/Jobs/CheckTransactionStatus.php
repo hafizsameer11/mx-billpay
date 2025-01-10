@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\BillPayment;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -40,7 +41,8 @@ class CheckTransactionStatus implements ShouldQueue
     {
         $mainTransaction = Transaction::where('id', $this->tid)->first();
         $transaction = BillPayment::where('refference', $this->transactionId)->first();
-
+        $userId = $transaction->user_id;
+        $wallet = Wallet::where('user_id', $userId)->orderBy('id', 'desc')->first();
         if (!$transaction) {
             Log::warning("Transaction not found: {$this->transactionId}");
             return;
@@ -61,6 +63,12 @@ class CheckTransactionStatus implements ShouldQueue
                 }
                 $transaction->update(['status' => 'success', 'token' => $token]);
                 Log::info("Transaction successful: {$this->transactionId}");
+            } else if ($status === '99') {
+                $transaction->update(['status' => 'failed']);
+                Log::info("Transaction failed: {$this->transactionId}");
+                $mainTransaction->update(['status' => 'failed']);
+                $wallet->accountBalance += $transaction->totalAmount;
+                $wallet->save();
             } else {
                 if ($this->currentRetry < $this->maxRetries) {
                     $this->retryJob();
