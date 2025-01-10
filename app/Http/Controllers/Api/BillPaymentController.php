@@ -482,6 +482,8 @@ class BillPaymentController extends Controller
                     'response' => json_encode($response->json()),
                     'totalAmount' => $totalAmount
                 ]);
+
+                CheckTransactionStatus::dispatch($reference, $transaction->id, 0);
                 $data = [
                     'status' => 'pending',
                     'amount' => floatval($amount),
