@@ -46,7 +46,7 @@ class CheckTransactionStatus implements ShouldQueue
             return;
         }
 
-        $response = Http::withHeaders(['AccessToken' => config('services.vfd.access_token')])
+        $response = Http::withHeaders(['AccessToken' => $this->accessToken])
             ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/transactionStatus', [
                 'transactionId' => $this->transactionId,
             ]);
