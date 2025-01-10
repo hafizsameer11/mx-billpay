@@ -69,26 +69,27 @@ class UserController extends Controller
         }
     }
     public function unreadNotifjications()
-{
-    $userId = Auth::user()->id;
+    {
+        $userId = Auth::user()->id;
 
-    // Fetch notifications and add one hour to the created_at field
-    $unreadNotifications = Notification::where('user_id', $userId)
-        ->orderBy('created_at', 'desc')
-        ->get()
-        ->map(function ($notification) {
-            $notification->created_at = $notification->created_at
-                ->addHour() // Add 1 hour
-                ->toISOString(); // Convert to ISO 8601 format
-            return $notification;
-        });
+        // Fetch notifications and add two hours to the created_at field
+        $unreadNotifications = Notification::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($notification) {
+                $notification->created_at = $notification->created_at
+                    ->addHours(2) // Add 2 hours
+                    ->toISOString(); // Convert to ISO 8601 format
+                return $notification;
+            });
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Unread notifications',
-        'data' => $unreadNotifications
-    ], 200);
-}
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Unread notifications',
+            'data' => $unreadNotifications
+        ], 200);
+    }
+
 
 
 
