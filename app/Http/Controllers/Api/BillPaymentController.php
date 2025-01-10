@@ -424,6 +424,7 @@ class BillPaymentController extends Controller
                 $transaction->sign = 'negative';
                 $transaction->amount = $amount;
                 $transaction->save();
+                CheckTransactionStatus::dispatch($reference, $transaction->id, 0);
                 BillPayment::create([
                     'category_id' => $request->category_id,
                     'providerName' => $request->billerId,
@@ -483,7 +484,7 @@ class BillPaymentController extends Controller
                     'totalAmount' => $totalAmount
                 ]);
 
-                CheckTransactionStatus::dispatch($reference, $transaction->id, 0);
+
                 $data = [
                     'status' => 'pending',
                     'amount' => floatval($amount),
