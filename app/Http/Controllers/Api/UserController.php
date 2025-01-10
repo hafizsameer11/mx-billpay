@@ -77,7 +77,10 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($notification) {
-                $notification->created_at = $notification->created_at->addHour(); // Add one hour
+                $notification->created_at = $notification->created_at
+                    ->addHour() // Add 1 hour
+                    ->setTimezone('UTC') // Convert to UTC
+                    ->toISOString(); // Convert to ISO 8601 format
                 return $notification;
             });
 
@@ -87,6 +90,7 @@ class UserController extends Controller
             'data' => $unreadNotifications
         ], 200);
     }
+
 
     public function checkUserStatus()
     {
