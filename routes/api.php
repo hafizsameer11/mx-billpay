@@ -111,3 +111,5 @@ Route::post('/mark-as-read', [UserController::class, 'markAsRead']);
 Route::get('/getpooldetails', [TransferApiController::class, 'getPoolAccountDetails']);
 Route::middleware('auth:sanctum')->post('/analytics', [AnalyticsController::class, 'getAnalyticsData']);
 Route::post('/send-notification',[PushNotificationController::class, 'sendNotification']);
+
+Route::get('/transactionStatus/{id}',[BillPaymentController::class, 'verifyTransactionStatus']);

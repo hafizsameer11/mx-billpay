@@ -597,4 +597,30 @@ class BillPaymentController extends Controller
         $category = BillerCategory::where('id', $id)->first();
         $categoryname = $category->originalName;
     }
+
+    public function verifyTransactionStatus($id)
+    {
+        $refferenceId = $id;
+        //verify transaction exists
+        $transaction = BillPayment::where('refference', $refferenceId)->first();
+        if ($transaction) {
+            $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+                ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/transactionStatus', [
+                    'transactionId' => $refferenceId
+                ]);
+            if ($response->successful()) {
+                Log::info('Transaction Status: ', $response->json());
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $response->json('data'),
+                ], 200);
+            } else {
+                Log::info('Transaction Status: ', $response->json());
+                return response()->json([
+                    'status' => 'error',
+                    'data' => $response->json('data'),
+                ], 200);
+            }
+        }
+    }
 }
