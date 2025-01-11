@@ -77,6 +77,8 @@ class BillPaymentController extends Controller
 
         // Make the API request
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
+        ->retry(3, 1000) // Retry 3 times with a 1-second delay
+    ->timeout(60)
             ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
                 'billerId' => $provider->billerId,
                 'divisionId' => $provider->division,
