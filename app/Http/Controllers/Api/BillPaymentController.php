@@ -371,7 +371,7 @@ class BillPaymentController extends Controller
             $token = '';
             if (isset($response->json()['data']['token'])) {
                 $token = $response->json()['data']['token'];
-                Log::info('Sending  Token Via Email: ', $token);
+                // Log::info('Sending  Token Via Email: ', $token);
                 $user = User::where('id', $userId)->with('account')->first();
                 // $customerName=
                 $customerName = $user->account->firstName . ' ' . $user->account->lastName;
