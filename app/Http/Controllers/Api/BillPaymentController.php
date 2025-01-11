@@ -376,7 +376,7 @@ class BillPaymentController extends Controller
                 // $customerName=
                 $customerName = $user->account->firstName . ' ' . $user->account->lastName;
                 $customerEmail = $user->email;
-
+                Log::info('Sending Email: ', ['customerName' => $customerName, 'customerEmail' => $customerEmail]);
                 Mail::send('emails.electricity_token', [
                     'customerName' => $customerName,
                     'tokenNumber' => $token,
