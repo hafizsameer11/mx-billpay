@@ -15,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class CheckTransactionStatus implements ShouldQueue
 {
@@ -26,14 +27,19 @@ class CheckTransactionStatus implements ShouldQueue
     public $currentRetry; // Tracks current retry count
     public $accessToken;
     protected $NotificationService;
+    public $customerName;
+    public $customerEmail;
+
 
     /**
      * Create a new job instance.
      */
-    public function __construct($transactionId, $tid, $currentRetry = 0)
+    public function __construct($transactionId, $tid, $currentRetry = 0, $customerName = null, $customerEmail = null)
     {
         $this->transactionId = $transactionId;
         $this->currentRetry = $currentRetry;
+        $this->customerName = $customerName;
+        $this->customerEmail = $customerEmail;
         $this->tid = $tid;
         $this->accessToken = config('access_token.live_token');
     }
@@ -65,7 +71,20 @@ class CheckTransactionStatus implements ShouldQueue
                 $mainTransaction->update(['status' => 'completed']);
                 if (isset($response->json()['data']['token'])) {
                     $token = $response->json()['data']['token'];
+                    $formattedToken = implode('-', str_split($token, 4));
+                    Mail::send(
+                        'emails.electricity_token',
+                        [
+                            'customerName' => $this->customerName,
+                            'tokenNumber' => $formattedToken, // Use formatted token
+                        ],
+                        function ($message) {
+                            $message->to($this->customerEmail)
+                                ->subject('Your Electricity Token');
+                        }
+                    );
                 }
+
                 $transaction->update(['status' => 'success', 'token' => $token]);
                 Log::info("Transaction successful: {$this->transactionId}");
                 $notification = new Notification();

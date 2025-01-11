@@ -374,12 +374,13 @@ class BillPaymentController extends Controller
                 // Log::info('Sending  Token Via Email: ', $token);
                 $user = User::where('id', $userId)->with('account')->first();
                 // $customerName=
+                $formattedToken = implode('-', str_split($token, 4));
                 $customerName = $user->account->firstName . ' ' . $user->account->lastName;
                 $customerEmail = $user->email;
                 Log::info('Sending Email: ', ['customerName' => $customerName, 'customerEmail' => $customerEmail]);
                 Mail::send('emails.electricity_token', [
                     'customerName' => $customerName,
-                    'tokenNumber' => $token,
+                    'tokenNumber' => $formattedToken,
                 ], function ($message) use ($customerEmail) {
                     $message->to($customerEmail)
                         ->subject('Your Electricity Token');
