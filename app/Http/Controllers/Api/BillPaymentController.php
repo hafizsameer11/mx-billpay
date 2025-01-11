@@ -440,7 +440,14 @@ class BillPaymentController extends Controller
                 $transaction->sign = 'negative';
                 $transaction->amount = $amount;
                 $transaction->save();
-                CheckTransactionStatus::dispatch($reference, $transaction->id, 0);
+                $user = User::where('id', $userId)->with('account')->first();
+
+
+
+                $customerName = $user->account->firstName . ' ' . $user->account->lastName;
+                $customerEmail = $user->email;
+
+                CheckTransactionStatus::dispatch($reference, $transaction->id, 0,$customerName, $customerEmail);
                 BillPayment::create([
                     'category_id' => $request->category_id,
                     'providerName' => $request->billerId,
