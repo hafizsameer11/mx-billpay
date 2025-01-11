@@ -10,6 +10,7 @@ use App\Models\BillPayment;
 use App\Models\BillProviders;
 use App\Models\Notification;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Container\RewindableGenerator;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\Mail;
 
 class BillPaymentController extends Controller
 {
@@ -369,6 +371,18 @@ class BillPaymentController extends Controller
             $token = '';
             if (isset($response->json()['data']['token'])) {
                 $token = $response->json()['data']['token'];
+                $user = User::where('id', $userId)->with('account')->first();
+                // $customerName=
+                $customerName = $user->account->firstName . ' ' . $user->account->lastName;
+                $customerEmail = $user->email;
+
+                Mail::send('emails.electricity_token', [
+                    'customerName' => $customerName,
+                    'tokenNumber' => $token,
+                ], function ($message) use ($customerEmail) {
+                    $message->to($customerEmail)
+                        ->subject('Your Electricity Token');
+                });
             }
 
             BillPayment::create([
