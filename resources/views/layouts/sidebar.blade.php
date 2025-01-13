@@ -167,6 +167,13 @@
                     <span class="link-title">SMTP</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('privacy-link.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="link"></i> <!-- Icon for Privacy Link -->
+                    <span class="link-title">Privacy Page Link</span>
+                </a>
+            </li>
+
 
             <!-- Access Token Section -->
             <li class="nav-item nav-category">Access Token</li>
@@ -222,7 +229,7 @@
                         <li class="nav-item">
                             <a href="{{ route('chat.index') }}" class="nav-link">All Chats</a>
                         </li>
-                        
+
                     </ul>
                 </div>
             </li>

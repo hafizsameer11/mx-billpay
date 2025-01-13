@@ -9,6 +9,7 @@ use App\Http\Controllers\BillerCategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\faqController;
+use App\Http\Controllers\PrivacyPageController;
 use App\Http\Controllers\SlideController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\SocialMediaController;
@@ -181,3 +182,7 @@ Route::get('/test-pusher/{userId}', function ($userId) {
 
     return "Direct Pusher test triggered for user {$userId}";
 })->name('test-pusher');
+
+
+Route::get('privacy-link', [PrivacyPageController::class, 'index'])->name('privacy-link.index');
+Route::put('privacy-link', [PrivacyPageController::class, 'update'])->name('privacy-link.update');

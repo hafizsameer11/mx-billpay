@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\PushNotificationController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\SocialMediaLinks;
 use App\Http\Controllers\Api\StatisticsController;
+use App\Http\Controllers\PrivacyPageController;
+
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TransferApiController;
 use App\Http\Controllers\Api\TransferController;
@@ -114,3 +116,4 @@ Route::post('/send-notification', [PushNotificationController::class, 'sendNotif
 
 Route::get('/transactionStatus/{id}', [BillPaymentController::class, 'verifyTransactionStatus']);
 Route::get('/testing-transaction-job/{id}/{tid}', [BillPaymentController::class, 'testingTransactionStatus']);
+Route::get('/privacy-page-link',[PrivacyPageController::class,'apiUrl']);
