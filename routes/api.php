@@ -88,9 +88,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/new-messages', [MessageController::class, 'newMessages']);
     Route::post('/send-message', [MessageController::class, 'store']);
     Route::post('/send-admin-message', [MessageController::class, 'sendAdminMessage']);
-    Route::get('/delete-account', [UserController::class, 'deleteAccount']);
     Route::get('/transaction-details/{id}', [TransactionController::class, 'transactionDetails']);
 });
+Route::get('/delete-account', [UserController::class, 'deleteAccount']);
 Route::get('/mark-single-notificatin-sRead/{id}', [UserController::class, 'markSingleRead']);
 Route::get('/delete-single-notification/{id}', [UserController::class, 'deleteSingleNotification']);
 
