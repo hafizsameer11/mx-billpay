@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -52,34 +51,21 @@ class UserController extends Controller
         $id = Auth::user()->id;
         $user = User::find($id);
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found
-                '
-            ], 404);
+            return response()->json(['status' => 'error', 'message' => 'User not found
+                '], 404);
         }
         try {
             if (!Hash::check($request->oldPassword, $user->password)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Old password is
-                        incorrect'
-                ], 400);
+                return response()->json(['status' => 'error', 'message' => 'Old password is
+                        incorrect'], 400);
             }
             $user->password = Hash::make($request->password);
             $user->save();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Password updated
-                        successfully'
-            ], 200);
+            return response()->json(['status' => 'success', 'message' => 'Password updated
+                        successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to update
-                            password',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['status' => 'error', 'message' => 'Failed to update
+                            password', 'error' => $e->getMessage()],  500);
         }
     }
     public function unreadNotifjications()
@@ -164,7 +150,7 @@ class UserController extends Controller
     public function setFcmToken(Request $request)
     {
         $userId = Auth::user()->id;
-        Log::info("FC TOmen" . $request->fcmToken);
+        Log::info("FC TOmen".$request->fcmToken);
         $fcmToken = $request->fcmToken;
 
         $user = User::where('id', $userId)->first();
@@ -195,37 +181,18 @@ class UserController extends Controller
         });
         return response()->json(['status' => 'success', 'data' => $links], 200);
     }
-    public function deleteAccount(Request $request)
+    public function deleteAccount()
     {
-        try {
-            // Production server URL
-            $productionServerUrl = 'https://admin.mxbillpay.com/api/delete-account';
-            Log::info("request token" . $request->bearerToken());
-            // Forward the request to the production server with the Bearer token
-            $response = Http::withToken($request->bearerToken())
-                ->get($productionServerUrl);
-
-
-            // Return the response from the production server directly to the frontend
-            if ($response->successful()) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Account deleted successfully on the production server',
-                ], 200);
-            }
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to delete account on the production server',
-                'details' => $response->json()
-            ], $response->status());
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while forwarding the request to the production server',
-                'details' => $e->getMessage(),
-            ], 500);
+        $userId = Auth::user()->id;
+        $user = User::find($userId);
+        $user->email=$user->email."-".rand(1000,9999);
+        $user->save();
+        if ($user) {
+            $user->delete(); // This performs a soft delete
+            return response()->json(['status' => 'success', 'message' => 'Account deleted successfully'], 200);
         }
+
+        return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
     }
     public function deleteSingleNotification($id)
     {
