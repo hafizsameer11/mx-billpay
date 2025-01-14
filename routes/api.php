@@ -116,4 +116,4 @@ Route::post('/send-notification', [PushNotificationController::class, 'sendNotif
 
 Route::get('/transactionStatus/{id}', [BillPaymentController::class, 'verifyTransactionStatus']);
 Route::get('/testing-transaction-job/{id}/{tid}', [BillPaymentController::class, 'testingTransactionStatus']);
-Route::get('/privacy-page-link',[PrivacyPageController::class,'apiUrl']);
+Route::get('/privacy-page-link', [PrivacyPageController::class, 'apiUrl']);

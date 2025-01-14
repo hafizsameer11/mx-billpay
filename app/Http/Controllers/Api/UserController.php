@@ -152,6 +152,7 @@ class UserController extends Controller
         $userId = Auth::user()->id;
         Log::info($request->fcmToken);
         $fcmToken = $request->fcmToken;
+    
         $user = User::where('id', $userId)->first();
         $user->fcmToken = $fcmToken;
         $user->save();

@@ -19,15 +19,18 @@
                     <form method="GET" action="{{ route('billPayments.transactions') }}">
                         <div class="row">
                             <div class="col-md-2">
-                                <input type="text" name="category" class="form-control" placeholder="Category" value="{{ request('category') }}">
+                                <input type="text" name="category" class="form-control" placeholder="Category"
+                                    value="{{ request('category') }}">
                             </div>
 
                             <div class="col-md-2">
-                                <input type="text" name="type" class="form-control" placeholder="Type" value="{{ request('type') }}">
+                                <input type="text" name="type" class="form-control" placeholder="Type"
+                                    value="{{ request('type') }}">
                             </div>
 
                             <div class="col-md-2">
-                                <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request('name') }}">
+                                <input type="text" name="name" class="form-control" placeholder="Name"
+                                    value="{{ request('name') }}">
                             </div>
 
 
@@ -35,13 +38,17 @@
                             <div class="col-md-2 text-center">
                                 <select name="status" id="status" class="form-control">
                                     <option value="" class="text-center">--Select Status--</option>
-                                    <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Success</option>
-                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="return" {{ request('status') == 'return' ? 'selected' : '' }}>Return</option>
+                                    <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Success
+                                    </option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending
+                                    </option>
+                                    <option value="return" {{ request('status') == 'return' ? 'selected' : '' }}>Return
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="date" name="created_at" class="form-control" value="{{ request('created_at') }}" >
+                                <input type="date" name="created_at" class="form-control"
+                                    value="{{ request('created_at') }}">
                             </div>
 
                             <div class="col-md-2 text-center">
@@ -59,9 +66,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Category</th>
-                                <th>Type</th>
+                                <th>Provider</th>
+                                <th>Item</th>
                                 <th>Amount</th>
-<th>Percentage Charges</th>
+                                <th>Percentage Charges</th>
                                 <th>User</th>
                                 <th>Status</th>
                                 <th>Created Time</th>
@@ -72,15 +80,16 @@
                             @foreach ($transactions as $item)
                                 <tr>
                                     <th>{{ $loop->index + 1 }}</th>
-                                    <td>{{ $item->billerItem->category->category ?? 'N/A' }}</td>
-                                    <td>{{ $item->billerItem->paymentitemname ?? 'N/A' }}</td>
-                                    <td>{{ $item->transaction->amount }}</td>
-                                    <td>{{ $item->billerItem->percentage_commision ?? 'N/A' }}</td>
-                                    <td>{{ $item->account->firstName ?? 'N/A' }} {{ $item->account->lastName ?? 'N/A' }}
+                                    <td>{{ $item->category->category ?? 'N/A' }}</td>
+                                    <td>{{ $item->providerName ?? 'N/A' }}</td>
+                                    <td>{{ $item->billItemName ?? 'N/A' }}</td>
+                                    <td>{{ $item->totalAmount }}</td>
+                                    <td>{{ $item->category->percentage_commission ?? 'N/A' }}</td>
+                                    <td>{{ $item->user->account->firstName ?? 'N/A' }} {{ $item->user->account->lastName ?? 'N/A' }}
                                     </td>
                                     <td>{{ $item->status ?? 'N/A' }}</td>
                                     <td>{{ $item->transaction->created_at ?? 'N/A' }}</td>
-                                    <td><a href="{{ route('billPayments.transactions.show', $item->user->id) }}"
+                                    <td><a href="{{ route('billPayments.transactions.show', $item->transaction->id) }}"
                                             class="btn btn-outline-primary">View</a></td>
                                 </tr>
                             @endforeach
@@ -89,12 +98,14 @@
 
                     <!-- Pagination Links -->
                     <div class="d-flex justify-content-between">
-                        {{-- <div>
-                            Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
+                        <div>
+                            Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of
+                            {{ $transactions->total() }} entries
                         </div>
                         <div>
-                            {{ $users->links('pagination::bootstrap-4') }} <!-- This generates the pagination links -->
-                        </div> --}}
+                            {{ $transactions->links('pagination::bootstrap-4') }}
+                            <!-- This generates the pagination links -->
+                        </div>
                     </div>
 
                 </div>
@@ -104,7 +115,7 @@
 @endsection
 
 @section('additonal-script')
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#status').change(function() {
@@ -128,5 +139,4 @@
         });
     });
 </script> --}}
-
 @endsection

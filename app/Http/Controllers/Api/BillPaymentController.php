@@ -77,8 +77,8 @@ class BillPaymentController extends Controller
 
         // Make the API request
         $response = Http::withHeaders(['AccessToken' => $this->accessToken])
-        ->retry(3, 1000) // Retry 3 times with a 1-second delay
-    ->timeout(60)
+            ->retry(3, 1000) // Retry 3 times with a 1-second delay
+            ->timeout(60)
             ->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/billerItems', [
                 'billerId' => $provider->billerId,
                 'divisionId' => $provider->division,
@@ -232,11 +232,11 @@ class BillPaymentController extends Controller
             $response = Http::withHeaders([
                 'AccessToken' => $this->accessToken,
             ])->get('https://api-apps.vfdbank.systems/vtech-wallet/api/v1/billspaymentstore/customervalidate', [
-                'divisionId' => $divisionId,
-                'paymentItem' => $paymentItem,
-                'customerId' => $customerId,
-                'billerId' => $billerId,
-            ]);
+                        'divisionId' => $divisionId,
+                        'paymentItem' => $paymentItem,
+                        'customerId' => $customerId,
+                        'billerId' => $billerId,
+                    ]);
             if ($response->successful()) {
                 Log::info('Response from Validation Biller ID: ' . $billerId, ['response' => $response->json()]);
 
@@ -279,8 +279,8 @@ class BillPaymentController extends Controller
     public function payBills(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customerId'   => 'nullable|string',
-            'amount'       => 'required|numeric',
+            'customerId' => 'nullable|string',
+            'amount' => 'required|numeric',
             'billerItemId' => 'required',
             'paymentitemname' => 'required',
             'phoneNumber' => 'nullable',
@@ -336,14 +336,14 @@ class BillPaymentController extends Controller
 
 
         $payload = [
-            'customerId'   => $customerId,
-            'amount'       => $amount,
-            'division'     => $division,
-            'paymentItem'  => $paymentItem,
-            'productId'    => $productId,
-            'billerId'     => $billerId,
-            'reference'    => $reference,
-            'phoneNumber'  => $phoneNumber,
+            'customerId' => $customerId,
+            'amount' => $amount,
+            'division' => $division,
+            'paymentItem' => $paymentItem,
+            'productId' => $productId,
+            'billerId' => $billerId,
+            'reference' => $reference,
+            'phoneNumber' => $phoneNumber,
         ];
         Log::info('Bill Payment Payload: ', [$payload]);
         $response = Http::withHeaders([
@@ -449,7 +449,7 @@ class BillPaymentController extends Controller
                 $customerName = $user->account->firstName . ' ' . $user->account->lastName;
                 $customerEmail = $user->email;
 
-                CheckTransactionStatus::dispatch($reference, $transaction->id, 0,$customerName, $customerEmail);
+                CheckTransactionStatus::dispatch($reference, $transaction->id, 0, $customerName, $customerEmail);
                 BillPayment::create([
                     'category_id' => $request->category_id,
                     'providerName' => $request->billerId,
@@ -589,8 +589,8 @@ class BillPaymentController extends Controller
         $response = Http::withHeaders([
             'AccessToken' => $this->accessToken,  // Replace with actual token
         ])->get('https://api-devapps.vfdbank.systems/vtech-wallet/api/v1.1/billspaymentstore/transactionStatus', [
-            'transactionId' => $transactionId,
-        ]);
+                    'transactionId' => $transactionId,
+                ]);
 
         // Check if the API request was successful
         if ($response->successful()) {
