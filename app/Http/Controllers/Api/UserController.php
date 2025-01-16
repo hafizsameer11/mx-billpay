@@ -51,21 +51,34 @@ class UserController extends Controller
         $id = Auth::user()->id;
         $user = User::find($id);
         if (!$user) {
-            return response()->json(['status' => 'error', 'message' => 'User not found
-                '], 404);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found
+                '
+            ], 404);
         }
         try {
             if (!Hash::check($request->oldPassword, $user->password)) {
-                return response()->json(['status' => 'error', 'message' => 'Old password is
-                        incorrect'], 400);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Old password is
+                        incorrect'
+                ], 400);
             }
             $user->password = Hash::make($request->password);
             $user->save();
-            return response()->json(['status' => 'success', 'message' => 'Password updated
-                        successfully'], 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password updated
+                        successfully'
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Failed to update
-                            password', 'error' => $e->getMessage()],  500);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update
+                            password',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
     public function unreadNotifjications()
@@ -150,7 +163,7 @@ class UserController extends Controller
     public function setFcmToken(Request $request)
     {
         $userId = Auth::user()->id;
-        Log::info("FC TOmen".$request->fcmToken);
+        Log::info("FC TOmen" . $request->fcmToken);
         $fcmToken = $request->fcmToken;
 
         $user = User::where('id', $userId)->first();
@@ -185,7 +198,7 @@ class UserController extends Controller
     {
         $userId = Auth::user()->id;
         $user = User::find($userId);
-        $user->email=$user->email."-".rand(1000,9999);
+        $user->email = $user->email . "-" . rand(1000, 9999);
         $user->save();
         if ($user) {
             $user->delete(); // This performs a soft delete

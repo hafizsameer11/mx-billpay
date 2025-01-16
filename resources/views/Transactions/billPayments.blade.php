@@ -89,7 +89,7 @@
                                     </td>
                                     <td>{{ $item->status ?? 'N/A' }}</td>
                                     <td>{{ $item->transaction->created_at ?? 'N/A' }}</td>
-                                    <td><a href="{{ route('billPayments.transactions.show', $item->transaction->id) }}"
+                                    <td><a href="{{ route('billPayments.transactions.show', $item->id) }}"
                                             class="btn btn-outline-primary">View</a></td>
                                 </tr>
                             @endforeach
