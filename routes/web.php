@@ -10,6 +10,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\faqController;
 use App\Http\Controllers\PrivacyPageController;
+use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\SlideController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\SocialMediaController;
@@ -57,6 +58,7 @@ Route::get('/fetch-biller-item/{categoryName}', [BillerCategoryController::class
 Route::geT('/show-biller-items', [BillerCategoryController::class, 'showBillerItems'])->name('billeritem.show');
 Route::post('item/add-commission', [BillerCategoryController::class, 'addCommission'])->name('item.addCommission');
 Route::post('item/bulk-add-commission', [BillerCategoryController::class, 'bulkAddCommission'])->name('item.bulkAddCommission');
+Route::post('provider/bulk-add-commission', [BillerCategoryController::class, 'bulkcomissionByVFD'])->name('provider.bulkAddCommission');
 
 Route::get('/fetch-banks', [BankController::class, 'index']);
 
@@ -186,3 +188,6 @@ Route::get('/test-pusher/{userId}', function ($userId) {
 
 Route::get('privacy-link', [PrivacyPageController::class, 'index'])->name('privacy-link.index');
 Route::put('privacy-link', [PrivacyPageController::class, 'update'])->name('privacy-link.update');
+
+
+Route::get('/revenue',[RevenueController::class, 'index'])->name('revenue.index');

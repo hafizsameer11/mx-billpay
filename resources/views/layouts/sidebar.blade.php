@@ -19,6 +19,12 @@
                     <span class="link-title">Dashboard</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('revenue.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="dollar-sign"></i> <!-- money icon for Dashboard -->
+                    <span class="link-title">Revenue</span>
+                </a>
+            </li>
 
             <!-- Manage Bills Section -->
             <li class="nav-item nav-category">Manage Bills</li>
@@ -91,7 +97,7 @@
             </li>
 
             <!-- Transactions Section -->
-            <li class="nav-item nav-category">Transactions</li>
+            {{-- <li class="nav-item nav-category">Transactions</li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#emails1" role="button" aria-expanded="false"
                     aria-controls="emails1">
@@ -112,7 +118,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Slides Section -->
             <li class="nav-item nav-category">Slides</li>
@@ -199,8 +205,8 @@
             <!-- Social Media Section -->
             <li class="nav-item nav-category">Social Media</li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button"
-                    aria-expanded="false" aria-controls="uiComponents">
+                <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false"
+                    aria-controls="uiComponents">
                     <i class="link-icon" data-feather="share-2"></i> <!-- Share icon for Social Media -->
                     <span class="link-title">Social Media</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
@@ -218,8 +224,8 @@
             </li>
             <li class="nav-item nav-category">Chat</li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#chatComponents" role="button"
-                    aria-expanded="false" aria-controls="chatComponents">
+                <a class="nav-link" data-bs-toggle="collapse" href="#chatComponents" role="button" aria-expanded="false"
+                    aria-controls="chatComponents">
                     <i class="link-icon" data-feather="message-square"></i> <!-- Message icon for Chat -->
                     <span class="link-title">Chat</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>

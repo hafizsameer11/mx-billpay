@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -15,7 +17,7 @@ class UserController extends Controller
         $phone = $request->input('phone');
         $created_at = $request->input('created_at');
         $updated_at = $request->input('updated_at');
-    
+
         $users = User::with('account')
             ->when($name, function ($query) use ($name) {
                 $query->whereHas('account', function ($query) use ($name) {
@@ -82,8 +84,15 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::where('id', $id)->with('account', 'tranaction', 'billPayment.billerItem')->first();
+        $user = User::where('id', $id)->with('account', 'tranaction', 'billPayment.category')->first();
         // dd($user);
-        return view('Users.showUser', compact('user'));
+        $wallet=Wallet::where('user_id',$user->id)->orderBy('created_at', 'desc')->first();
+
+        $transactions = Transaction::where('user_id', $id)
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
+
+        return view('Users.showUser', compact('user','transactions','wallet'));
     }
 }

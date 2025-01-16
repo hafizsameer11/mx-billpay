@@ -10,6 +10,7 @@
                 Commission</button>
         </div>
     </div>
+
     <div class="row">
         <div class="card">
             <div class="card-body">
@@ -114,6 +115,42 @@
         </div>
     </div>
 
+   <div class="modal fade" id="bulkCommissionModal" tabindex="-1" aria-labelledby="bulkCommissionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bulkCommissionModalLabel">Bulk Add Commission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bulkCommissionForm" method="POST" action="{{route('provider.bulkAddCommission')}}" >
+                        @csrf
+                        <div class="mb-3">
+                            <label for="bulk_fixed_commission" class="form-label">Fixed Commission</label>
+                            <input type="number" class="form-control" name="bulk_fixed_commission"
+                                id="bulk_fixed_commission" value="0" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bulk_percentage_commission" class="form-label">Percentage Commission</label>
+                            <input type="number" class="form-control" name="bulk_percentage_commission"
+                                id="bulk_percentage_commission" value="0" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_commission" class="form-label">Category Base </label>
+                            <select name="biller_category" id="biller_category" class="form-select">
+                                <option value="">Select Category</option>
+                                @foreach ($options as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Bulk</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="categoryTitleModal" tabindex="-1" aria-labelledby="categoryTitleModalLabel"
         aria-hidden="true">
@@ -217,6 +254,7 @@
 @endsection
 
 @section('additonal-script')
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const updateLogoButtons = document.querySelectorAll('.update-logo-btn');
