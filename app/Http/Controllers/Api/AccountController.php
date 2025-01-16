@@ -36,7 +36,7 @@ class AccountController extends Controller
             'lastName' => 'required|string',
             'dob' => 'nullable|string',
             'phone' => 'required|string',
-            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
         Log::info('Request: for  profile create ' . json_encode($request->all()));
 
