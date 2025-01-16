@@ -38,6 +38,7 @@ class AccountController extends Controller
             'phone' => 'required|string',
             'profilePicture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        Log::info('Request: for  profile create ' . json_encode($request->all()));
 
         if ($validation->fails()) {
             $errorMessage = $validation->errors()->first();
