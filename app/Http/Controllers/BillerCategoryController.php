@@ -201,16 +201,17 @@ class BillerCategoryController extends Controller
         return redirect()->back()->with('success', 'Select title saved successfully!');
     }
 
-
     public function bulkcomissionByVFD(Request $request)
     {
         $request->validate([
-            'bulk_fixed_commission' => 'nullable|numeric|min:0',
-            'bulk_percentage_commission' => 'nullable|numeric|min:0|max:100',
+            'bulk_fixed_commission' => 'nullable|numeric',
+            'bulk_percentage_commission' => 'nullable|numeric|min:-100|max:100', // Allowing negative percentage values
         ]);
+
         $biller_provider_id = $request->biller_category ?? null;
         $fixedCommission = $request->bulk_fixed_commission ?? 0;
         $percentageCommission = $request->bulk_percentage_commission ?? 0;
+
         if ($biller_provider_id) {
             $billerCategory = BillProviders::find($biller_provider_id);
             $billerCategory->fixed_comission = $fixedCommission;
@@ -224,4 +225,5 @@ class BillerCategoryController extends Controller
 
         return redirect()->back()->with('success', 'Bulk commission added successfully. By using category filter.');
     }
+
 }
