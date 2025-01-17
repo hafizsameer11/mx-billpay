@@ -28,7 +28,7 @@
 
                             @if (isset($user->account->profile_picture))
 
-                                <img src="{{ asset($user->account->profile_picture) }}" alt="Sender Avatar"
+                                <img src="{{ asset('storage/'.$user->account->profile_picture) }}" alt="Sender Avatar"
                                     class="rounded-circle mr-2" width="40" height="40">
                             @else
                                 <img src="{{ asset('assets/images/others/dummyImage.jpeg') }}" alt="Sender Avatar"
