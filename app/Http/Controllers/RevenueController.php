@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BillPayment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RevenueController extends Controller
@@ -10,7 +11,8 @@ class RevenueController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->input('keyword');
-        $created_at = $request->input('created_at');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         $transactions = BillPayment::with(['user.account', 'transaction', 'category'])
             ->leftJoin('bill_providers', 'bill_payments.providerName', '=', 'bill_providers.billerId')
@@ -21,19 +23,63 @@ class RevenueController extends Controller
                 'bill_providers.percentage_comission as provider_percentage_comission'
             )
             ->where('bill_payments.status', 'success')
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->whereHas('user.account', function ($query) use ($keyword) {
-                    $query->where('firstName', 'like', '%' . $keyword . '%');
-                })->orwhereHas('user', function ($query) use ($keyword) {
-                    $query->where('email', 'like', '%' . $keyword . '%');
-                })
-                    ->orWhereHas('billerItem.category', function ($query) use ($keyword) {
-                        $query->where('category', 'like', '%' . $keyword . '%');
+            ->where(function ($query) use ($keyword, $startDate, $endDate) {
+                if ($keyword) {
+                    $query->whereHas('user.account', function ($q) use ($keyword) {
+                        $q->where('firstName', 'like', '%' . $keyword . '%');
                     })
-                    ->orWhere('bill_providers.name', 'like', '%' . $keyword . '%'); // Search in provider name as well
+                        ->orWhereHas('user', function ($q) use ($keyword) {
+                            $q->where('email', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('billerItem.category', function ($q) use ($keyword) {
+                            $q->where('category', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhere('bill_providers.name', 'like', '%' . $keyword . '%');
+                }
+
+                if ($startDate && $endDate) {
+                    $query->orWhereBetween('bill_payments.created_at', [$startDate, $endDate]);
+                }
             })
-            ->paginate(10);
-// dd($transactions);
-        return view('Transactions.revenue', compact('transactions'));
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+
+        $dailyRevenue = $this->calculateRevenue(Carbon::today());
+        $weeklyRevenue = $this->calculateRevenue(Carbon::now()->subWeek());
+        $monthlyRevenue = $this->calculateRevenue(Carbon::now()->subMonth());
+        $yearlyRevenue = $this->calculateRevenue(Carbon::now()->subYear());
+
+        return view('Transactions.revenue', compact(
+            'transactions',
+            'dailyRevenue',
+            'weeklyRevenue',
+            'monthlyRevenue',
+            'yearlyRevenue'
+        ));
     }
+
+
+    /**
+     * Function to calculate revenue based on the given date range.
+     */
+    private function calculateRevenue($startDate)
+    {
+        $billPayments = BillPayment::where('bill_payments.created_at', '>=', $startDate)->leftJoin('bill_providers', 'bill_payments.providerName', '=', 'bill_providers.billerId')
+            ->select(
+                'bill_payments.*',
+                'bill_providers.billerId',
+                'bill_providers.fixed_comission as provider_fixed_comission',
+                'bill_providers.percentage_comission as provider_percentage_comission'
+            )->get();
+
+        $totalRevenue = 0;
+        foreach ($billPayments as $payment) {
+            $commission = ($payment->amount * ($payment->provider_percentage_comission / 100)) + $payment->provider_fixed_comission;
+            $totalRevenue += ($payment->amount - $payment->totalAmount) + $commission;
+        }
+
+        return $totalRevenue;
+    }
+
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\BankController;
 use App\Http\Controllers\BillerCategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepositController;
 use App\Http\Controllers\faqController;
 use App\Http\Controllers\PrivacyPageController;
 use App\Http\Controllers\RevenueController;
@@ -191,3 +192,6 @@ Route::put('privacy-link', [PrivacyPageController::class, 'update'])->name('priv
 
 
 Route::get('/revenue',[RevenueController::class, 'index'])->name('revenue.index');
+
+Route::get('/deposit',[DepositController::class, 'index'])->name('deposit.index');
+// Route::get('/withdrawal',[WithdrawalController::class, 'index'])->name('withdrawal.index');

@@ -16,45 +16,48 @@
         <div class="col-md-3">
             <div class="card l-bg-blue-dark">
                 <div class="card-body">
-                    <h5 class="card-title text-white">Daily Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($dailyRevenue, 2) }}</h2>
+                    <h5 class="card-title text-white">Daily Deposit</h5>
+                    <h3 class="text-white">NGN {{ number_format($todayCount, 0) }}</h3>
                 </div>
             </div>
         </div>
-        <div class="card l-bg-orange">
-            <div class="card-body">
-                <h5 class="card-title text-white">Weekly Revenue</h5>
-                <h2 class="text-white">NGN {{ number_format($weeklyRevenue, 2) }}</h2>
+
+        <div class="col-md-3">  <!-- Corrected: Wrapped Weekly Deposit Card -->
+            <div class="card l-bg-orange">
+                <div class="card-body">
+                    <h5 class="card-title text-white">Weekly Deposit</h5>
+                    <h3 class="text-white">NGN {{ number_format($weekCount, 0) }}</h3>
+                </div>
             </div>
         </div>
-    </div>
+
         <div class="col-md-3">
             <div class="card l-bg-cyan">
                 <div class="card-body">
-                    <h5 class="card-title text-white">Monthly Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($monthlyRevenue, 2) }}</h2>
+                    <h5 class="card-title text-white">Monthly Deposit</h5>
+                    <h3 class="text-white">NGN {{ number_format($monthCount, 0) }}</h3>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="card l-bg-green">
                 <div class="card-body">
-                    <h5 class="card-title text-white">Yearly Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($yearlyRevenue, 2) }}</h2>
+                    <h5 class="card-title text-white">Yearly Deposit</h5>
+                    <h3 class="text-white">NGN {{ number_format($yearCount, 0) }}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-
     </div>
+
     <div class="card">
         <div class="card-body">
-            <h6 class="card-title">Completed Bill Payments</h6>
+            <h6 class="card-title">All Deposits</h6>
 
 
 
             <div class="row d-flex justify-content-between mb-4">
-                <form method="GET" action="{{ route('revenue.index') }}">
+                <form method="GET" action="{{ route('deposit.index') }}">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="input-group">
@@ -91,36 +94,32 @@
                             <th>Transaction Date</th>
                             <th>User Email</th>
                             <th>Refference</th>
-                            <th>Service Name</th>
-                            <th>Service Charge</th>
-                            <th>Comission Revenue</th>
-                            <th>Total Revenue</th>
-                            <th>Actions</th>
+                         <th>Amount</th>
+                         <th>Revenue</th>
+                            {{-- <th>Actions</th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($transactions as $item)
                             <tr>
                                 <th>{{ $loop->index + 1 }}</th>
-                                <td>   {{ $item->transaction->created_at ? $item->transaction->created_at->format('d-m-Y H:i') : 'N/A' }}</td>
-                                <td>{{ $item->user->email}}</td>
-                                <td>{{ $item->refference }}</td>
-                                <td>{{ $item->billItemName }}</td>
-                                <td class="text-center">{{ $item->totalAmount - $item->transaction->amount}}</td>
+                                <td>   {{ $item->created_at ? $item->created_at->format('d-m-Y H:i') : 'N/A' }}</td>
+                                <td>{{ $item->user?->email ?? 'N/A' }}</td>
+
+                                <td>{{ $item->transfer->reference }}</td>
+                                <td>{{ $item->amount }}</td>
                                 <td class="text-center">
-                                    {{ ($item->amount * ($item->provider_percentage_comission / 100)) + $item->provider_fixed_comission }}
+                                    @php
+                                        $revenue = $item->amount * 0.003;
+                                    @endphp
+                                @if($revenue > 300)
+                                300
+                                @else
+                                {{ $revenue }}
+                                @endif
                                 </td>
 
 
-                                <td class="text-center">
-                                    {{
-                                        ($item->totalAmount - $item->transaction->amount) +
-                                        (($item->amount * ($item->provider_percentage_comission / 100)) + $item->provider_fixed_comission)
-                                    }}
-                                </td>
-
-                                <td><a href="{{route('billPayments.transactions.show', $item->user->id)}}"
-                                        class="btn btn-outline-primary">View</a></td>
                             </tr>
                         @endforeach
                     </tbody>

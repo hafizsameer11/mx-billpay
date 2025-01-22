@@ -38,6 +38,7 @@ class UserController extends Controller
             ->when($updated_at, function ($query) use ($updated_at) {
                 $query->whereDate('updated_at', $updated_at);
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
 
@@ -82,17 +83,24 @@ class UserController extends Controller
     }
 
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $user = User::where('id', $id)->with('account', 'tranaction', 'billPayment.category')->first();
-        // dd($user);
-        $wallet=Wallet::where('user_id',$user->id)->orderBy('created_at', 'desc')->first();
+        $user = User::where('id', $id)->with('account', 'billPayment.category')->first();
+        $wallet = Wallet::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
 
-        $transactions = Transaction::where('user_id', $id)
-        ->orderBy('created_at', 'desc')
-        ->take(5)
-        ->get();
+        // Date Range Filters
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        return view('Users.showUser', compact('user','transactions','wallet'));
+        $transactionsQuery = Transaction::where('user_id', $id)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->orderBy('created_at', 'desc');
+
+        $transactions = $transactionsQuery->paginate(10);
+
+        return view('Users.showUser', compact('user', 'transactions', 'wallet'));
     }
+
 }

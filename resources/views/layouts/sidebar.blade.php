@@ -25,6 +25,12 @@
                     <span class="link-title">Revenue</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('deposit.index') }}" class="nav-link">
+                    <i class="link-icon" data-feather="dollar-sign"></i> <!-- money icon for Dashboard -->
+                    <span class="link-title">Deposits</span>
+                </a>
+            </li>
 
             <!-- Manage Bills Section -->
             <li class="nav-item nav-category">Manage Bills</li>

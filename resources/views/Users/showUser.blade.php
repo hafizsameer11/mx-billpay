@@ -28,7 +28,7 @@
 
                             @if (isset($user->account->profile_picture))
 
-                                <img src="{{ asset('storage/'.$user->account->profile_picture) }}" alt="Sender Avatar"
+                                <img src="{{ asset('storage/' . $user->account->profile_picture) }}" alt="Sender Avatar"
                                     class="rounded-circle mr-2" width="40" height="40">
                             @else
                                 <img src="{{ asset('assets/images/others/dummyImage.jpeg') }}" alt="Sender Avatar"
@@ -61,12 +61,32 @@
         </div>
     </div>
     <div class="row">
-        <!-- Left Column (Sender Details) -->
         <div class="col-md-12 mb-4">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">Transactions</h6>
-                    <table class="table">
+
+                    <!-- Filter Form -->
+                    <form method="GET" action="{{ route('user.show', $user->id) }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="date" name="start_date" class="form-control"
+                                    value="{{ request('start_date') }}" placeholder="Start Date">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" name="end_date" class="form-control"
+                                    value="{{ request('end_date') }}" placeholder="End Date">
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <a href="{{ route('user.show', $user->id) }}" class="btn btn-secondary">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="table mt-3">
                         @php
                             $index = 1;
                         @endphp
@@ -94,12 +114,21 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <div>
+                            Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of
+                            {{ $transactions->total() }} entries
+                        </div>
+                        <div>
+                            {{ $transactions->appends(request()->all())->links('pagination::bootstrap-4') }}
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-
-        <!-- Right Column (Bill Information) -->
-
     </div>
 
 

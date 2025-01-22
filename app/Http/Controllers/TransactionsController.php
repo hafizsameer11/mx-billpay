@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BillPayment;
 use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -122,18 +123,48 @@ class TransactionsController extends Controller
 
     public function billPayments(Request $request)
     {
-        $category = $request->input('category');
-        $type = $request->input('type');
-        $name = $request->input('name');
-        $status = $request->input('status');
-        $created_at = $request->input('created_at');
+        $keyword = $request->input('keyword');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         $transactions = BillPayment::with(['user.account', 'transaction', 'category'])
-            ->paginate(10);
-            // dd($transactions);
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->whereHas('user.account', function ($q) use ($keyword) {
+                        $q->where('firstName', 'like', '%' . $keyword . '%')
+                            ->orWhere('lastName', 'like', '%' . $keyword . '%');
+                    })
+                        ->orWhereHas('user', function ($q) use ($keyword) {
+                            $q->where('email', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('category', function ($q) use ($keyword) {
+                            $q->where('category', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhere('bill_payments.providerName', 'like', '%' . $keyword . '%')
+                        ->orWhere('bill_payments.reference', 'like', '%' . $keyword . '%');
+                });
+            })
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
-        return view('Transactions.billPayments', compact('transactions'));
+        // Calculate total deposits for different periods
+        $todayCount = BillPayment::whereDate('created_at', Carbon::today())->sum('amount');
+        $weekCount = BillPayment::where('created_at', '>=', Carbon::now()->subWeek())->sum('amount');
+        $monthCount = BillPayment::where('created_at', '>=', Carbon::now()->subMonth())->sum('amount');
+        $yearCount = BillPayment::where('created_at', '>=', Carbon::now()->subYear())->sum('amount');
+
+        return view('Transactions.billPayments', compact(
+            'transactions',
+            'todayCount',
+            'weekCount',
+            'monthCount',
+            'yearCount'
+        ));
     }
+
 
 
 
