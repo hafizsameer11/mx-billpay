@@ -10,7 +10,7 @@ class RevenueController extends Controller
 {
     public function index(Request $request)
     {
-        $keyword = $request->input('keyword');
+        $keyword = trim($request->input('keyword'));  // Trim any whitespace
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
@@ -24,8 +24,8 @@ class RevenueController extends Controller
             )
             ->where('bill_payments.status', 'success')
 
-            // Handle keyword search independently
-            ->when($keyword, function ($query) use ($keyword) {
+            // Handle keyword search independently with proper empty check
+            ->when(!empty($keyword), function ($query) use ($keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->whereHas('user.account', function ($q) use ($keyword) {
                         $q->where('firstName', 'like', '%' . $keyword . '%');
@@ -40,8 +40,8 @@ class RevenueController extends Controller
                 });
             })
 
-            // Handle date range independently
-            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+            // Handle date range independently with proper checks
+            ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
             })
 
@@ -62,6 +62,7 @@ class RevenueController extends Controller
             'yearlyRevenue'
         ));
     }
+
 
 
 
