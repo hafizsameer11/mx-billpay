@@ -41,8 +41,12 @@ class RevenueController extends Controller
 
             // Handle date range independently with proper checks
             ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
+                // Ensure the end date includes the entire day by adding one day
+                $endDate = Carbon::parse($endDate)->endOfDay();
+
                 $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
             })
+
 
             ->orderBy('bill_payments.created_at', 'desc')
             ->paginate(15);
