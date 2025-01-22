@@ -44,7 +44,7 @@ class DepositController extends Controller
         $monthCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $month)->sum('amount');
         $yearCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $year)->sum('amount');
 
-        return view('transactions.deposits', compact('transactions', 'todayCount', 'weekCount', 'monthCount', 'yearCount'));
+        return view('Transactions.deposits', compact('transactions', 'todayCount', 'weekCount', 'monthCount', 'yearCount'));
     }
 
 }
