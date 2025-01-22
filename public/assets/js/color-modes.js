@@ -4,29 +4,34 @@
   const getStoredTheme = () => localStorage.getItem('theme')
   const setStoredTheme = theme => localStorage.setItem('theme', theme)
 
-  // Custom event dispatch 
-  // const setStoredTheme = (theme) => { 
+  // Custom event dispatch
+  // const setStoredTheme = (theme) => {
   //   localStorage.setItem('theme', theme);
   //   const event = new CustomEvent('themeChanged');
   //   document.dispatchEvent(event)
   // }
-
   const getPreferredTheme = () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme) {
-      return storedTheme
-    } else {
-      setStoredTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    }
+    // Check if there's a stored theme preference
+    const storedTheme = getStoredTheme();
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
+    if (storedTheme) {
+      return storedTheme; // If a theme is stored, use it
+    } else {
+      // If no stored theme, set dark theme by default, else fallback to system preference
+      const defaultTheme = 'dark'; // Default to dark theme
+      setStoredTheme(defaultTheme); // Store the default theme
+      return defaultTheme; // Return dark theme
+    }
+  };
 
   const setTheme = theme => {
-    document.documentElement.setAttribute('data-bs-theme', theme)
-  }
+    // Apply the theme to the document
+    document.documentElement.setAttribute('data-bs-theme', theme);
+  };
 
-  setTheme(getPreferredTheme())
+  // Set the theme based on the preferred theme
+  setTheme(getPreferredTheme());
+
 
   const showActiveTheme = (theme) => {
     const themeSwitcher = document.querySelector('#theme-switcher')

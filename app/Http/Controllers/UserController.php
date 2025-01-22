@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -93,9 +94,12 @@ class UserController extends Controller
         $endDate = $request->input('end_date');
 
         $transactionsQuery = Transaction::where('user_id', $id)
-            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('created_at', [$startDate, $endDate]);
-            })
+        ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
+            // Ensure the end date includes the entire day by adding one day
+            $endDate = Carbon::parse($endDate)->endOfDay();
+
+            $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
+        })
             ->orderBy('created_at', 'desc');
 
         $transactions = $transactionsQuery->paginate(10);

@@ -144,8 +144,11 @@ class TransactionsController extends Controller
                         ->orWhere('bill_payments.reference', 'like', '%' . $keyword . '%');
                 });
             })
-            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('created_at', [$startDate, $endDate]);
+            ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
+                // Ensure the end date includes the entire day by adding one day
+                $endDate = Carbon::parse($endDate)->endOfDay();
+
+                $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15);

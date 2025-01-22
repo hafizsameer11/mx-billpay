@@ -20,30 +20,30 @@
                             <div class="col-md-2">
                                 <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request('name') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="text" name="email" class="form-control" placeholder="Email" value="{{ request('email') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="text" name="phone" class="form-control" placeholder="Phone" value="{{ request('phone') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="date" name="created_at" class="form-control" value="{{ request('created_at') }}">
                             </div>
-                
+
                             <div class="col-md-2">
                                 <input type="date" name="updated_at" class="form-control" value="{{ request('updated_at') }}">
                             </div>
-                
+
                             <div class="col-md-2 text-center">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                
+
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -52,9 +52,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Account Number</th>
-                                <th>Bvn</th>
-                                <th>Account Type</th>
+
                                 <th>Status</th>
                                 <th>Account Balance</th>
                                 <th>Actions</th>
@@ -67,9 +65,7 @@
                                     <td>{{ $item->account->firstName ?? 'N/A' }}</td>
                                     <td>{{ $item->email }}</td>
                                     <td>{{ $item->account->phone ?? 'N/A' }}</td>
-                                    <td>{{ $item->account->account_number  ?? 'N/A' }}</td>
-                                    <td>{{ $item->account->bvn  ?? 'N/A' }}</td>
-                                    <td>{{ $item->account->account_type  ?? 'N/A' }}</td>
+                                 
                                     <td>{{ $item->account->status  ?? 'N/A' }}</td>
                                     <td>{{ $item->account->accountBalance  ?? 'N/A' }}</td>
                                     <td>

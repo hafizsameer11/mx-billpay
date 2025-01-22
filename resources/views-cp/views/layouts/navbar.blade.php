@@ -16,7 +16,7 @@
         </form> --}}
 
         <ul class="navbar-nav">
-            <li class="theme-switcher-wrapper nav-item">
+            {{-- <li class="theme-switcher-wrapper nav-item">
                 <input type="checkbox" value="" id="theme-switcher">
                 <label for="theme-switcher">
                     <div class="box">
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </label>
-            </li>
+            </li> --}}
             {{-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex" href="#" id="languageDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
