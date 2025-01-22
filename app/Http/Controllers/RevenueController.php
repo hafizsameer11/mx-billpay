@@ -23,28 +23,32 @@ class RevenueController extends Controller
                 'bill_providers.percentage_comission as provider_percentage_comission'
             )
             ->where('bill_payments.status', 'success')
-            ->where(function ($query) use ($keyword, $startDate, $endDate) {
-                if ($keyword) {
-                    $query->whereHas('user.account', function ($q) use ($keyword) {
+
+            // Handle keyword search independently
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->whereHas('user.account', function ($q) use ($keyword) {
                         $q->where('firstName', 'like', '%' . $keyword . '%');
                     })
-                        ->orWhereHas('user', function ($q) use ($keyword) {
-                            $q->where('email', 'like', '%' . $keyword . '%');
-                        })
-                        ->orWhereHas('billerItem.category', function ($q) use ($keyword) {
-                            $q->where('category', 'like', '%' . $keyword . '%');
-                        })
-                        ->orWhere('bill_providers.name', 'like', '%' . $keyword . '%');
-                }
-
-                if ($startDate && $endDate) {
-                    $query->orWhereBetween('bill_payments.created_at', [$startDate, $endDate]);
-                }
+                    ->orWhereHas('user', function ($q) use ($keyword) {
+                        $q->where('email', 'like', '%' . $keyword . '%');
+                    })
+                    ->orWhereHas('billerItem.category', function ($q) use ($keyword) {
+                        $q->where('category', 'like', '%' . $keyword . '%');
+                    })
+                    ->orWhere('bill_providers.name', 'like', '%' . $keyword . '%');
+                });
             })
-            ->orderBy('created_at', 'desc')
+
+            // Handle date range independently
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
+            })
+
+            ->orderBy('bill_payments.created_at', 'desc')
             ->paginate(15);
 
-
+        // Revenue calculations
         $dailyRevenue = $this->calculateRevenue(Carbon::today());
         $weeklyRevenue = $this->calculateRevenue(Carbon::now()->subWeek());
         $monthlyRevenue = $this->calculateRevenue(Carbon::now()->subMonth());
@@ -58,6 +62,8 @@ class RevenueController extends Controller
             'yearlyRevenue'
         ));
     }
+
+
 
 
     /**

@@ -7,8 +7,7 @@
     </div>
     <div class="d-flex align-items-center flex-wrap text-nowrap">
 
-        {{-- <button class="btn btn-primary mb-2 mb-md-0" data-bs-toggle="modal"
-            data-bs-target="#bulkCommissionModal">Bulk Add Commission</button> --}}
+       
     </div>
 </div>
 <div class="row">
@@ -17,7 +16,7 @@
             <div class="card l-bg-blue-dark">
                 <div class="card-body">
                     <h5 class="card-title text-white">Daily Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($dailyRevenue, 2) }}</h2>
+                    <h3 class="text-white">NGN {{ number_format($dailyRevenue, 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -25,7 +24,7 @@
             <div class="card l-bg-orange">
                 <div class="card-body">
                     <h5 class="card-title text-white">Weekly Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($weeklyRevenue, 2) }}</h2>
+                    <h3 class="text-white">NGN {{ number_format($weeklyRevenue, 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -33,7 +32,7 @@
             <div class="card l-bg-cyan">
                 <div class="card-body">
                     <h5 class="card-title text-white">Monthly Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($monthlyRevenue, 2) }}</h2>
+                    <h3 class="text-white">NGN {{ number_format($monthlyRevenue, 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -41,7 +40,7 @@
             <div class="card l-bg-green">
                 <div class="card-body">
                     <h5 class="card-title text-white">Yearly Revenue</h5>
-                    <h2 class="text-white">NGN {{ number_format($yearlyRevenue, 2) }}</h2>
+                    <h3 class="text-white">NGN {{ number_format($yearlyRevenue, 2) }}</h3>
                 </div>
             </div>
         </div>
