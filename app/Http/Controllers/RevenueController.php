@@ -24,6 +24,21 @@ class RevenueController extends Controller
             )
             ->where('bill_payments.status', 'success')
 
+            ->when(!empty($keyword), function ($query) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->whereHas('user.account', function ($q) use ($keyword) {
+                        $q->where('firstName', 'like', '%' . $keyword . '%');
+                    })
+                        ->orWhereHas('user', function ($q) use ($keyword) {
+                            $q->where('email', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('billerItem.category', function ($q) use ($keyword) {
+                            $q->where('category', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhere('bill_providers.name', 'like', '%' . $keyword . '%');
+                });
+            })
+
             // Handle date range independently with proper checks
             ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
@@ -67,7 +82,7 @@ class RevenueController extends Controller
         $totalRevenue = 0;
         foreach ($billPayments as $payment) {
             $commission = ($payment->amount * ($payment->provider_percentage_comission / 100)) + $payment->provider_fixed_comission;
-            $totalRevenue += ($payment->amount - $payment->totalAmount) + $commission;
+            $totalRevenue += ($payment->totalAmount - $payment->amount) + $commission;
         }
 
         return $totalRevenue;
