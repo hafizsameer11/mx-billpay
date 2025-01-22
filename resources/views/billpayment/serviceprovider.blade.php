@@ -141,7 +141,7 @@
                             <select name="biller_category" id="biller_category" class="form-select">
                                 <option value="">Select Category</option>
                                 @foreach ($options as $cat)
-                                    <option value="{{ $cat->id }}">{{ $cat->title }}</option>
+                                    <option value="{{ $cat->id }}">{{ $cat->title }}- {{$cat->category->category}}</option>
                                 @endforeach
                             </select>
                         </div>

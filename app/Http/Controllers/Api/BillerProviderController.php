@@ -75,7 +75,7 @@ class BillerProviderController extends Controller
                     $query->where('title', 'like', '%' . $title . '%'); // Searching in account's firstName
                 });
             })->paginate(10);
-        $options = BillProviders::all();
+        $options = BillProviders::with('category')->get();
         return view('billpayment.serviceprovider', compact('serviceProviders', 'options'));
     }
 

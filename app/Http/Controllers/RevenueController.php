@@ -84,7 +84,6 @@ class RevenueController extends Controller
             $commission = ($payment->amount * ($payment->provider_percentage_comission / 100)) + $payment->provider_fixed_comission;
             $totalRevenue += ($payment->totalAmount - $payment->amount) + $commission;
         }
-
         return $totalRevenue;
     }
 
