@@ -25,7 +25,7 @@
         <div class="col-md-3">  <!-- Corrected: Wrapped Weekly Deposit Card -->
             <div class="card l-bg-orange">
                 <div class="card-body">
-                    <h5 class="card-title text-white">Weekly Deposit</h5>
+                    <h5 class="card-title text-white">Total User Balance</h5>
                     <h3 class="text-white">NGN {{ number_format($weekCount, 0) }}</h3>
                 </div>
             </div>

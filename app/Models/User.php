@@ -67,6 +67,6 @@ class User extends Authenticatable
             return $this->hasMany(Message::class,'user_id','id');
         }
         public function wallet(){
-            return $this->hasMany(Wallet::class,'user_id','id');
+            return $this->hasOne(Wallet::class,'user_id','id');
         }
 }
