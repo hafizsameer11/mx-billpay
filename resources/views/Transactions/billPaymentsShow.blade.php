@@ -99,18 +99,19 @@
                         <p class="text-muted mb-0">
                             {{$transactions->totalAmount ?? 'N/A'}}
                         </p>
-                        <div class="d-flex justify-content-between my-3">
-                            <p class="mb-0"><strong>Payload</strong></p>
-                            <p class="text-muted mb-0">
-                                {{$transactions->payload ?? 'N/A'}}
-                            </p>
-                        </div>
-                        <div class="d-flex justify-content-between my-3">
-                            <p class="mb-0"><strong>Response</strong></p>
-                            <p class="text-muted mb-0">
-                                {{$transactions->response ?? 'N/A'}}
-                            </p>
-                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between my-3">
+                        <p class="mb-0"><strong>Payload</strong></p>
+                        <p class="text-muted mb-0">
+                            {{$transactions->payload ?? 'N/A'}}
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-between my-3">
+                        <p class="mb-0"><strong>Response</strong></p>
+                        <p class="text-muted mb-0">
+                            {{$transactions->response ?? 'N/A'}}
+                        </p>
                     </div>
                 </div>
             </div>
