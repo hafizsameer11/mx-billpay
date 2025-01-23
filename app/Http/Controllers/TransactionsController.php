@@ -243,7 +243,7 @@ class TransactionsController extends Controller
 
     public function billPaymentsShow($id)
     {
-        $transactions = BillPayment::where('user_id', $id)->with(['user.account', 'transaction', 'billerItem.category'])->first();
+        $transactions = BillPayment::where('id', $id)->with(['user.account', 'transaction', 'billerItem.category'])->first();
         // dd($transactions);
         return view('Transactions.billPaymentsShow', compact('transactions'));
     }
