@@ -95,7 +95,7 @@
                             <th>User Email</th>
                             <th>Refference</th>
                          <th>Amount</th>
-                         <th>Revenue</th>
+                         <th>VFD Charge</th>
                             {{-- <th>Actions</th> --}}
                         </tr>
                     </thead>
