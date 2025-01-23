@@ -120,7 +120,7 @@
                                                             }}
                                                         </td>
 
-                                                        <td><a href="{{route('billPayments.transactions.show', $item->user->id)}}"
+                                                        <td><a href="{{route('billPayments.transactions.show', $item->id)}}"
                                                                 class="btn btn-outline-primary">View</a></td>
                                                     </tr>
                             @endforeach
