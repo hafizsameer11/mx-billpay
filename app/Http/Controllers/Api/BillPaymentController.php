@@ -390,6 +390,7 @@ class BillPaymentController extends Controller
             }
 
             BillPayment::create([
+                'payload' => json_encode($payload),
                 'category_id' => $request->category_id,
                 'billItemName' => $request->paymentitemname,
                 'providerName' => $request->billerId,
@@ -451,6 +452,7 @@ class BillPaymentController extends Controller
 
                 CheckTransactionStatus::dispatch($reference, $transaction->id, 0, $customerName, $customerEmail);
                 BillPayment::create([
+                      'payload' => json_encode($payload),
                     'category_id' => $request->category_id,
                     'providerName' => $request->billerId,
                     'billItemName' => $request->paymentitemname,
@@ -494,6 +496,7 @@ class BillPaymentController extends Controller
                 $transaction->amount = $amount;
                 $transaction->save();
                 BillPayment::create([
+                    'payload' => json_encode($payload),
                     'category_id' => $request->category_id,
                     'providerName' => $request->billerId,
                     'billItemName' => $request->paymentitemname,
@@ -537,6 +540,7 @@ class BillPaymentController extends Controller
             $transaction->amount = $amount;
             $transaction->save();
             BillPayment::create([
+                'payload' => json_encode($payload),
                 'category_id' => $request->category_id,
                 'providerName' => $request->billerId,
                 'billItemName' => $request->paymentitemname,
