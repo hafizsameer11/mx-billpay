@@ -95,7 +95,7 @@
                                 <th>Service Charge</th>
                                 <th>Comission Revenue</th>
                                 <th>Total Revenue</th>
-                                <th>Actions</th>
+                                {{-- <th>Actions</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -120,8 +120,8 @@
                                                             }}
                                                         </td>
 
-                                                        <td><a href="{{route('billPayments.transactions.show', $item->id)}}"
-                                                                class="btn btn-outline-primary">View</a></td>
+                                                        {{-- <td><a href="{{route('billPayments.transactions.show', $item->user->id)}}"
+                                                                class="btn btn-outline-primary">View</a></td> --}}
                                                     </tr>
                             @endforeach
                         </tbody>
