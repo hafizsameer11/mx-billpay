@@ -103,16 +103,17 @@
                     </div>
                     <div class="d-flex justify-content-between my-3">
                         <p class="mb-0"><strong>Payload</strong></p>
-                        <p class="text-muted mb-0">
+                        <p class="text-muted mb-0 text-break" style="word-wrap: break-word; white-space: pre-wrap;">
                             {{$transactions->payload ?? 'N/A'}}
                         </p>
                     </div>
                     <div class="d-flex justify-content-between my-3">
                         <p class="mb-0"><strong>Response</strong></p>
-                        <p class="text-muted mb-0">
+                        <p class="text-muted mb-0 text-break" style="word-wrap: break-word; white-space: pre-wrap;">
                             {{$transactions->response ?? 'N/A'}}
                         </p>
                     </div>
+
                 </div>
             </div>
         </div>
