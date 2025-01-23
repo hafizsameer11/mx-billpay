@@ -65,9 +65,7 @@
                                                             <a href="{{ route('chat.show', ['id' => $user['id']]) }}"
                                                                 class="d-flex align-items-center">
                                                                 <figure class="mb-0 me-2">
-                                                                    <img src="@if ($user['profile_picture'])  {{"storage/". $user['account']['profile_picture'] }}
-                      @else
-                      https://via.placeholder.com/37x37 @endif"
+                                                                    <img src="@if ($user['account']['profile_picture'])  {{"storag/". $user['account']['profile_picture'] }}@else https://via.placeholder.com/37x37 @endif"
                                                                         class="img-xs rounded-circle" alt="user">
                                                                     <div class="status online"></div>
                                                                 </figure>
