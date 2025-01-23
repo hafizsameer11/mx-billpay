@@ -14,7 +14,7 @@ class DepositController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $transactions = Transaction::where('transaction_type', 'Inward Credit')
-            ->with(['user.account', 'transfer'])
+            ->with(['user', 'user.account', 'transfer'])
             ->when($keyword, function ($query) use ($keyword) {
                 $query->whereHas('user.account', function ($q) use ($keyword) {
                     $q->where('firstName', 'like', '%' . $keyword . '%')
