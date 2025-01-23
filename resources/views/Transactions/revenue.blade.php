@@ -7,7 +7,7 @@
     </div>
     <div class="d-flex align-items-center flex-wrap text-nowrap">
 
-       
+
     </div>
 </div>
 <div class="row">
@@ -104,7 +104,7 @@
                                                         <th>{{ $loop->index + 1 }}</th>
                                                         <td> {{ $item->transaction->created_at ? $item->transaction->created_at->format('d-m-Y H:i') : 'N/A' }}
                                                         </td>
-                                                        <td>{{ $item->user->email}}</td>
+                                                        <td>{{ $item->user->email ?? 'N/A' }}</td>
                                                         <td>{{ $item->refference }}</td>
                                                         <td>{{ $item->billItemName }}</td>
                                                         <td class="text-center">{{ $item->totalAmount - $item->transaction->amount}}</td>
