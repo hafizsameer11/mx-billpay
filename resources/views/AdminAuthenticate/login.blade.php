@@ -40,7 +40,7 @@ License: For each use you must have a valid license purchased only from above li
 	<link rel="stylesheet" href="../../../assets/fonts/feather-font/css/iconfont.css">
 	<!-- endinject -->
 
-  <!-- Layout styles -->  
+  <!-- Layout styles -->
 	<link rel="stylesheet" href="../../../assets/css/demo1/style.css">
   <!-- End layout styles -->
 
@@ -69,7 +69,7 @@ License: For each use you must have a valid license purchased only from above li
                             {{ session('error') }}
                         </div>
                     @endif
-                    
+
                     <form action="{{route('admin.authenticate')}}" class="forms-sample" method="POST" >
                         @csrf
                       <div class="mb-3">
@@ -90,12 +90,7 @@ License: For each use you must have a valid license purchased only from above li
                             @enderror
                         </span>
                       </div>
-                      <div class="form-check mb-3">
-                        <input type="checkbox" disabled class="form-check-input" id="authCheck">
-                        <label class="form-check-label" for="authCheck">
-                          Remember me
-                        </label>
-                      </div>
+                      
                       <div>
                         <button  class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Login</button>
                         {{-- <button type="button" class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
