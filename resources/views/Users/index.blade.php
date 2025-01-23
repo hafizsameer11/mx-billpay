@@ -53,7 +53,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
 
-                                <th>Status</th>
+                                {{-- <th>Status</th> --}}
                                 <th>Account Balance</th>
                                 <th>Actions</th>
                             </tr>
@@ -65,9 +65,9 @@
                                     <td>{{ $item->account->firstName ?? 'N/A' }}</td>
                                     <td>{{ $item->email }}</td>
                                     <td>{{ $item->account->phone ?? 'N/A' }}</td>
-                                 
-                                    <td>{{ $item->account->status  ?? 'N/A' }}</td>
-                                    <td>{{ $item->account->accountBalance  ?? 'N/A' }}</td>
+
+                                    {{-- <td>{{ $item->account->status  ?? 'N/A' }}</td> --}}
+                                    <td>{{ $item->wallet->accountBalance  ?? 'N/A' }}</td>
                                     <td>
                                         <a href="{{route('user.edit',$item->id)}}" class="btn btn-outline-primary">Edit</a>
                                         <a href="{{route('user.show',$item->id)}}" class="btn btn-outline-secondary mx-2">View</a>

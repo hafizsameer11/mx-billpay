@@ -19,7 +19,7 @@ class UserController extends Controller
         $created_at = $request->input('created_at');
         $updated_at = $request->input('updated_at');
 
-        $users = User::with('account')
+        $users = User::with('account','wallet')
             ->when($name, function ($query) use ($name) {
                 $query->whereHas('account', function ($query) use ($name) {
                     $query->where('firstName', 'like', '%' . $name . '%'); // Searching in account's firstName

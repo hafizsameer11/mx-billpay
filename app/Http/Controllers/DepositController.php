@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -35,12 +36,14 @@ class DepositController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
+
         $today = Carbon::today();
         $week = Carbon::today()->subDays(7);
         $month = Carbon::today()->subDays(30);
         $year = Carbon::today()->subDays(365);
+        // $totalUserBalance=Wallet::sum('accountBalance');
         $todayCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $today)->sum('amount');
-        $weekCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $week)->sum('amount');
+        $weekCount = Wallet::sum('accountBalance');
         $monthCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $month)->sum('amount');
         $yearCount = Transaction::where('transaction_type', 'Inward Credit')->where('created_at', '>=', $year)->sum('amount');
 
