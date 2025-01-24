@@ -332,9 +332,7 @@ class BillPaymentController extends Controller
             $customerId = $request->customerId;
         }
         $phoneNumber = $request->input('phoneNumber', null);
-        $reference = 'mxPay-' . mt_rand(1000, 9999);
-
-
+        $reference = 'mxPay-' . date('yzs') . mt_rand(100, 999);
         $payload = [
             'customerId' => $customerId,
             'amount' => $amount,
