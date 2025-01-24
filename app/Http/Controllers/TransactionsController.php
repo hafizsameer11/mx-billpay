@@ -154,10 +154,10 @@ class TransactionsController extends Controller
             ->paginate(15);
 
         // Calculate total deposits for different periods
-        $todayCount = BillPayment::whereDate('created_at', Carbon::today())->sum('amount');
-        $weekCount = BillPayment::where('created_at', '>=', Carbon::now()->subWeek())->sum('amount');
-        $monthCount = BillPayment::where('created_at', '>=', Carbon::now()->subMonth())->sum('amount');
-        $yearCount = BillPayment::where('created_at', '>=', Carbon::now()->subYear())->sum('amount');
+        $todayCount = BillPayment::whereDate('created_at', Carbon::today())->where('status', 'success')->sum('amount');
+        $weekCount = BillPayment::where('created_at', '>=', Carbon::now()->subWeek())->where('status', 'success')->sum('amount');
+        $monthCount = BillPayment::where('created_at', '>=', Carbon::now()->subMonth())->where('status', 'success')->sum('amount');
+        $yearCount = BillPayment::where('created_at', '>=', Carbon::now()->subYear())->where('status', 'success')->sum('amount');
 
         return view('Transactions.billPayments', compact(
             'transactions',

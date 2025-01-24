@@ -26,7 +26,7 @@
                                     <input type="text" name="keyword" class="form-control" placeholder="Search here..." value="{{ request('keyword') }}">
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-2 text-center">
                                 <select name="status" id="status" class="form-control">
                                     <option value="" class="text-center">--Select Status--</option>
@@ -35,7 +35,7 @@
                                     <option value="return" {{ request('status') == 'return' ? 'selected' : '' }}>Return</option>
                                 </select>
                             </div>
-                            
+
                             <div class="col-md-2 text-center">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
@@ -54,7 +54,7 @@
                                 <th>User</th>
                                 <th>Status</th>
                                 <th>Created Time</th>
-                                <th>Actions</th>                               
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +68,7 @@
                                     <td>{{ $item->account->firstName ?? 'N/A' }} {{ $item->account->lastName ?? 'N/A' }}</td>
                                     <td>{{ $item->status ?? 'N/A' }}</td>
                                     <td>{{ $item->transaction->created_at ?? 'N/A' }}</td>
-                                    <td><a href="{{route('billPayments.transactions.show', $item->user->id)}}" class="btn btn-outline-primary">View</a></td>
+                                    <td><a href="{{route('billPayments.transactions.show', $item->id)}}" class="btn btn-outline-primary">View</a></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -89,9 +89,9 @@
         </div>
     </div>
 
-   
+
 @endsection
 
 @section('additonal-script')
-  
+
 @endsection
