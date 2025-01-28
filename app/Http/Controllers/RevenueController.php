@@ -81,7 +81,9 @@ class RevenueController extends Controller
                 'bill_providers.billerId',
                 'bill_providers.fixed_comission as provider_fixed_comission',
                 'bill_providers.percentage_comission as provider_percentage_comission'
-            )->get();
+            )
+            ->where('bill_payments.status', 'success')
+            ->get();
 
         $totalRevenue = 0;
         foreach ($billPayments as $payment) {
