@@ -43,7 +43,7 @@ class DashboardController extends Controller
         }
 
         // Calculate total revenue
-        $totalLastAmount = $totalAmount - $totalAmountPaid;
+        $totalLastAmount =  $totalAmountPaid- $totalAmount ;
         $totalRevenue = $totalLastAmount + $totalCommission;
 
         // Bill Payments by Time Period
