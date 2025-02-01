@@ -26,7 +26,7 @@ class LogRequests
         }
 
         // Check if the request is from an iOS app
-        elseif (strpos($userAgent, 'cfnetwork') !== false && strpos($userAgent, 'darwin') !== false) {
+        elseif (strpos($userAgent, 'CFNetwork') !== false && strpos($userAgent, 'Darwin') !== false) {
             $deviceType = "iOS Mobile App";
         }
 
