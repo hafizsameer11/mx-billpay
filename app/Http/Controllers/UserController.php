@@ -45,7 +45,36 @@ class UserController extends Controller
 
         return view('Users.index', compact('users'));
     }
+public function indexNoAccount(Request $request){
+    $name = $request->input('name');
+    $email = $request->input('email');
+    $phone = $request->input('phone');
+    $created_at = $request->input('created_at');
+    $updated_at = $request->input('updated_at');
 
+    // Fetch users who DO NOT have an account
+    $users = User::with('wallet')
+        ->whereDoesntHave('account')
+        ->when($name, function ($query) use ($name) {
+            $query->where('name', 'like', '%' . $name . '%'); // Searching in users table's name
+        })
+        ->when($phone, function ($query) use ($phone) {
+            $query->where('phone', 'like', '%' . $phone . '%'); // Searching in users table's phone
+        })
+        ->when($email, function ($query) use ($email) {
+            $query->where('email', 'like', '%' . $email . '%'); // Searching in users table's email
+        })
+        ->when($created_at, function ($query) use ($created_at) {
+            $query->whereDate('created_at', $created_at);
+        })
+        ->when($updated_at, function ($query) use ($updated_at) {
+            $query->whereDate('updated_at', $updated_at);
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    return view('Users.index', compact('users'));
+}
     public function edit($id)
     {
         $user = User::where('id', $id)->with('account')->first();

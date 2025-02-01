@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
 
     // user routes
+    Route::get('/fetch-users-no-account', [UserController::class, 'indexNoAccount'])->name('user.indexNoAccount');
     Route::get('/fetch-users', [UserController::class, 'index'])->name('user.index');
     Route::get('/edit-user/{id}', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/update-user/{id}', [UserController::class, 'update'])->name('user.update');
@@ -175,9 +176,9 @@ Route::middleware('auth')->group(function () {
     Route::put('privacy-link', [PrivacyPageController::class, 'update'])->name('privacy-link.update');
 
 
-    Route::get('/revenue',[RevenueController::class, 'index'])->name('revenue.index');
+    Route::get('/revenue', [RevenueController::class, 'index'])->name('revenue.index');
 
-    Route::get('/deposit',[DepositController::class, 'index'])->name('deposit.index');
+    Route::get('/deposit', [DepositController::class, 'index'])->name('deposit.index');
 });
 
 // Route::get('/withdrawal',[WithdrawalController::class, 'index'])->name('withdrawal.index');

@@ -98,6 +98,9 @@
                         <li class="nav-item">
                             <a href="{{ route('user.index') }}" class="nav-link">All Users</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user.indexNoAccount') }}" class="nav-link">No Account</a>
+                        </li>
                     </ul>
                 </div>
             </li>
