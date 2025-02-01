@@ -19,7 +19,7 @@ class UserController extends Controller
         $created_at = $request->input('created_at');
         $updated_at = $request->input('updated_at');
 
-        $users = User::with('account','wallet')
+        $users = User::with('account', 'wallet')->whereHas('account')
             ->when($name, function ($query) use ($name) {
                 $query->whereHas('account', function ($query) use ($name) {
                     $query->where('firstName', 'like', '%' . $name . '%'); // Searching in account's firstName
@@ -94,12 +94,12 @@ class UserController extends Controller
         $endDate = $request->input('end_date');
 
         $transactionsQuery = Transaction::where('user_id', $id)
-        ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
-            // Ensure the end date includes the entire day by adding one day
-            $endDate = Carbon::parse($endDate)->endOfDay();
+            ->when(!empty($startDate) && !empty($endDate), function ($query) use ($startDate, $endDate) {
+                // Ensure the end date includes the entire day by adding one day
+                $endDate = Carbon::parse($endDate)->endOfDay();
 
-            $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
-        })
+                $query->whereBetween('bill_payments.created_at', [$startDate, $endDate]);
+            })
             ->orderBy('created_at', 'desc');
 
         $transactions = $transactionsQuery->paginate(10);
