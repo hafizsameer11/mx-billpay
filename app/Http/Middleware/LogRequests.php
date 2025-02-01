@@ -18,7 +18,17 @@ class LogRequests
     {
         // Determine Device Type
         $userAgent = $request->header('User-Agent');
-        $deviceType =$userAgent;
+        $deviceType = "Unknown";
+
+        // Check if the request is from an Android app
+        if (strpos($userAgent, 'okhttp') !== false) {
+            $deviceType = "Android Mobile App";
+        }
+
+        // Check if the request is from an iOS app
+        elseif (strpos($userAgent, 'cfnetwork') !== false && strpos($userAgent, 'darwin') !== false) {
+            $deviceType = "iOS Mobile App";
+        }
 
         // Log the request in the database
         RequestLog::create([
