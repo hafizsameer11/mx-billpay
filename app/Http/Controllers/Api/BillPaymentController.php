@@ -280,7 +280,7 @@ class BillPaymentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'customerId' => 'nullable|string',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0.01',
             'billerItemId' => 'required',
             'paymentitemname' => 'required',
             'phoneNumber' => 'nullable',

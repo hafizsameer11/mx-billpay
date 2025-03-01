@@ -56,7 +56,7 @@ Route::get('/clear-cache', function () {
 Route::get('/bill-categories', [BillerCategoryController::class, 'index'])->name('category.index');
 Route::get('/fetch-biller-categories', [BillerCategoryController::class, 'fetchCategories'])->name('category.fetch');
 Route::get('/fetch-biller-item/{categoryName}', [BillerCategoryController::class, 'fetchBillerItemsForCategory'])->name('billitem.fetch');
-Route::geT('/show-biller-items', [BillerCategoryController::class, 'showBillerItems'])->name('billeritem.show');
+Route::get('/show-biller-items', [BillerCategoryController::class, 'showBillerItems'])->name('billeritem.show');
 Route::post('item/add-commission', [BillerCategoryController::class, 'addCommission'])->name('item.addCommission');
 Route::post('item/bulk-add-commission', [BillerCategoryController::class, 'bulkAddCommission'])->name('item.bulkAddCommission');
 Route::post('provider/bulk-add-commission', [BillerCategoryController::class, 'bulkcomissionByVFD'])->name('provider.bulkAddCommission');
@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
 
     // user routes
     Route::get('/fetch-users-no-account', [UserController::class, 'indexNoAccount'])->name('user.indexNoAccount');
+
     Route::get('/fetch-users', [UserController::class, 'index'])->name('user.index');
     Route::get('/edit-user/{id}', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/update-user/{id}', [UserController::class, 'update'])->name('user.update');

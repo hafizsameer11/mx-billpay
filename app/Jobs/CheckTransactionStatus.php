@@ -76,7 +76,7 @@ class CheckTransactionStatus implements ShouldQueue
                         'emails.electricity_token',
                         [
                             'customerName' => $this->customerName,
-                            'tokenNumber' => $formattedToken, // Use formatted token
+                            'tokenNumber' => $formattedToken, 
                         ],
                         function ($message) {
                             $message->to($this->customerEmail)
@@ -102,7 +102,7 @@ class CheckTransactionStatus implements ShouldQueue
             } else if ($status === '99') {
                 $transaction->update(['status' => 'failed']);
                 Log::info("Transaction failed: {$this->transactionId}");
-                $mainTransaction->update(['status' => 'failed']);
+                $mainTransaction->update(attributes: ['status' => 'failed']);
                 $wallet->accountBalance += $transaction->totalAmount;
                 $wallet->save();
                 $notification = new Notification();
@@ -120,7 +120,6 @@ class CheckTransactionStatus implements ShouldQueue
                 if ($this->currentRetry < $this->maxRetries) {
                     $this->retryJob();
                 } else {
-                    // $transaction->update(['status' => 'pending', 'last_checked_at' => now()]);
                     Log::info("Transaction still pending after max retries: {$this->transactionId}");
                 }
             }
